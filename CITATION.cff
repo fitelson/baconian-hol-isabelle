@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this formalization, please cite the software release."
+title: "Baconian HOL: Higher-Order Metaphysics in Isabelle/HOL"
+type: software
+authors:
+  - family-names: Fitelson
+    given-names: Branden
+version: 0.1.0
+date-released: 2026-07-15
+license: BSD-2-Clause
+keywords:
+  - Isabelle/HOL
+  - higher-order logic
+  - higher-order metaphysics
+  - modal logic
+  - names
+

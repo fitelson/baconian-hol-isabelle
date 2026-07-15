@@ -1,0 +1,10 @@
+session Higher_Order_Metaphysics = HOL +
+  description "
+    A deep embedding of a Bacon-style higher-order object language in Isabelle/HOL.
+  "
+  sessions
+    "HOL-Library"
+  theories
+    Bacon_Canonical
+    Bacon_Caie
+    Bacon_Caie_Mstar

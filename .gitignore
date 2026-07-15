@@ -1,0 +1,18 @@
+.DS_Store
+
+# LaTeX build products. The finished Baconian_HOL.pdf is tracked explicitly.
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# Local Isabelle and tooling state.
+.isabelle/
+.isabelle-codex-home/
+graphify-out/
+tmp/
+
+# Older generated reports retained locally but not part of the release.
+scaffold_report.pdf
+reports/

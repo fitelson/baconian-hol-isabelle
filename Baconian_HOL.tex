@@ -1,0 +1,2348 @@
+\documentclass[12pt,leqno]{article}
+\usepackage{amsmath,amssymb,amsthm,colortbl,xcolor,nicefrac,setspace}
+\usepackage[T1]{fontenc}
+\usepackage[expert,seriftt,lucidasmallscale]{lucidabr}
+\usepackage{mathrsfs,hyperref,color,graphicx}
+\usepackage[numbers]{natbib}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{
+  breaklines=true,
+  breakanywhere=true,
+  fontsize=\small
+}
+
+% Extra symbol definitions for Lucida fonts.
+\DeclareMathSymbol{\Dashv}{\mathrel}{symbols}{239}
+\DeclareMathSymbol{\eqdef}{\mathrel}{symbols}{214}
+\DeclareMathSymbol{\sentails}{\mathrel}{symbols}{240}
+\DeclareSymbolFont{txsymbolsC}{U}{txsyc}{m}{n}
+\SetSymbolFont{txsymbolsC}{bold}{U}{txsyc}{bx}{n}
+\DeclareFontSubstitution{U}{txsyc}{m}{n}
+\DeclareMathSymbol{\boxright}{\mathrel}{txsymbolsC}{"80}
+\DeclareMathSymbol{\boxRight}{\mathrel}{txsymbolsC}{"88}
+
+% Forbesian logical macros.
+\newcommand{\AND}{\ensuremath{\mathbin{\&}}}
+\newcommand{\OR}{\ensuremath{\vee}}
+\newcommand{\IFF}{\ensuremath{\leftrightarrow}}
+\newcommand{\IC}{\ensuremath{\rightarrow}}
+\newcommand{\IF}{\ensuremath{\supset}}
+\newcommand{\NOT}{\ensuremath{\text{$\thicksim$}}}
+\newcommand{\lc}{\ensuremath{\ulcorner}}
+\newcommand{\rc}{\ensuremath{\urcorner}}
+\newcommand{\given}{\ensuremath{\mathbin{|}}}
+
+\onehalfspacing
+\emergencystretch=3em
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
+\newcommand{\code}[1]{%
+  \begingroup
+  \def\_{\char`\_\allowbreak}%
+  \texttt{#1}%
+  \endgroup
+}
+\newcommand{\codeblock}[1]{%
+  \par\begingroup\centering\code{#1}\par\endgroup
+}
+\newcommand{\oty}{\mathsf{Ty}}
+\newcommand{\otm}{\mathsf{Tm}}
+\newcommand{\Ind}{\mathsf{Ind}}
+\newcommand{\Prop}{\mathsf{Prop}}
+\newcommand{\Arr}{\mathbin{\Rightarrow_o}}
+\newcommand{\Var}{\mathsf{Var}}
+\newcommand{\Const}{\mathsf{Const}}
+\newcommand{\App}{\mathsf{App}}
+\newcommand{\Lam}{\mathsf{Lam}}
+\newcommand{\Eq}{\mathsf{Eq}}
+\newcommand{\Neg}{\mathsf{Neg}}
+\newcommand{\Conj}{\mathsf{Conj}}
+\newcommand{\Imp}{\mathsf{Imp}}
+\newcommand{\Forall}{\mathsf{Forall}}
+\newcommand{\lookup}{\mathsf{lookup}}
+\newcommand{\infer}{\mathsf{infer}}
+\newcommand{\rename}{\mathsf{rename}}
+\newcommand{\subst}{\mathsf{subst}}
+\newcommand{\shift}{\mathsf{shift}}
+\newcommand{\substz}{\mathsf{subst0}}
+\newcommand{\ObjTrue}{\mathsf{True}_o}
+\newcommand{\ObjFalse}{\mathsf{False}_o}
+\newcommand{\oftype}{\mathrel{:}}
+\newcommand{\types}{\mathrel{\vdash}}
+\newcommand{\betastep}{\mathrel{\to_\beta}}
+\newcommand{\CE}{\mathsf{CE}}
+\newcommand{\CEV}{\mathsf{CEV}}
+\newcommand{\Caie}{\mathsf{Caie}}
+\newcommand{\sem}[1]{[\![#1]\!]}
+\newcommand{\CF}{\mathrel{\boxright_{\!o}}}
+\newcommand{\PrTy}{\mathsf{Pr}}
+\newcommand{\ClTy}{\mathsf{Cl}}
+\newcommand{\heq}{\mathsf{heq}}
+\newcommand{\downc}[1]{#1^{\downarrow_c}}
+\newcommand{\upc}[1]{#1^{\uparrow_c}}
+\newcommand{\dsim}{\mathrel{\sim_{\downarrow c}}}
+
+\title{Baconian HOL: An Isabelle/HOL Formalization Scaffold for Higher-Order Metaphysics}
+\author{}
+\date{July 15, 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Purpose of the scaffold}
+
+The current Isabelle/HOL development is a first, buildable scaffold for
+formalizing higher-order metaphysics in the setting of Bacon's
+\emph{A Philosophical Introduction to Higher-Order Logics}.  The governing
+choice is that Isabelle/HOL is used as the metalanguage.  The Bacon-style
+higher-order language is represented inside Isabelle as an object language.
+
+This choice is deliberate.  Isabelle/HOL already has simple types, lambda
+abstraction, higher-order quantification, and equality.  If we used all of
+those directly as the language being studied, many of the distinctions that
+matter in Bacon's setting would disappear.  In particular, object-language
+identity, object-language implication, object-language abstraction, and
+object-language quantification would be identified with Isabelle's own
+metalogical equality, implication, lambda abstraction, and quantification.
+That would be too extensional for many of the intended metaphysical
+applications.
+
+The present development therefore deep-embeds a small typed object language.
+The development currently contains:
+\begin{itemize}[leftmargin=2em]
+\item object-language types for individuals, propositions, and arrows;
+\item object-language variables, constants, application, and lambda
+  abstraction;
+\item object-language equality, negation, conjunction, disjunction, and
+  implication;
+\item object-language universal and existential quantification;
+\item a typing judgment for object-language terms;
+\item renaming and substitution operations over de Bruijn variables;
+\item preservation lemmas for renaming, substitution, and one-step beta
+  contraction;
+\item Hilbert-style theoremhood for the minimal higher-order logic $H$;
+\item a Classicism extension $C$ containing the Boolean identities and the
+  Classicist identities;
+\item a first modal-logicism derivation layer, including restricted
+  necessitation and a zero-ary equivalence-closure extension;
+\item a vector/zeta equivalence layer for fresh de Bruijn variables and
+  higher-type Equivalence;
+\item a standalone typed beta-eta conversion relation, together with bridge
+  lemmas from conversion to biconditional theoremhood in \(H\), \(C\), \(\CE\),
+  and \(\CEV\);
+\item an S4-style modal derivation layer, including equality symmetry,
+  equality transitivity, and the modal $K$, $T$, and $4$ schemata;
+\item an abstract semantic layer, including applicative structures, semantic
+  environments, recursive interpretation of object terms, typed evaluation,
+  semantic substitution and conversion preservation, full \(H\)-soundness for
+  \code{valid\_in\_context}, and relative soundness theorems for \(C\), \(\CE\),
+  and \(\CEV\);
+\item a completeness interface, including semantic consequence for assumption
+  lists, local soundness for \code{H\_derivable} and \code{C\_derivable}, and
+  countermodel-property bridge theorems for completeness;
+\item a canonical-theory layer, including H/C Lindenbaum-Henkin extensions,
+  canonical truth lemmas, substitutional term-model semantics, H/C
+  Henkin-validity and term-model completeness biconditionals, explicit H/C
+  countermodel packages, and strengthened CE/CEV local consequence machinery
+  for the remaining completeness work;
+\item a Caie names layer, including the type correspondence for individuals,
+  propositions, first-order properties, and property classifiers; an
+  uninterpreted counterfactual connective; the maximal-consistency, name, and
+  haecceity vocabulary; deep-embedded Appendix C theorem statements; applied
+  typing lemmas; verified definitional conversion bridges for \(\heq\),
+  down-projection, up-projection, and down-similarity; and a local Caie
+  derivability wrapper over explicit finite assumption lists.
+\item a finite Caie \(M^*\) model layer, checking the current two-world
+  model core of Caie's Proposition 29.
+\end{itemize}
+
+The session builds with Isabelle2025-2:
+\begin{verbatim}
+isabelle build -D .
+\end{verbatim}
+
+\section{Bacon-style notation}
+
+\subsection{Types}
+
+Bacon's typed languages use simple types.  I will write $t$ for the type of
+propositions and $\iota$ for a background type of individuals.  If $\sigma$ and
+$\tau$ are types, then
+\[
+  \sigma \to \tau
+\]
+is the type of functions or operations from expressions of type $\sigma$ to
+expressions of type $\tau$.  Thus a predicate of individuals may be written as
+having type $\iota \to t$, a binary relation on individuals as
+$\iota \to \iota \to t$, and an operation from propositions to propositions as
+$t \to t$.
+
+The scaffold also defines an order function on types:
+\[
+  \operatorname{ord}(\iota)=0,\qquad
+  \operatorname{ord}(t)=0,\qquad
+  \operatorname{ord}(\sigma\to\tau)
+    = \max(\operatorname{ord}(\sigma)+1,\operatorname{ord}(\tau)).
+\]
+This is not yet used in a major theorem, but it is a useful bookkeeping device
+for later separating first-order, second-order, and genuinely higher-order
+fragments.
+
+\subsection{Terms}
+
+In standard Bacon-style notation, terms are typed expressions.  Typical typing
+claims have the form
+\[
+  \Gamma \types M:\sigma,
+\]
+where $\Gamma$ is a context assigning types to variables, $M$ is a term, and
+$\sigma$ is a type.
+
+The core term-forming operations represented so far are these:
+\[
+\begin{array}{lll}
+  x & \text{variable} & \Gamma \types x:\sigma,\\[2mm]
+  c_\sigma & \text{constant of type }\sigma
+    & \Gamma \types c_\sigma:\sigma,\\[2mm]
+  MN & \text{application}
+    & \dfrac{\Gamma \types M:\sigma\to\tau\quad
+              \Gamma \types N:\sigma}
+             {\Gamma \types MN:\tau},\\[5mm]
+  \lambda x^\sigma.M & \text{abstraction}
+    & \dfrac{\Gamma,x:\sigma \types M:\tau}
+             {\Gamma \types \lambda x^\sigma.M:\sigma\to\tau},\\[5mm]
+  M =_\sigma N & \text{typed equality}
+    & \dfrac{\Gamma \types M:\sigma\quad
+              \Gamma \types N:\sigma}
+             {\Gamma \types M =_\sigma N:t},\\[5mm]
+  \NOT A & \text{negation}
+    & \dfrac{\Gamma \types A:t}{\Gamma \types \NOT A:t},\\[5mm]
+  A \AND B & \text{conjunction}
+    & \dfrac{\Gamma \types A:t\quad \Gamma \types B:t}
+             {\Gamma \types A\AND B:t},\\[5mm]
+  A \IC B & \text{implication}
+    & \dfrac{\Gamma \types A:t\quad \Gamma \types B:t}
+             {\Gamma \types A\IC B:t},\\[5mm]
+  \forall x^\sigma A & \text{higher-order universal quantification}
+    & \dfrac{\Gamma,x:\sigma \types A:t}
+             {\Gamma \types \forall x^\sigma A:t}.
+\end{array}
+\]
+Here the quantifier is higher-order in the broad sense: $\sigma$ may itself be
+a functional type, such as $\iota\to t$, $t\to t$, or
+$(\iota\to t)\to t$.
+
+\subsection{Beta contraction}
+
+The central syntactic operation currently formalized is beta contraction:
+\[
+  (\lambda x^\sigma.M)N \betastep M[N/x].
+\]
+The corresponding preservation theorem says:
+\[
+  \text{if }\Gamma\types(\lambda x^\sigma.M)N:\tau
+  \text{ and }(\lambda x^\sigma.M)N\betastep M[N/x],
+  \text{ then }\Gamma\types M[N/x]:\tau.
+\]
+This is the first syntactic safety property one wants before adding proof
+systems or model theory.
+
+\section{Isabelle-side representation}
+
+\subsection{Session layout}
+
+The Isabelle session is the repository root:
+\begin{verbatim}
+Baconian_HOL/
+\end{verbatim}
+It currently contains:
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.44\textwidth}
+                >{\raggedright\arraybackslash}p{0.48\textwidth}@{}}
+\code{ROOT} & session declaration,\\
+\code{README.md} & short project description and build command,\\
+\code{STATUS.md} & verified, conditional, and open-result ledger,\\
+\code{CITATION.cff} & software citation metadata,\\
+\code{LICENSE} & BSD 2-Clause license,\\
+\code{check\_isabelle.sh} & portable one-command session build,\\
+\code{Bacon\_Types.thy} & object-language types,\\
+\code{Bacon\_Syntax.thy} & object-language terms,\\
+\code{Bacon\_Typing.thy} & typing judgment and type inference,\\
+\code{Bacon\_Substitution.thy} & renaming and substitution,\\
+\code{Bacon\_Beta.thy} & beta contraction and type preservation,\\
+\code{Bacon\_Deduction.thy} & the minimal higher-order logic \(H\),\\
+\code{Bacon\_Abbreviations.thy} & Bacon-Dorr identity schemas,\\
+\code{Bacon\_Classicism.thy} & the Classicism extension \(C\),\\
+\code{Bacon\_Modal.thy} & modal-logicism definitions and sanity checks,\\
+\code{Bacon\_Modal\_Derivations.thy}
+  & restricted necessitation and equivalence closure,\\
+\code{Bacon\_Zeta.thy}
+  & vector/zeta equivalence infrastructure,\\
+\code{Bacon\_Conversion.thy}
+  & standalone beta-eta equivalence and proof-system bridge,\\
+\code{Bacon\_S4.thy}
+  & local \(\CEV\) derivability, equality transfer, and modal S4,\\
+\code{Bacon\_Semantics.thy}
+  & abstract applicative semantics and soundness,\\
+\code{Bacon\_Completeness.thy}
+  & semantic consequence and countermodel bridges to completeness,\\
+\code{Bacon\_Canonical.thy}
+  & canonical theories and Henkin-completeness infrastructure,\\
+\code{Bacon\_Caie.thy}
+  & Caie names vocabulary, Appendix C statements, and conversion bridges,\\
+\code{Bacon\_Caie\_Mstar.thy}
+  & finite \(M^*\) table model for Caie's Proposition 29 core.
+\end{tabular}
+\end{center}
+
+\subsection{Object-language types in Isabelle}
+
+The object-language type datatype is:
+\begin{verbatim}
+datatype otype =
+    Ind
+  | Prop
+  | Arr otype otype
+\end{verbatim}
+The Isabelle theory installs an infix notation for \code{Arr sigma tau}.
+Mathematically, this is the object-language arrow
+\[
+  \sigma \Arr \tau.
+\]
+In Isabelle source, that same symbol is written with Isabelle's symbolic escape
+syntax as \verb|\<rightarrow>\<^sub>o|: \verb|\<rightarrow>| renders as
+$\rightarrow$, and \verb|\<^sub>o| renders the following \code{o} as a
+subscript.  The subscript marks this as the object-language arrow, not
+Isabelle/HOL's own function arrow.
+
+Thus the correspondence with the Bacon notation is:
+\[
+\begin{array}{c|c|c}
+\text{Bacon-style notation} & \text{Isabelle constructor} & \text{Report notation}\\
+\hline
+\iota & \code{Ind} & \Ind\\
+t & \code{Prop} & \Prop\\
+\sigma\to\tau & \code{Arr sigma tau} & \sigma\Arr\tau
+\end{array}
+\]
+
+\subsection{Object-language terms in Isabelle}
+
+The object-language term datatype is:
+\begin{verbatim}
+datatype oterm =
+    Var nat
+  | Const string otype
+  | App oterm oterm
+  | Lam otype oterm
+  | Eq otype oterm oterm
+  | Neg oterm
+  | Conj oterm oterm
+  | Disj oterm oterm
+  | Imp oterm oterm
+  | Forall otype oterm
+  | Exists otype oterm
+\end{verbatim}
+
+The key design point is that variables are represented by de Bruijn indices.
+There are no named bound variables in the Isabelle representation.  Instead,
+\code{Var 0} means the most recently bound variable, \code{Var 1} means the
+next outer bound variable, and so on.  This makes alpha-equivalent formulas
+definitionally identical in Isabelle.
+
+For example, the Bacon expressions
+\[
+  \lambda x^\sigma.x
+  \qquad\text{and}\qquad
+  \lambda y^\sigma.y
+\]
+are represented by the same Isabelle term:
+\[
+  \Lam\ \sigma\ (\Var\ 0).
+\]
+In Isabelle syntax this is:
+\begin{verbatim}
+Lam sigma (Var 0)
+\end{verbatim}
+
+\subsection{Contexts}
+
+The Isabelle context type is:
+\begin{verbatim}
+type_synonym ctx = "otype list"
+\end{verbatim}
+The intended reading is that the head of the list gives the type of
+\code{Var 0}, the next entry gives the type of \code{Var 1}, and so on.  Thus
+the Bacon context
+\[
+  x_0:\sigma_0,\ x_1:\sigma_1,\ \ldots,\ x_{n-1}:\sigma_{n-1}
+\]
+is represented in reverse binding order as a list
+\[
+  [\sigma_{n-1},\ldots,\sigma_1,\sigma_0],
+\]
+if $x_{n-1}$ is the nearest enclosing binder.
+
+The lookup function is:
+\begin{verbatim}
+lookup Gamma n =
+  (if n < length Gamma then Some (Gamma ! n) else None)
+\end{verbatim}
+So $\lookup(\Gamma,n)=\sigma$ says that de Bruijn variable $n$ has type
+$\sigma$ in context $\Gamma$.
+
+\subsection{Typing judgment}
+
+The main typing judgment is the inductive predicate:
+\begin{verbatim}
+inductive has_type :: "ctx => oterm => otype => bool"
+    ("_ \<turnstile> _ : _" [50, 50, 50] 50)
+\end{verbatim}
+In prose I write this as
+\[
+  \Gamma \types M:\sigma.
+\]
+It is an object-language typing judgment defined inside Isabelle/HOL.  It is
+not Isabelle's own type checker.
+
+The rules correspond directly to the Bacon-style rules above:
+\[
+\begin{array}{c|c}
+\text{Bacon-style clause} & \text{Isabelle rule}\\
+\hline
+\Gamma\types x:\sigma & \code{has\_type.Var}\\
+\Gamma\types c_\sigma:\sigma & \code{has\_type.Const}\\
+\Gamma\types MN:\tau & \code{has\_type.App}\\
+\Gamma\types \lambda x^\sigma.M:\sigma\to\tau & \code{has\_type.Lam}\\
+\Gamma\types M=_\sigma N:t & \code{has\_type.Eq}\\
+\Gamma\types\NOT A:t & \code{has\_type.Neg}\\
+\Gamma\types A\AND B:t & \code{has\_type.Conj}\\
+\Gamma\types A\IC B:t & \code{has\_type.Imp}\\
+\Gamma\types \forall x^\sigma A:t & \code{has\_type.Forall}
+\end{array}
+\]
+
+\section{Translation table}
+
+The following table gives the working correspondence between ordinary
+Bacon-style syntax and the Isabelle encoding.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.28\textwidth}
+                  >{\raggedright\arraybackslash}p{0.34\textwidth}
+                  >{\raggedright\arraybackslash}p{0.28\textwidth}}
+\hline
+\textbf{Bacon-style notation}
+& \textbf{Isabelle representation}
+& \textbf{Comment}\\
+\hline
+$\iota$ & \code{Ind} & individual base type\\
+$t$ & \code{Prop} & proposition base type\\
+$\sigma\to\tau$ & \code{Arr sigma tau} & object-language arrow type\\
+$x$ & \code{Var n} & de Bruijn variable\\
+$c_\sigma$ & \code{Const c sigma} & typed object constant\\
+$MN$ & \code{App M N} & object-language application\\
+$\lambda x^\sigma.M$ & \code{Lam sigma M'} & $M'$ uses \code{Var 0} for $x$\\
+$M=_\sigma N$ & \code{Eq sigma M N} & typed object equality\\
+$\NOT A$ & \code{Neg A} & object negation\\
+$A\AND B$ & \code{Conj A B} & object conjunction\\
+$A\IC B$ & \code{Imp A B} & object implication\\
+$A\IFF B$ & \code{ObjIff A B} & abbreviation for both implications\\
+$\forall x^\sigma A$ & \code{Forall sigma A'} & $A'$ uses \code{Var 0} for $x$\\
+$\top$ & \code{ObjTrue} & defined as $\forall p^t(p\IC p)$\\
+$\bot$ & \code{ObjFalse} & defined as \code{Neg ObjTrue}\\
+$\Box_o A$ & \code{ObjBox A} & defined as $A=_t\top_o$\\
+$\Diamond_o A$ & \code{ObjDiamond A} & defined as $\NOT\Box_o\NOT A$\\
+$A\preceq_o B$ & \code{ObjEntails A B} & defined as $\Box_o(A\IC B)$\\
+$M[N/x]$ & \code{subst0 N M'} & capture-avoiding substitution for \code{Var 0}\\
+$(\lambda x^\sigma.M)N\betastep M[N/x]$
+& \code{App (Lam sigma M) N} $\betastep$ \code{subst0 N M}
+& one-step beta contraction\\
+\hline
+\end{longtable}
+
+\section{Current metatheorems}
+
+\subsection{Type inference soundness and completeness}
+
+Besides the inductive typing judgment, the scaffold defines a deterministic
+type inference function:
+\[
+  \infer(\Gamma,M)\in\{\text{none}\}\cup\{\text{some }\sigma:\sigma\in\oty\}.
+\]
+In Isabelle this is:
+\begin{verbatim}
+fun infer_type :: "ctx => oterm => otype option"
+\end{verbatim}
+
+Two basic metatheorems have been proved:
+\[
+  \infer(\Gamma,M)=\sigma \quad\Rightarrow\quad \Gamma\types M:\sigma
+\]
+and
+\[
+  \Gamma\types M:\sigma \quad\Rightarrow\quad \infer(\Gamma,M)=\sigma.
+\]
+Together these show that the executable type checker and the inductive typing
+judgment agree.
+
+\subsection{Uniqueness of types}
+
+The development proves:
+\[
+  \Gamma\types M:\sigma \AND \Gamma\types M:\tau
+  \quad\Rightarrow\quad
+  \sigma=\tau.
+\]
+This is useful immediately in beta preservation, since inversion on an
+application gives both the function type and the argument type, and uniqueness
+lets Isabelle identify the domain type of the lambda expression with the type
+of the argument.
+
+\subsection{Renaming preservation}
+
+The development defines capture-respecting renaming:
+\[
+  \rename(\rho,M).
+\]
+The binder case lifts the renaming function so that the newly bound variable is
+left fixed:
+\[
+  \rho^\uparrow(0)=0,\qquad
+  \rho^\uparrow(n+1)=\rho(n)+1.
+\]
+The theorem proved is:
+\[
+  \begin{aligned}
+  &\Gamma\types M:\tau,\\
+  &\forall n,\alpha\,
+    (\lookup(\Gamma,n)=\alpha \Rightarrow
+     \lookup(\Delta,\rho(n))=\alpha)\\
+  &\qquad\Rightarrow\quad
+  \Delta\types \rename(\rho,M):\tau.
+  \end{aligned}
+\]
+Weakening at the front of a context is an immediate corollary, implemented as
+\[
+  \shift(M)=\rename(\lambda n.\ n+1,M).
+\]
+
+\subsection{Substitution preservation}
+
+The development defines simultaneous substitution:
+\[
+  \subst(s,M),
+\]
+where $s$ maps de Bruijn indices to object-language terms.  Under a binder, the
+substitution is lifted so that the newly bound variable maps to \code{Var 0},
+while all substituted terms from the outer context are shifted.
+
+The main theorem is:
+\[
+  \Gamma\types M:\tau
+  \quad\text{and}\quad
+  \forall n,\sigma\,
+    (\lookup(\Gamma,n)=\sigma \Rightarrow
+     \Delta\types s(n):\sigma)
+  \quad\Rightarrow\quad
+  \Delta\types \subst(s,M):\tau.
+\]
+The single-variable substitution operation for beta contraction is:
+\[
+  \substz(N,M)=\subst([0\mapsto N,\ n+1\mapsto \Var(n)],M).
+\]
+The proved special case is:
+\[
+  \sigma,\Gamma\types M:\tau
+  \quad\text{and}\quad
+  \Gamma\types N:\sigma
+  \quad\Rightarrow\quad
+  \Gamma\types \substz(N,M):\tau.
+\]
+
+\subsection{Beta preservation}
+
+One-step beta contraction is currently represented by the inductive relation:
+\[
+  \App(\Lam(\sigma,M),N)\betastep \substz(N,M).
+\]
+The preservation theorem says:
+\[
+  M\betastep N
+  \quad\text{and}\quad
+  \Gamma\types M:\tau
+  \quad\Rightarrow\quad
+  \Gamma\types N:\tau.
+\]
+\subsection{The minimal logic H}
+
+The file \code{Bacon\_Deduction.thy} now defines a Hilbert-style theoremhood
+judgment
+\[
+  \Gamma \vdash_H A,
+\]
+read as: $A$ is an $H$-theorem in the object-language type context $\Gamma$.
+It includes the Bacon-Dorr Figure 2 principles in the present syntax: classical
+truth-functional tautologies, universal instantiation, existential
+generalization, typed reflexivity, Leibniz's law, beta and eta conversion inside
+formula contexts, modus ponens, Hilbert-Ackermann generalization, and
+Hilbert-Ackermann instantiation.
+
+The theory also defines a local-assumption wrapper
+\[
+  \Gamma;\Delta \vdash_H A,
+\]
+where $\Delta$ is a list of object-language assumptions.  At present this wraps
+assumptions, $H$-theorems, and modus ponens.  The pure $H$ judgment is the
+minimal inductive closure under the Bacon-style rules.
+
+The main checked metatheorem for this layer is formula preservation:
+\[
+  \Gamma\vdash_H A \quad\Rightarrow\quad \Gamma\types A:\Prop,
+\]
+and similarly for the local-assumption judgment.  This verifies that the
+derivability rules only derive well-typed object-language formulas.
+
+\subsection{Classicism}
+
+The file \code{Bacon\_Abbreviations.thy} names the Boolean identities from
+Bacon-Dorr Figure 3 and the Classicist identities from Figure 4 as closed
+object-language formulas.  The file \code{Bacon\_Classicism.thy} then defines a
+second theoremhood judgment
+\[
+  \Gamma \vdash_C A,
+\]
+read as: $A$ is a theorem of Classicism in type context $\Gamma$.  This judgment
+extends $H$ with the six Boolean identities and the five Classicist identity
+schemas: the identity identity, absorption and distribution for universal
+quantification, and absorption and distribution for existential quantification.
+
+The checked metatheorem for this layer is again formula preservation:
+\[
+  \Gamma\vdash_C A \quad\Rightarrow\quad \Gamma\types A:\Prop.
+\]
+There is also a local-assumption wrapper
+\[
+  \Gamma;\Delta\vdash_C A,
+\]
+with the corresponding formula-preservation theorem.
+
+\subsection{Modal logicism}
+
+The file \code{Bacon\_Modal.thy} defines broad necessity as propositional
+identity with object-language truth:
+\[
+  \Box_o A \;:=\; A =_t \top_o.
+\]
+It also defines possibility, entailment, and the usual modal schema terms:
+\[
+  \Diamond_o A := \NOT\Box_o\NOT A,\qquad
+  A \preceq_o B := \Box_o(A\IC B),
+\]
+as well as object-language terms corresponding to the modal $K$, $T$, and $4$
+schemas.  The theory proves typing lemmas for these definitions and adds small
+sanity checks, including that Classicism proves $\Box_o\top_o$, the conjunction
+commutativity identity, and the identity identity.
+
+\subsection{Restricted necessitation}
+
+The file \code{Bacon\_Modal\_Derivations.thy} proves the restricted
+necessitation principle for both $H$ and $C$.  In Bacon-style notation, the
+Classicism version is:
+\[
+  \Gamma\vdash_C A=_t\top_o
+  \quad\Rightarrow\quad
+  \Gamma\vdash_C \Box_o A.
+\]
+There is an exactly analogous $H$ version:
+\[
+  \Gamma\vdash_H A=_t\top_o
+  \quad\Rightarrow\quad
+  \Gamma\vdash_H \Box_o A.
+\]
+These results are not yet the full necessitation theorem.  They are immediate
+because broad necessity is defined as identity with truth:
+\[
+  \Box_o A \;:=\; A=_t\top_o.
+\]
+
+The corresponding Isabelle lemmas are:
+\begin{verbatim}
+lemma C_restricted_necessitation:
+  assumes "Gamma \<turnstile>\<^sub>C Eq Prop A ObjTrue"
+  shows "Gamma \<turnstile>\<^sub>C \<box>\<^sub>o A"
+
+lemma H_restricted_necessitation:
+  assumes "Gamma \<turnstile>\<^sub>H Eq Prop A ObjTrue"
+  shows "Gamma \<turnstile>\<^sub>H \<box>\<^sub>o A"
+\end{verbatim}
+Here \code{Eq Prop A ObjTrue} is the object-language formula $A=_t\top_o$.
+The source-level notation
+\begin{verbatim}
+\<box>\<^sub>o A
+\end{verbatim}
+abbreviates \code{ObjBox A}.
+
+\subsection{Zero-ary equivalence closure}
+
+The same file also isolates the exact extra closure needed to move from
+``$A$ is equivalent to truth'' to ``$A$ is identical with truth.''  The new
+judgment is written
+\[
+  \Gamma\vdash_{\CE} A.
+\]
+It extends $C$ with the following propositional, zero-ary fragment of Bacon and
+Dorr's Equivalence rule:
+\[
+  \frac{\Gamma\types A:t \qquad \Gamma\types B:t \qquad
+        \Gamma\vdash_{\CE} A\IFF B}
+       {\Gamma\vdash_{\CE} A=_t B}.
+\]
+In Isabelle this rule is the constructor \code{CE\_proves.PropEquivalence}:
+\begin{verbatim}
+PropEquivalence:
+  "Gamma \<turnstile> A : Prop ==>
+   Gamma \<turnstile> B : Prop ==>
+   Gamma \<turnstile>\<^sub>CE ObjIff A B ==>
+   Gamma \<turnstile>\<^sub>CE Eq Prop A B"
+\end{verbatim}
+The extension also has modus ponens and the two Hilbert-Ackermann closure rules,
+and the file proves formula preservation:
+\[
+  \Gamma\vdash_{\CE} A \quad\Rightarrow\quad \Gamma\types A:t.
+\]
+
+With this rule available, necessitation follows once $A$ has been connected to
+truth by object-language biconditional:
+\[
+  \Gamma\types A:t
+  \quad\text{and}\quad
+  \Gamma\vdash_{\CE} A\IFF\top_o
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CE}\Box_o A.
+\]
+The Isabelle theorem name is
+\begin{center}
+\code{CE\_necessitation\_from\_equivalence\_to\_truth}.
+\end{center}
+The proof first uses \code{PropEquivalence} to infer $A=_t\top_o$, and then
+applies restricted necessitation.
+
+\subsection{Vector/zeta equivalence}
+
+The file \code{Bacon\_Zeta.thy} now formalizes the higher-type vector
+Equivalence infrastructure.  It introduces:
+\begin{itemize}[leftmargin=2em]
+\item \code{arrow\_type}, the iterated arrow type
+  $\sigma_1\to\cdots\to\sigma_n\to\tau$;
+\item \code{app\_vec}, iterated object-language application;
+\item \code{fresh\_vars}, the de Bruijn variables \code{Var 0}, \code{Var 1},
+  \ldots, \code{Var (n-1)} in a freshly extended context;
+\item \code{shift\_by}, which moves old terms across a finite fresh context
+  prefix;
+\item \code{free\_in} and \code{fresh\_for\_extension}, which state that the
+  old shifted terms do not mention the newly added variables;
+\item \code{zeta\_body}, the biconditional obtained by applying two shifted
+  higher-type terms to the fresh variable vector.
+\end{itemize}
+
+The main typing theorem for this layer is:
+\[
+  \Gamma\types F:\vec\sigma\to t
+  \quad\Rightarrow\quad
+  \vec\sigma,\Gamma\types
+    F^\uparrow \vec v:t,
+\]
+where $F^\uparrow$ is the shifted version of $F$ and $\vec v$ is the fresh
+de Bruijn variable vector.  The corresponding Isabelle lemmas are
+\code{typed\_app\_fresh\_vars} and \code{typed\_zeta\_body}.
+
+The new derivability judgment is
+\[
+  \Gamma\vdash_{\CEV} A.
+\]
+It extends $\CE$ with the vector form of Bacon-Dorr Equivalence:
+\[
+  \frac{
+    \vec\sigma,\Gamma \vdash_{\CEV} F^\uparrow\vec v \IFF G^\uparrow\vec v
+  }{
+    \Gamma\vdash_{\CEV} F=_{\vec\sigma\to t}G
+  },
+\]
+provided $F$ and $G$ are both typed as $\vec\sigma\to t$ in the old context
+$\Gamma$.  The current theory also adds the contextual vector form needed for
+conditional higher-order extensionality:
+\[
+  \frac{
+    \vec\sigma,\Gamma\vdash_{\CEV}
+      A^\uparrow\IC (F^\uparrow\vec v\IFF G^\uparrow\vec v)
+  }{
+    \Gamma\vdash_{\CEV} A\IC F=_{\vec\sigma\to t}G
+  }.
+\]
+In Isabelle this is the \code{ContextVectorEquivalence} rule of
+\code{CEV\_proves}.  It is included in formula preservation,
+\code{CEV\_theorem\_to\_truth\_induction}, semantic soundness, and the canonical
+\code{CEV\_rule\_closed} bookkeeping through
+\code{CEV\_context\_vector\_equivalence\_closed}. Formula preservation has been proved:
+\[
+  \Gamma\vdash_{\CEV} A \quad\Rightarrow\quad \Gamma\types A:t.
+\]
+The zero-vector instance recovers the propositional rule:
+\[
+  \Gamma\types A:t,\quad \Gamma\types B:t,\quad
+  \Gamma\vdash_{\CEV} A\IFF B
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV} A=_tB.
+\]
+Consequently, the previous restricted-necessitation bridge also holds for
+$\CEV$:
+\[
+  \Gamma\types A:t,\quad
+  \Gamma\vdash_{\CEV} A\IFF\top_o
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}\Box_o A.
+\]
+
+\subsection{Theoremhood as equivalence with truth}
+
+The same file now proves the theorem-to-truth equivalence step for $\CEV$.
+First, it proves that object-language truth is itself an $H$-theorem, hence a
+$\CEV$-theorem:
+\[
+  \Gamma\vdash_H \top_o
+  \qquad\text{and}\qquad
+  \Gamma\vdash_{\CEV}\top_o.
+\]
+Then it proves a general propositional closure lemma:
+\[
+  \Gamma\vdash_{\CEV}A
+  \quad\text{and}\quad
+  \Gamma\vdash_{\CEV}B
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}A\IFF B.
+\]
+The theorem-to-truth result follows by taking $B$ to be $\top_o$:
+\[
+  \Gamma\vdash_{\CEV} A
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV} A\IFF\top_o.
+\]
+The Isabelle theorem names are:
+\begin{center}
+\code{CEV\_theorem\_equiv\_ObjTrue}
+\qquad
+\code{CEV\_theorem\_to\_truth\_induction}.
+\end{center}
+The second theorem is stated and checked as an induction over the constructors
+of
+\begin{center}
+\code{CEV\_proves}.
+\end{center}
+In each case, the relevant $\CEV$ theorem is reconstructed from the rule
+premises and then converted to equivalence with truth.
+
+As a corollary, the development now proves unrestricted $\CEV$ necessitation:
+\[
+  \Gamma\vdash_{\CEV} A
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}\Box_o A.
+\]
+The Isabelle theorem name is \code{CEV\_necessitation}.
+
+\subsection{Standalone beta-eta conversion}
+
+The file \code{Bacon\_Conversion.thy} now factors beta-eta conversion itself
+away from the proof systems.  In Bacon-style notation, write the new relation as
+\[
+  \Gamma\types M \equiv_{\beta\eta,\tau} N.
+\]
+The subscript \(\tau\) is important: this is a typed syntactic conversion
+relation, not an untyped rewrite relation and not a quotient of Isabelle terms.
+It is generated by five clauses:
+\[
+\frac{\Gamma\types M:\tau}
+     {\Gamma\types M\equiv_{\beta\eta,\tau}M},
+\qquad
+\frac{\Gamma\types M:\tau\quad \Gamma\types N:\tau\quad M\betastep N}
+     {\Gamma\types M\equiv_{\beta\eta,\tau}N},
+\]
+\[
+\frac{\Gamma\types M:\tau\quad \Gamma\types N:\tau\quad M\to_\eta N}
+     {\Gamma\types M\equiv_{\beta\eta,\tau}N},
+\qquad
+\frac{\Gamma\types M\equiv_{\beta\eta,\tau}N}
+     {\Gamma\types N\equiv_{\beta\eta,\tau}M},
+\]
+\[
+\frac{\Gamma\types M\equiv_{\beta\eta,\tau}N
+      \quad
+      \Gamma\types N\equiv_{\beta\eta,\tau}P}
+     {\Gamma\types M\equiv_{\beta\eta,\tau}P}.
+\]
+Here \(M\betastep N\) abbreviates a compatible one-step beta contraction, and
+\(M\to_\eta N\) abbreviates a compatible one-step eta contraction.
+
+The Isabelle relation is:
+{\scriptsize
+\begin{verbatim}
+inductive beta_eta_equiv ::
+  "ctx => otype => oterm => oterm => bool" where
+  Refl: "Gamma \<turnstile> M : tau ==> beta_eta_equiv Gamma tau M M"
+| Beta: "Gamma \<turnstile> M : tau ==> Gamma \<turnstile> N : tau ==>
+    compatible_step beta_contract M N ==>
+    beta_eta_equiv Gamma tau M N"
+| Eta: "Gamma \<turnstile> M : tau ==> Gamma \<turnstile> N : tau ==>
+    compatible_step eta_contract M N ==>
+    beta_eta_equiv Gamma tau M N"
+| Sym: "beta_eta_equiv Gamma tau M N ==>
+    beta_eta_equiv Gamma tau N M"
+| Trans: "beta_eta_equiv Gamma tau M N ==>
+    beta_eta_equiv Gamma tau N P ==>
+    beta_eta_equiv Gamma tau M P"
+\end{verbatim}
+}
+
+The first checked metatheorem for the relation is type preservation:
+\[
+  \Gamma\types M\equiv_{\beta\eta,\tau}N
+  \quad\Rightarrow\quad
+  \Gamma\types M:\tau\ \text{and}\ \Gamma\types N:\tau.
+\]
+In Isabelle this is \code{beta\_eta\_equiv\_types}.  The one-sided corollaries
+are:
+\begin{center}
+\code{beta\_eta\_equiv\_left\_type}\\
+\code{beta\_eta\_equiv\_right\_type}.
+\end{center}
+
+The second checked metatheorem is the bridge back to derivability.  At
+proposition type, beta-eta equivalence yields an object-language biconditional:
+\[
+  \Gamma\types A\equiv_{\beta\eta,t}B
+  \quad\Rightarrow\quad
+  \Gamma\vdash_H A\IFF B.
+\]
+This is \code{H\_beta\_eta\_equiv}.  Its proof is an induction on the conversion
+derivation.  The beta and eta cases use the existing \(H\) conversion axioms.
+The reflexive, symmetric, and transitive cases use small propositional
+tautology lemmas for biconditional reflexivity, symmetry, and transitivity.
+
+The same conversion-to-biconditional bridge is lifted through the stronger
+systems:
+{\scriptsize
+\begin{verbatim}
+lemma C_beta_eta_equiv:
+  assumes "beta_eta_equiv Gamma Prop A B"
+  shows "Gamma \<turnstile>\<^sub>C (A \<longleftrightarrow>\<^sub>o B)"
+
+lemma CE_beta_eta_equiv:
+  assumes "beta_eta_equiv Gamma Prop A B"
+  shows "Gamma \<turnstile>\<^sub>CE (A \<longleftrightarrow>\<^sub>o B)"
+
+lemma CEV_beta_eta_equiv:
+  assumes "beta_eta_equiv Gamma Prop A B"
+  shows "Gamma \<turnstile>\<^sub>CEV (A \<longleftrightarrow>\<^sub>o B)"
+\end{verbatim}
+}
+This gives later proofs a clean conversion interface: they can reason about the
+standalone beta-eta closure, then import the corresponding biconditional theorem
+only when a particular proof system is needed.
+
+\subsection{Local \(\CEV\) derivability}
+
+The file \code{Bacon\_S4.thy} adds a deliberately small local derivability
+relation for working under one temporary assumption.  In Bacon-style notation,
+write it as
+\[
+  \Gamma;A\vdash_{\CEV}^{\mathrm{loc}} B.
+\]
+It has only three constructors:
+\[
+\frac{\Gamma\types A:t}{\Gamma;A\vdash_{\CEV}^{\mathrm{loc}} A},
+\qquad
+\frac{\Gamma\vdash_{\CEV}B}{\Gamma;A\vdash_{\CEV}^{\mathrm{loc}} B},
+\qquad
+\frac{\Gamma;A\vdash_{\CEV}^{\mathrm{loc}}B
+      \quad
+      \Gamma;A\vdash_{\CEV}^{\mathrm{loc}}B\IC C}
+     {\Gamma;A\vdash_{\CEV}^{\mathrm{loc}}C}.
+\]
+The Isabelle relation is:
+\begin{verbatim}
+inductive CEV_from :: "ctx => oterm => oterm => bool" where
+  Assumption: "Gamma \<turnstile> A : Prop ==> CEV_from Gamma A A"
+| Theorem: "Gamma \<turnstile>\<^sub>CEV B ==> CEV_from Gamma A B"
+| MP: "CEV_from Gamma A B ==>
+       CEV_from Gamma A (Imp B C) ==>
+       CEV_from Gamma A C"
+\end{verbatim}
+The key metatheorem is the corresponding deduction theorem:
+\[
+  \Gamma;A\vdash_{\CEV}^{\mathrm{loc}}B
+  \quad\text{and}\quad
+  \Gamma\types A:t
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}A\IC B.
+\]
+In Isabelle this is \code{CEV\_from\_deduction}.  This relation is not a new
+object-language axiom.  It is just proof bookkeeping for deriving conditional
+theorems from temporary assumptions.
+
+\subsection{Equality symmetry and shifted beta reduction}
+
+The same file proves the small substitution fact needed to beta-reduce lambda
+terms whose body contains an old term shifted across a fresh binder:
+\[
+  \substz(N,\shift(M)) = M.
+\]
+In Isabelle this appears as \code{subst0\_shift} and its unfolded variant
+\code{subst\_case\_nat\_shift}.  This is the de Bruijn version of the familiar
+fact that substituting for the newly bound variable does not affect an older
+free term once the bookkeeping shift is undone.
+
+Using reflexivity, Leibniz's Law, and beta conversion, the theory then derives
+symmetry of object-language identity:
+\[
+  \Gamma\types M:\sigma,\quad \Gamma\types N:\sigma
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}(M=_\sigma N)\IC(N=_\sigma M).
+\]
+The Bacon-style proof is standard.  Define
+\[
+  F(x) \;:=\; x=_\sigma M.
+\]
+Reflexivity gives \(M=_\sigma M\).  Leibniz's Law gives
+\[
+  M=_\sigma N \;\IC\; (F(M)\IC F(N)).
+\]
+But \(F(M)\) beta-reduces to \(M=_\sigma M\), and \(F(N)\) beta-reduces to
+\(N=_\sigma M\).  A local derivation under the assumption \(M=_\sigma N\),
+followed by \code{CEV\_from\_deduction}, yields the displayed conditional.
+The Isabelle theorem name is \code{CEV\_eq\_sym}.
+
+\subsection{The modal \(T\) schema}
+
+The first S4-style modal theorem now proved is \(T\):
+\[
+  \Gamma\types A:t
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}\Box_o A\IC A.
+\]
+Equivalently, since \code{modal\_T A} is defined as
+\code{Imp (ObjBox A) A}, the Isabelle theorem is:
+\begin{verbatim}
+lemma CEV_modal_T:
+  assumes "Gamma \<turnstile> A : Prop"
+  shows "Gamma \<turnstile>\<^sub>CEV modal_T A"
+\end{verbatim}
+The proof uses the definition \(\Box_o A := A=_t\top_o\).  From
+\(\Box_o A\), equality symmetry gives \(\top_o=_t A\).  Then apply Leibniz's
+Law to the propositional identity function
+\[
+  I_t := \lambda p^t.p.
+\]
+Leibniz gives
+\[
+  \top_o=_t A \;\IC\; (I_t(\top_o)\IC I_t(A)).
+\]
+The theory proves \(I_t(\top_o)\), because \(\top_o\) is already a
+\(\CEV\)-theorem and \(I_t(\top_o)\) beta-expands/contracts with it.  It then
+derives \(I_t(A)\), and beta conversion yields \(A\).  Finally, the local
+assumption \(\Box_o A\) is discharged by \code{CEV\_from\_deduction}.
+
+\subsection{Equality transfer for \(K\) and \(4\)}
+
+The next step was to avoid adding a new local Equivalence rule.  Instead, the
+formalization derives the identity-transfer facts needed for \(K\) and \(4\)
+from Leibniz's Law, beta conversion, global necessitation, and ordinary local
+deduction.
+
+First, \code{Bacon\_S4.thy} proves equality transitivity:
+\[
+  \Gamma\types M:\sigma,\quad
+  \Gamma\types N:\sigma,\quad
+  \Gamma\types P:\sigma
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}
+    (M=_\sigma N)\IC((N=_\sigma P)\IC(M=_\sigma P)).
+\]
+The Isabelle theorem is \code{CEV\_eq\_trans}.  Its proof again uses a local
+derivation under the conjunction of the two equality assumptions, followed by
+deduction and currying.
+
+Second, the theory proves that \(\top_o\IC B\) is propositionally identical to
+\(B\):
+\[
+  \Gamma\types B:t
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}(\top_o\IC B)=_t B.
+\]
+This is \code{CEV\_eq\_imp\_ObjTrue\_left}.  The proof first derives the
+biconditional \((\top_o\IC B)\IFF B\), using the theoremhood of \(\top_o\),
+and then applies zero-ary vector Equivalence.
+
+Third, the theory proves the key equality-to-truth transfer:
+\[
+  \Gamma\types M:\sigma,\quad \Gamma\types N:\sigma
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}
+    (M=_\sigma N)\IC((M=_\sigma N)=_t\top_o).
+\]
+The Isabelle theorem is \code{CEV\_eq\_truth\_of\_eq}.  The idea is simple:
+reflexivity gives \(M=_\sigma M\), unrestricted necessitation gives
+\((M=_\sigma M)=_t\top_o\), and Leibniz transfers this fact along
+\(M=_\sigma N\) using the predicate
+\[
+  x \mapsto (M=_\sigma x)=_t\top_o.
+\]
+
+\subsection{The modal \(K\) and \(4\) schemata}
+
+The modal \(K\) theorem is now:
+\[
+  \Gamma\types A:t,\quad \Gamma\types B:t
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}
+    \Box_o(A\IC B)\IC(\Box_o A\IC\Box_o B).
+\]
+In Isabelle:
+\begin{verbatim}
+lemma CEV_modal_K:
+  assumes "Gamma \<turnstile> A : Prop"
+    and "Gamma \<turnstile> B : Prop"
+  shows "Gamma \<turnstile>\<^sub>CEV modal_K A B"
+\end{verbatim}
+The proof reasons under the conjunction of the two boxed assumptions
+\[
+  (A\IC B)=_t\top_o
+  \qquad\text{and}\qquad
+  A=_t\top_o
+\]
+and derives \(B=_t\top_o\).  The main move is to apply Leibniz's Law to
+\[
+  p \mapsto ((p\IC B)=_t\top_o).
+\]
+This changes \((A\IC B)=_t\top_o\) into
+\((\top_o\IC B)=_t\top_o\).  Since \(\top_o\IC B\) is identical to \(B\), equality
+symmetry and transitivity yield \(B=_t\top_o\).  Deduction and currying then
+produce the displayed \(K\) theorem.
+
+The modal \(4\) theorem is:
+\[
+  \Gamma\types A:t
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV}
+    \Box_o A\IC\Box_o\Box_o A.
+\]
+In Isabelle:
+\begin{verbatim}
+lemma CEV_modal_4:
+  assumes "Gamma \<turnstile> A : Prop"
+  shows "Gamma \<turnstile>\<^sub>CEV modal_4 A"
+\end{verbatim}
+This is exactly the proposition-type instance of
+\code{CEV\_eq\_truth\_of\_eq}: under the assumption \(A=_t\top_o\), derive
+\[
+  (A=_t\top_o)=_t\top_o.
+\]
+Together with \code{CEV\_modal\_T}, these lemmas give the expected S4-style
+package for the object-language box defined as identity with truth.
+
+The theory also records the package theorem:
+\begin{verbatim}
+theorem CEV_S4_package:
+  assumes "Gamma \<turnstile> A : Prop"
+    and "Gamma \<turnstile> B : Prop"
+  shows "Gamma \<turnstile>\<^sub>CEV modal_K A B"
+    and "Gamma \<turnstile>\<^sub>CEV modal_T A"
+    and "Gamma \<turnstile>\<^sub>CEV modal_4 A"
+    and "!!C. Gamma \<turnstile>\<^sub>CEV C ==> Gamma \<turnstile>\<^sub>CEV \<box>\<^sub>o C"
+\end{verbatim}
+
+\section{Initial semantic layer}
+
+The file \code{Bacon\_Semantics.thy} begins the semantic side of the
+formalization.  It deliberately does not yet construct a concrete set-theoretic
+model.  Instead, it introduces an abstract applicative structure.  In
+Bacon-style notation, such a structure supplies:
+\[
+  D_\sigma,\quad
+  \sem{c:\sigma},\quad
+  \mathsf{app},\quad
+  \mathsf{lam}_\sigma,\quad
+  \mathsf{true}(b),\quad
+  \mathsf{holds},\quad
+  =_\sigma^{\mathcal M}.
+\]
+Here \(D_\sigma\) is the semantic domain for object type \(\sigma\);
+\(\mathsf{app}\) and \(\mathsf{lam}\) interpret object-language application and
+abstraction; \(\mathsf{true}(b)\) embeds a metalanguage Boolean as an
+object-language proposition-denotation; \(\mathsf{holds}\) decodes
+proposition-denotations; and \(=_\sigma^{\mathcal M}\) is the type-indexed
+semantic interpretation of object-language identity.
+
+The Isabelle locale is:
+{\scriptsize
+\begin{verbatim}
+locale applicative_structure =
+  fixes D :: "otype => 'v set"
+    and const_den :: "string => otype => 'v"
+    and app_den :: "'v => 'v => 'v"
+    and lam_den :: "otype => ('v => 'v) => 'v"
+    and truth_den :: "bool => 'v"
+    and holds :: "'v => bool"
+    and eq_den :: "otype => 'v => 'v => bool"
+\end{verbatim}
+}
+with assumptions saying that constants have their displayed type, application
+preserves arrow-domain typing, abstraction forms arrow-domain elements, truth
+values denote propositions, extensionally equal abstraction bodies have equal
+lambda denotations, beta and eta are semantically respected by
+\[
+  \mathsf{app}(\mathsf{lam}_\sigma F,x)=F(x),
+  \qquad
+  \mathsf{lam}_\sigma(\lambda x.\mathsf{app}(f,x))=f,
+\]
+semantic identity is reflexive on each domain, and Leibniz substitution is sound
+for proposition-valued predicates:
+\[
+  x =_\sigma^{\mathcal M} y
+  \quad\Rightarrow\quad
+  F(x)\text{ true}\Rightarrow F(y)\text{ true}.
+\]
+
+Semantic environments are de Bruijn-indexed functions.  The notation
+\[
+  \rho\models\Gamma
+\]
+corresponds to the Isabelle predicate \code{env\_typed Gamma rho}; it says that
+whenever
+\begin{center}
+\code{lookup Gamma n = Some sigma},
+\end{center}
+the value \(\rho(n)\) belongs to \(D_\sigma\).  The operation
+\code{extend\_env x rho} is the semantic counterpart of moving under one binder:
+index \(0\) is assigned \(x\), and index \(n+1\) looks back to \(\rho(n)\).
+
+The recursive interpretation function is \code{eval}.  In standard notation,
+write it as \(\sem{M}_\rho\).  The central checked theorem is
+typed evaluation:
+\[
+  \Gamma\types M:\tau
+  \quad\text{and}\quad
+  \rho\models\Gamma
+  \quad\Rightarrow\quad
+  \sem{M}_\rho\in D_\tau.
+\]
+In Isabelle:
+\begin{verbatim}
+lemma eval_type:
+  assumes "Gamma \<turnstile> M : tau"
+    and "env_typed Gamma rho"
+  shows "eval rho M \<in> D tau"
+\end{verbatim}
+
+The semantic layer now also proves that the syntactic infrastructure commutes
+with interpretation.  Renaming and substitution are evaluated by the
+corresponding semantic environments:
+\begin{verbatim}
+lemma eval_rename:
+  "eval rho (rename r M) = eval (%n. rho (r n)) M"
+
+lemma eval_subst0:
+  "eval rho (subst0 T M) = eval (extend_env (eval rho T) rho) M"
+\end{verbatim}
+Beta and eta contractions are then shown to preserve denotation, and that fact
+is lifted through all compatible formula contexts:
+\begin{verbatim}
+lemma beta_contract_eval_preserving:
+  "eval_preserving_step beta_contract"
+
+lemma eta_contract_eval_preserving:
+  "eval_preserving_step eta_contract"
+
+lemma compatible_step_eval:
+  assumes "compatible_step R M N"
+    and "eval_preserving_step R"
+    and "Gamma \<turnstile> M : tau"
+    and "Gamma \<turnstile> N : tau"
+    and "env_typed Gamma rho"
+  shows "eval rho M = eval rho N"
+\end{verbatim}
+
+The file also connects the existing syntactic propositional-tautology predicate
+to semantic truth.  First it proves that semantic truth for the displayed
+truth-functional connectives agrees with \code{prop\_eval}:
+\begin{verbatim}
+lemma holds_eval_prop_eval:
+  "holds (eval rho A) = prop_eval (%B. holds (eval rho B)) A"
+\end{verbatim}
+Then it proves soundness for propositional tautologies:
+\[
+  \mathsf{prop\_tautology}(\Gamma,A)
+  \quad\text{and}\quad
+  \rho\models\Gamma
+  \quad\Rightarrow\quad
+  \mathsf{holds}(\sem{A}_\rho).
+\]
+The corresponding Isabelle theorem is \code{prop\_tautology\_sound}.
+
+Finally, \code{Bacon\_Semantics.thy} defines a semantic validity predicate:
+\[
+  \Gamma\models A
+  \quad\text{iff}\quad
+  \Gamma\types A:t
+  \text{ and every }\rho\models\Gamma\text{ makes }A\text{ true}.
+\]
+In Isabelle this is \code{valid\_in\_context}.  Propositional tautologies remain
+available as a checked validity result:
+\begin{verbatim}
+lemma prop_tautology_valid:
+  assumes "prop_tautology Gamma A"
+  shows "valid_in_context Gamma A"
+\end{verbatim}
+The new milestone is full soundness for the minimal higher-order logic \(H\):
+\[
+  \Gamma\vdash_H A \quad\Rightarrow\quad \Gamma\models A.
+\]
+In Isabelle:
+\begin{verbatim}
+theorem H_soundness:
+  assumes "Gamma \<turnstile>\<^sub>H A"
+  shows "valid_in_context Gamma A"
+\end{verbatim}
+The induction covers propositional tautologies, universal instantiation,
+existential generalization, typed reflexivity, Leibniz's Law, beta/eta
+conversion in formula contexts, modus ponens, and the Hilbert-Ackermann
+generalization and instantiation rules.
+
+The stronger proof systems require stronger semantic hypotheses.  The file
+therefore introduces three locale extensions.  A \code{classicist\_structure}
+is an applicative structure in which the Boolean identities and the five
+Classicist identity schemata are valid.  In that locale:
+\begin{verbatim}
+theorem C_soundness:
+  assumes "Gamma \<turnstile>\<^sub>C A"
+  shows "valid_in_context Gamma A"
+\end{verbatim}
+A \code{propositional\_equivalence\_structure} adds propositional extensionality:
+if two proposition denotations have the same truth value, then they are
+identified by \code{eq\_den Prop}.  This validates the zero-ary Equivalence rule:
+\begin{verbatim}
+theorem CE_soundness:
+  assumes "Gamma \<turnstile>\<^sub>CE A"
+  shows "valid_in_context Gamma A"
+\end{verbatim}
+Finally, a \code{vector\_equivalence\_structure} adds the corresponding vector
+extensionality condition: if two proposition-valued functions agree in truth on
+every typed vector of arguments, then they are identical at the appropriate
+arrow type.  The semantic proof uses \code{extend\_envs},
+\code{eval\_shift\_by\_extend\_envs}, and \code{eval\_app\_vec} to relate the
+fresh de Bruijn vector in \code{zeta\_body} to ordinary semantic argument
+vectors.  In that locale:
+\begin{verbatim}
+theorem CEV_soundness:
+  assumes "Gamma \<turnstile>\<^sub>CEV A"
+  shows "valid_in_context Gamma A"
+\end{verbatim}
+
+\section{Completeness interface}
+
+The file \code{Bacon\_Completeness.thy} begins the completeness side without
+yet constructing a canonical model.  It defines semantic satisfaction for a
+finite list of assumptions:
+\begin{verbatim}
+definition satisfies_assumptions ::
+  "ctx => oterm list => 'v env => bool"
+\end{verbatim}
+and semantic consequence:
+\begin{verbatim}
+definition semantically_entails ::
+  "ctx => oterm list => oterm => bool"
+\end{verbatim}
+In Bacon-style notation, \(\Gamma;\Delta\models_s A\) means that \(A\) is a
+well-typed formula and every environment satisfying all members of \(\Delta\)
+makes \(A\) true.
+
+The file then proves local soundness for the two derivability systems already
+defined with explicit assumption lists:
+\begin{verbatim}
+lemma H_derivable_sound:
+  assumes "Gamma ; Delta \<turnstile>\<^sub>H A"
+  shows "Gamma ; Delta \<Turnstile>\<^sub>s A"
+
+lemma C_derivable_sound:
+  assumes "Gamma ; Delta \<turnstile>\<^sub>C A"
+  shows "Gamma ; Delta \<Turnstile>\<^sub>s A"
+\end{verbatim}
+
+Finally, the file isolates the exact countermodel principles that a canonical
+model construction must supply.  For example:
+\begin{verbatim}
+definition H_countermodel_property :: bool
+
+theorem H_completeness_from_countermodels:
+  assumes "H_countermodel_property"
+    and "valid_in_context Gamma A"
+  shows "Gamma \<turnstile>\<^sub>H A"
+
+theorem H_strong_completeness_from_countermodels:
+  assumes "H_entailment_countermodel_property"
+    and "Gamma ; Delta \<Turnstile>\<^sub>s A"
+  shows "Gamma ; Delta \<turnstile>\<^sub>H A"
+\end{verbatim}
+Analogous bridge theorems are checked for \(C\), \(\CE\), and \(\CEV\).  Thus
+the remaining completeness task is now sharply formulated: construct, for each
+unprovable well-typed formula, a semantic countermodel in the appropriate
+semantic locale.
+
+\section{Canonical theory layer}
+
+The file \code{Bacon\_Canonical.thy} now carries most of the syntactic
+Henkin construction.  In standard notation, it replaces finite assumption
+lists \(\Delta\) by sets \(T\) of formulas and defines:
+\[
+  \Gamma;T\vdash^s_H A
+  \quad\text{iff}\quad
+  \text{some finite list }\Delta\subseteq T\text{ satisfies }
+  \Gamma;\Delta\vdash_H A.
+\]
+The analogous relation \(\Gamma;T\vdash^s_C A\) is defined for \(C\).
+
+The file then defines typed theories, consistency, negation-completeness,
+maximal consistency, and Henkin witnessing.  The Henkin condition is:
+\[
+  \text{if } \exists x^\sigma A(x)\in T,
+  \text{ then for some term } W:\sigma,\; A(W)\in T.
+\]
+In Isabelle this is represented as membership of
+\code{subst0 W A} whenever \code{Exists sigma A} belongs to \(T\).
+
+The main verified facts now go well beyond the initial closure lemmas.  The
+file proves Lindenbaum-Henkin extension theorems for \(H\) and \(C\), using
+countability-based enumerations of formulas and witness bodies.  It proves the
+canonical truth clauses for negation, conjunction, implication, disjunction,
+universal and existential quantification, equality, Leibniz substitution, and
+beta-eta conversion.  It then factors the truth lemma through substitutional
+truth predicates and a term-model semantics: a term-model value is a typed
+object-language term, evaluation is capture-avoiding substitution, and
+propositional truth is membership in the Henkin theory.  This gives verified
+H/C Henkin-validity and term-model completeness biconditionals, plus explicit
+H/C term-model countermodels for unprovable formulas and underivable finite
+assumption entailments.
+
+\section{CE and CEV completeness infrastructure}
+
+The current canonical file also isolates the extra closure needed above
+Classicism.  A \(\CE\)-Henkin theory is a \(C\)-Henkin theory plus closure
+under propositional Equivalence and the CE generalization/instantiation rules.
+A \(\CEV\)-Henkin theory adds vector Equivalence and the CEV rule closures.
+The verified containment lemmas show that every \(\CE\) or \(\CEV\) theorem
+belongs to every corresponding Henkin theory.
+
+The construction then introduces strengthened local consequence relations.
+For \(\CE\), \code{CE\_equiv\_set\_derivable} internalizes the local rule from
+\(A\leftrightarrow B\) to \(A =_t B\).  The later
+\code{CE\_context\_equiv\_set\_derivable} relation strengthens this further:
+from a locally derivable finite-prefix implication
+\[
+  P_1\to\cdots\to P_n\to(A\leftrightarrow B)
+\]
+it locally derives
+\[
+  P_1\to\cdots\to P_n\to(A =_t B).
+\]
+This isolates exactly the prefix-Equivalence closure needed for CE
+completeness.  The file proves the associated monotonicity, finite support,
+deduction, Lindenbaum, Henkin-witness, and shifted-instantiation lemmas, and
+reduces CE completeness to the corresponding prefix internalization
+principle.
+
+For \(\CEV\), the analogous strengthened relation
+\code{CEV\_context\_equiv\_set\_derivable} has now been developed.  The
+verified package includes monotonicity, a deduction theorem, finite support,
+consistency-preserving one-step extensions, a Lindenbaum extension theorem,
+prefix/conservativity equivalences, and conditional Henkin witness staging.
+The shifted existential-instantiation principle for this relation is no longer
+an external assumption: it is proved from CEV-context conservativity.  The
+remaining named CEV construction obligation is
+\[
+  \code{CEV\_context\_equiv\_abstract\_const\_admissible}.
+\]
+Informally, this says that if \(A\) is locally derivable from \(T\), then after
+abstracting a fresh constant \(c:\sigma\), the abstracted formula is locally
+derivable from the abstracted theory in the extended context.  This is the
+fresh-constant abstraction step needed to preserve consistency when Henkin
+witness axioms are added.  It is expected to require the renaming/substitution
+behavior of CEV theoremhood through \code{zeta\_body} and vector Equivalence.
+
+With this abstraction principle available, the file already proves:
+\[
+  \code{CEV\_context\_equiv\_available\_countermodel\_property}
+\]
+from CEV prefix internalization and abstraction.  The existing bridge theorems
+then turn that property into the corresponding CEV Henkin-validity and
+term-model completeness statements.
+
+\section{Caie's names layer}
+
+The file \code{Bacon\_Caie.thy} is the first application layer over the
+Bacon/Bacon-Dorr background logic.  It does not replace the deep embedding by a
+shallow HOL formalization.  Instead, Caie's vocabulary is represented as
+object-language syntax inside the same typed object language used for \(H\),
+\(C\), \(\CE\), and \(\CEV\).
+
+\subsection{Caie-style types}
+
+The type correspondence is:
+\[
+\begin{array}{c|c|c}
+\text{Caie notation} & \text{Isabelle definition} & \text{Report notation}\\
+\hline
+e & \code{Ind} & \Ind\\
+t & \code{Prop} & \Prop\\
+e\to t & \code{caie\_prop\_ty} & \PrTy\\
+(e\to t)\to t & \code{caie\_classifier\_ty} & \ClTy
+\end{array}
+\]
+Thus an ordinary first-order property is an object-language predicate of
+individuals, and a name meaning is represented as a property classifier:
+\[
+  \PrTy := \Ind\Arr\Prop,
+  \qquad
+  \ClTy := \PrTy\Arr\Prop.
+\]
+The theory also defines the corresponding class types
+\(\PrTy\Arr\Prop\) and \(\ClTy\Arr\Prop\), which are used by the maximal
+consistency vocabulary.
+
+Caie's counterfactual connective is currently an uninterpreted object-language
+constant:
+\[
+  A\CF B.
+\]
+In Isabelle this is \code{ObjCF A B}.  Its source-level infix notation is:
+\begin{verbatim}
+\<box>\<rightarrow>\<^sub>o
+\end{verbatim}
+The connective itself remains uninterpreted in the definitional layer.  The
+Caie-specific counterfactual principles are now collected separately in the
+local axiom package described below, so the definitions stay conservative over
+the Bacon object logic.
+
+\subsection{Basic name-theoretic operations}
+
+The main definitional operations now represented are:
+\[
+\begin{array}{rcl}
+  \heq(x) &:=& \lambda y^e.\; y =_e x,\\[1mm]
+  \downc{Q} &:=& \lambda x^e.\; Q(\heq(x)),\\[1mm]
+  \upc{P}(R) &:=&
+    \bigl(\exists x^e\, P =_{\PrTy}\heq(x)\bigr)
+      \CF
+    \bigl(\exists x^e\, (P(x)\AND R(x))\bigr),\\[1mm]
+  Q\dsim Z &:=& \downc{Q}=_{\PrTy}\downc{Z}.
+\end{array}
+\]
+The Isabelle definitions use de Bruijn indices, so the displayed equations are
+the intended Bacon/Caie reading rather than the literal source syntax.  For
+example, the body of \(\upc{P}(R)\) is named \code{caie\_up\_body P R};
+inside binders, the Isabelle source shifts \(P\) and \(R\) before applying
+them to \code{Var 0}.  This is the usual de Bruijn bookkeeping: the shift says
+that \(P\) and \(R\) are free relative to the newly bound individual variable.
+
+The file also defines the predicate vocabulary used in Caie's Appendix C:
+\[
+\begin{gathered}
+  \mathsf{GLB},\mathsf{NS},\mathsf{UC},\mathsf{GLBC},
+  \mathsf{Comp},\mathsf{Cons},\mathsf{MC},\\
+  \mathsf{Hae},\mathsf{hae},\mathsf{NH},\mathsf{AH},
+  \mathsf{AC},\mathsf{HP},\mathsf{NHP},\mathsf{ACF},\mathsf{PE},\\
+  \mathsf{Name},\mathsf{WName},\mathsf{phae}.
+\end{gathered}
+\]
+These are object-language constants or lambda-defined operations, not Isabelle
+predicates.  Applied abbreviations such as \code{caie\_Name Q} and
+\code{caie\_MC Q} merely build object-language formulas.
+
+\subsection{Typing facts}
+
+The theory proves typing lemmas for the primitive and applied Caie vocabulary.
+For example:
+\[
+  \Gamma\types x:\Ind
+  \quad\Rightarrow\quad
+  \Gamma\types \heq(x):\PrTy,
+\]
+\[
+  \Gamma\types Q:\ClTy
+  \quad\Rightarrow\quad
+  \Gamma\types \downc{Q}:\PrTy,
+\]
+\[
+  \Gamma\types P:\PrTy
+  \quad\Rightarrow\quad
+  \Gamma\types \upc{P}:\ClTy,
+\]
+and
+\[
+  \Gamma\types Q:\ClTy,\quad \Gamma\types Z:\ClTy
+  \quad\Rightarrow\quad
+  \Gamma\types Q\dsim Z:\Prop.
+\]
+There are also applied typing lemmas for the Appendix C vocabulary, including
+\code{typed\_caie\_MC}, \code{typed\_caie\_Hae},
+\code{typed\_caie\_Name}, and \code{typed\_caie\_WName}.  Finally, the
+deep-embedded Appendix C statements \code{caie\_Thm32} through
+\code{caie\_Thm40} are all proved to be formulas:
+\[
+  A\in\code{set caie\_appendix\_C\_theorems}
+  \quad\Rightarrow\quad
+  \Gamma\types A:\Prop.
+\]
+
+\subsection{Definitional conversion bridges}
+
+The main verified Caie facts are beta-eta conversion bridges.  The standalone
+conversion relation proves the definitional reductions first; the general
+bridge lemmas then turn these into object-language biconditionals in the proof
+systems.  The currently named Caie bridges are:
+\[
+\begin{array}{rcl}
+  \heq(x)(y) &\simeq_{\beta\eta}& y=_e x,\\[1mm]
+  \downc{Q}(x) &\simeq_{\beta\eta}& Q(\heq(x)),\\[1mm]
+  \upc{P}(R) &\simeq_{\beta\eta}& \code{caie\_up\_body}\;P\;R,\\[1mm]
+  Q\dsim Z &\simeq_{\beta\eta}& \downc{Q}=_{\PrTy}\downc{Z}.
+\end{array}
+\]
+The corresponding Isabelle theorem names are:
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\code{beta\_eta\_caie\_heq\_apply},&
+\code{H\_caie\_heq\_apply},\quad
+\code{CEV\_caie\_heq\_apply},\\
+\code{beta\_eta\_caie\_down\_apply},&
+\code{H\_caie\_down\_apply},\quad
+\code{CEV\_caie\_down\_apply},\\
+\code{beta\_eta\_caie\_up\_apply},&
+\code{H\_caie\_up\_apply},\quad
+\code{CEV\_caie\_up\_apply},\\
+\code{beta\_eta\_caie\_dsim},&
+\code{H\_caie\_dsim},\quad
+\code{CEV\_caie\_dsim}.
+\end{tabular}
+\end{center}
+For instance, if \(Q:\ClTy\) and \(x:e\), then Isabelle verifies:
+\[
+  \Gamma\vdash_H
+    \bigl(\downc{Q}(x)\IFF Q(\heq(x))\bigr)
+\]
+and also the analogous \(\CEV\) theorem.  The same pattern holds for
+\(\heq\), \(\upc{\cdot}\), and \(\dsim\).
+
+The proof of the \(\upc{\cdot}\) and \(\dsim\) bridges required a small amount
+of de Bruijn substitution infrastructure.  These lemmas are deliberately local
+and mostly used explicitly rather than installed as global simplifier rules.
+That keeps later proof search predictable.
+
+\subsection{Local Caie derivability}
+
+The latest Caie step adds an explicit local derivability interface for working
+from Caie-specific assumptions without baking those assumptions into the base
+logic.  In standard notation, write
+\[
+  \Gamma;\Delta\vdash_{\Caie} A
+\]
+for derivability of \(A\) from a finite list \(\Delta\) of object-language
+assumptions over the background context \(\Gamma\).  The Isabelle predicate is:
+\begin{verbatim}
+caie_CEV_derivable Gamma Delta A
+\end{verbatim}
+It has exactly three primitive clauses:
+\[
+\frac{A\in\Delta \quad \Gamma\types A:\Prop}
+     {\Gamma;\Delta\vdash_{\Caie} A},
+\qquad
+\frac{\Gamma\vdash_{\CEV} A}
+     {\Gamma;\Delta\vdash_{\Caie} A},
+\]
+and modus ponens:
+\[
+\frac{\Gamma;\Delta\vdash_{\Caie} A
+       \quad
+       \Gamma;\Delta\vdash_{\Caie} A\IC B}
+     {\Gamma;\Delta\vdash_{\Caie} B}.
+\]
+Thus \(\vdash_{\Caie}\) is not a new logic.  It is a bookkeeping layer over
+\(\CEV\) theoremhood plus explicitly listed Caie assumptions.
+
+The verified metatheory for this wrapper includes:
+\[
+  \Gamma;\Delta\vdash_{\Caie} A
+  \quad\Rightarrow\quad
+  \Gamma\types A:\Prop,
+\]
+and monotonicity in the assumption list:
+\[
+  \Gamma;\Delta\vdash_{\Caie} A,\quad
+  \Delta\subseteq\Delta'
+  \quad\Rightarrow\quad
+  \Gamma;\Delta'\vdash_{\Caie} A.
+\]
+There is also a bridge back to the existing one-assumption machinery in
+\code{Bacon\_S4.thy}.  If \(A\) is well-typed and \(B\) is derivable from the
+singleton assumption list \([A]\), then:
+\[
+  \Gamma;[A]\vdash_{\Caie} B
+  \quad\Rightarrow\quad
+  \Gamma\vdash_{\CEV} A\IC B.
+\]
+In Isabelle this is \code{caie\_CEV\_derivable\_singleton\_deduction}, proved
+by first translating the singleton derivation into \code{CEV\_from} and then
+using \code{CEV\_from\_deduction}.
+
+The four definitional conversion bridges have also been lifted into arbitrary
+Caie assumption contexts.  For example, if \(Q:\ClTy\) and \(x:e\), then:
+\[
+  \Gamma;\Delta\vdash_{\Caie}
+    \bigl(\downc{Q}(x)\IFF Q(\heq(x))\bigr).
+\]
+The corresponding theorem names are:
+\[
+\begin{array}{ll}
+\code{caie\_CEV\_derivable\_heq\_apply},&
+\code{caie\_CEV\_derivable\_down\_apply},\\
+\code{caie\_CEV\_derivable\_up\_apply},&
+\code{caie\_CEV\_derivable\_dsim}.
+\end{array}
+\]
+The wrapper also has derivability-level eliminators for object-language
+biconditionals:
+\[
+\begin{array}{l}
+\code{caie\_CEV\_derivable\_bicond\_left},\\
+\code{caie\_CEV\_derivable\_bicond\_right}.
+\end{array}
+\]
+These rules let a local proof use a derivable definitional bridge
+\(A\IFF B\) together with one side of the biconditional to derive the other
+side without leaving the \(\vdash_{\Caie}\) wrapper.
+This means that later derivations from Caie's substantive name and
+counterfactual assumptions can use the beta-eta reductions without reopening
+their conversion proofs.
+
+Finally, the file defines a typed assumption-package predicate:
+\[
+  \code{caie\_assumption\_package}\;\Gamma\;\Delta
+  \quad\text{iff}\quad
+  \text{every member of \(\Delta\) is a \(\Gamma\)-formula.}
+\]
+The Appendix C target list is proved to be such a package.  Consequently,
+members of \code{caie\_appendix\_C\_theorems} are locally available when that
+list is used explicitly as an assumption list.  This is only bookkeeping: it
+does not turn Appendix C statements into theorems of \(\CEV\).
+
+\subsection{Caie-specific axiom package}
+
+The file now defines an explicit, non-circular package of Caie-style principles
+for the residual Appendix C work.  These formulas are not the Appendix C target
+theorems themselves.  They are lower-level assumptions corresponding to the
+counterfactual and name/haecceity principles cited in Caie's proof
+dependencies.
+
+The counterfactual part is:
+\[
+  \code{caie\_counterfactual\_principles}.
+\]
+It contains closed proposition-level versions of counterfactual identity,
+reciprocity, modus ponens, conditional excluded middle, non-triviality,
+absorption,
+\[
+  (p\CF q)\IFF (p\CF(p\CF q)),
+\]
+and consequent strengthening,
+\[
+  \Box(q\IC r)\IC ((p\CF q)\IC(p\CF r)).
+\]
+
+The name-theoretic part is:
+\[
+  \code{caie\_name\_haecceity\_principles}.
+\]
+It contains lower-level principles for possible haecceity projection, name
+down-naturality, a component-box principle for the down-projection possible
+haecceity conditions, modal collapse for possible haecceities, the five
+component conditions needed to make \(\upc{P}\) a Name when \(P\) is a possible
+haecceity, pointwise up-down and down-up principles for possible haecceities and
+names, the haecceity case of \(\upc{P}\), a possible-haecceity witness
+principle for the unfolded upward-projection body, weak-name
+possible-haecceity principles, weak-name haecceity classification, the Hae
+down-characterization, and weak-name down-similarity extensionality.  The
+component-box principle is
+named
+\[
+  \code{caie\_name\_expanded\_down\_phae\_components\_principle}.
+\]
+It is deliberately weaker than the previously used
+\code{caie\_name\_expanded\_down\_phae\_principle}: it gives the boxed possible,
+positive-persistence, and negative-persistence components separately, rather
+than assuming the packed \(\mathsf{phae}\) formula.
+
+The combined package is \code{caie\_appendix\_C\_axiom\_package}.  Its
+definition appends the counterfactual-principle list to the
+name/haecceity-principle list.
+Isabelle verifies that every member is a closed object-language formula:
+\[
+  \code{caie\_appendix\_C\_axiom\_package\_typed}.
+\]
+It also verifies that any member of this package is locally derivable when the
+package itself is used as the local assumption list.
+The corresponding theorem is:
+\[
+  \code{caie\_CEV\_derivable\_appendix\_C\_axiom}.
+\]
+
+At the package boundary, the file names the closure predicate:
+\[
+  \code{caie\_appendix\_C\_axiom\_package\_closes\_targets}\;\Gamma.
+\]
+By definition, this says that every member of the current principle-target
+bucket is derivable from the new axiom package.  The destructor is:
+\[
+  \code{caie\_appendix\_C\_axiom\_package\_closes\_targetD}.
+\]
+The residual derivation layer below derives the Appendix C targets one at a
+time from the package and then packages those derivations as:
+\[
+  \code{caie\_appendix\_C\_residual\_target\_from\_axiom\_package}.
+\]
+
+The first residual target has now been discharged.  Isabelle proves:
+\[
+  \code{caie\_appendix\_C\_first\_residual\_target\_from\_axiom\_package}.
+\]
+This is the local derivability statement
+\[
+  \Gamma;\code{caie\_appendix\_C\_axiom\_package}
+  \vdash_{\Caie}
+  \code{caie\_Thm32}.
+\]
+The proof does not assume \code{caie\_Thm32} itself.  It assumes the
+component-box down-projection principle
+\code{caie\_name\_expanded\_down\_phae\_components\_principle}.  The generic
+CEV helper lemmas
+\[
+\begin{array}{l}
+  \code{CEV\_imp\_trans},\quad
+  \code{CEV\_imp\_lift\_right},\quad
+  \code{CEV\_curry\_conj},\\
+  \code{CEV\_box\_conj\_intro\_imp},\quad
+  \code{CEV\_box\_conj3\_from\_components\_imp}
+\end{array}
+\]
+assemble the three boxed components into the packed \(\mathsf{phae}\) claim.
+The Caie-specific bridge is
+\[
+  \code{CEV\_caie\_name\_expanded\_down\_phae\_from\_components},
+\]
+which derives the old expanded principle from the component principle.  The
+formal proof also uses two generic de Bruijn helper facts,
+\code{weakening\_after\_front} and
+\code{subst0\_Var0\_rename\_lift\_Suc}, to instantiate the shifted universal
+component principle cleanly.
+
+Finally, the file proves the conversion bridge
+\[
+  \code{caie\_Thm32}
+  \simeq_{\beta\eta}
+  \code{caie\_name\_expanded\_down\_phae\_principle},
+\]
+and then uses the corresponding \(\CEV\) implication to transfer local
+derivability to the official Appendix C statement.
+
+The second residual target has also been discharged.  Isabelle proves:
+\[
+  \code{caie\_appendix\_C\_second\_residual\_target\_from\_axiom\_package}.
+\]
+This is the local derivability statement
+\[
+  \Gamma;\code{caie\_appendix\_C\_axiom\_package}
+  \vdash_{\Caie}
+  \code{caie\_Thm33}.
+\]
+Again, the proof does not assume the Appendix C target itself.  The package
+already contains five component principles saying that, if \(P\) is
+\(\mathsf{phae}\), then \(\mathsf{MC}(\upc{P})\),
+\(\mathsf{AC}(\upc{P})\), \(\mathsf{HP}(\upc{P})\),
+\(\mathsf{NHP}(\upc{P})\), and \(\mathsf{ACF}(\upc{P})\) each hold under
+\(\Box_o\).  The file bundles these as
+\[
+  \code{caie\_Thm33\_component\_principles}.
+\]
+The new definitional bridge expands \(\mathsf{Name}(Q)\) into its boxed
+five-part conjunction:
+\[
+  \code{beta\_eta\_caie\_Name}.
+\]
+The bridge theorem
+\[
+  \code{CEV\_caie\_Name\_from\_component\_boxes}
+\]
+then says that the five boxed components imply \(\mathsf{Name}(Q)\).  The
+generic five-component helpers
+\[
+\begin{array}{l}
+  \code{CEV\_shifted\_forall\_inst\_Var0},\quad
+  \code{CEV\_imp\_common\_conj5\_intro},\\
+  \code{CEV\_box\_conj5\_from\_components\_imp}
+\end{array}
+\]
+combine the five instantiated package principles and assemble the boxed
+\(\mathsf{Name}\)-definition.  The main global bridge is
+\[
+  \code{CEV\_caie\_Thm33\_from\_component\_principles},
+\]
+and the package-level derivation is
+\[
+  \code{caie\_CEV\_derivable\_Thm33\_from\_axiom\_package}.
+\]
+
+The next two residual equality targets are now derived from pointwise package
+principles.  For Theorem 34 the package member is
+\[
+  \code{caie\_phae\_up\_down\_pointwise\_principle}.
+\]
+In Bacon/Caie notation it says that if \(P\) is a possible haecceity, then
+\[
+  \forall x:e.\; P(x)\IFF \downc{(\upc{P})}(x).
+\]
+It does not assert the official equality target
+\[
+  P =_{\PrTy} \downc{(\upc{P})}.
+\]
+Isabelle instantiates the pointwise principle with
+\[
+  \code{CEV\_caie\_phae\_up\_down\_pointwise\_instance},
+\]
+then uses contextual unary equivalence to close from fresh-argument agreement to
+property equality:
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_Thm34\_from\_up\_down\_pointwise},\\
+  \code{caie\_CEV\_derivable\_Thm34\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_fourth\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+
+For Theorem 35 the package member is
+\[
+  \code{caie\_name\_down\_up\_pointwise\_principle}.
+\]
+In Bacon/Caie notation it says that if \(Q\) is a name, then
+\[
+  \forall P:\PrTy.\; Q(P)\IFF \upc{(\downc{Q})}(P).
+\]
+Again the package does not assume the official equality target
+\[
+  Q =_{\ClTy} \upc{(\downc{Q})}.
+\]
+The verified derivation is:
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_name\_down\_up\_pointwise\_instance},\\
+  \code{CEV\_caie\_Thm35\_from\_down\_up\_pointwise},\\
+  \code{caie\_CEV\_derivable\_Thm35\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_fifth\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+Both equality derivations use the contextual vector-equivalence rule in
+\(\CEV\), so they are no longer conditional on a separate admissibility
+assumption.
+
+Theorem 36 is also derived from the package.  The general zeta layer proves the
+theorem-level unary case of vector equivalence:
+\[
+  \code{CEV\_unary\_equivalence}.
+\]
+In Bacon/Caie notation, this says that if \(F,G:\sigma\to_o t\) agree on a
+fresh argument, then \(F=_{\sigma\to_o t}G\).  In Isabelle notation the
+pointwise premise has the form
+\[
+  \sigma\#\Gamma\vdash_{\CEV}
+  \bigl(\code{App (shift F) (Var 0)}
+    \IFF \code{App (shift G) (Var 0)}\bigr),
+\]
+and the conclusion is
+\[
+  \Gamma\vdash_{\CEV} F =_{\sigma\to_o t} G.
+\]
+The Caie file also derives small CEV infrastructure lemmas
+\[
+  \code{CEV\_forall\_inst},\qquad \code{CEV\_modal\_T\_imp},
+\]
+and proves the instantiated haecceity-up principle
+\[
+  \code{CEV\_caie\_haecceity\_up\_extensionality\_instance}.
+\]
+This last theorem instantiates the principle
+\codeblock{caie\_haecceity\_up\_extensionality\_principle}
+at the current property \(P\) and individual \(x\).  In Bacon/Caie notation
+its conclusion is the implication
+\[
+  \mathsf{phae}(P)\wedge P=\heq(x)
+  \IC
+  \Box_o\forall R:\PrTy.\;
+    \upc{P}(R)\IFF R(x).
+\]
+This is exactly the pointwise material needed for Theorem 36 before applying
+higher-order extensionality.
+
+The extra proof-theoretic ingredient is now part of \(\CEV\) itself:
+\code{CEV\_proves} has a contextual vector-equivalence rule.  The Caie file
+derives the old named admissibility predicate as
+\[
+  \code{CEV\_contextual\_unary\_equivalence\_admissible\_holds}.
+\]
+In report notation, this says: if \(A\) is a formula and
+\(F,G:\sigma\to_o t\), and under the shifted hypothesis \(A\) the fresh
+argument instances of \(F\) and \(G\) are biconditional, then \(A\) implies
+\(F=_{\sigma\to_o t}G\).  With that CEV rule, Isabelle proves
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_Thm36\_contextual\_unary\_premise},\\
+  \code{CEV\_caie\_Thm36\_from\_haecceity\_up\_extensionality},\\
+  \code{caie\_CEV\_derivable\_Thm36\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_third\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+The proof does not assume \code{caie\_Thm36}.  It uses modal \(T\), universal
+instantiation, beta-eta conversion for the classifier lambda term, the
+contextual vector-equivalence rule, and the package member
+\[
+  \code{caie\_haecceity\_up\_extensionality\_principle}.
+\]
+
+Theorem 37 is now derived from the same package without the contextual
+unary-equivalence assumption.  The added package member is the smaller witness
+principle
+\[
+  \code{caie\_phae\_up\_hae\_witness\_principle}.
+\]
+It is stated with the unfolded upward-projection body.  In report notation:
+\[
+  \forall P:\PrTy.\forall x:e.\;
+  \mathsf{phae}(P)\IC
+  \bigl(\code{caie\_up\_body}\;P\;\heq(x)\IC \mathsf{hae}(P)\bigr).
+\]
+Thus it is not the official Appendix C target, whose consequent is a negated
+application of \(\upc{P}\).  The proof first specializes this principle:
+\[
+  \code{CEV\_caie\_phae\_up\_hae\_witness\_instance}.
+\]
+It then uses the already verified beta-eta bridge for upward projection,
+\[
+  \upc{P}(R)\simeq_{\beta\eta}\code{caie\_up\_body}\;P\;R,
+\]
+via \code{CEV\_caie\_up\_apply}.  With \(R=\heq(x)\), propositional
+contraposition yields
+\[
+  \mathsf{phae}(P)\wedge\neg\mathsf{hae}(P)
+  \IC
+  \neg\upc{P}(\heq(x)).
+\]
+Finally, \(\CEV\) generalization reintroduces the individual and property
+quantifiers.  The verified theorems are:
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_Thm37\_from\_up\_hae\_witness},\\
+  \code{caie\_CEV\_derivable\_Thm37\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_sixth\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+
+Theorem 38 is now also derived from the package.  The package member is
+\[
+  \code{caie\_wname\_dsim\_surrogacy\_principle}.
+\]
+It is a smaller surrogate for the official target: under weak-name hypotheses
+on \(Q\) and \(Z\), its left side is the expanded equality
+\[
+  \downc{Q}=_{\PrTy}\downc{Z},
+\]
+not the official down-similarity formula \(Q\dsim Z\).  The right side is
+Caie's boxed identity condition.  The derivation then uses the verified
+definitional bridge
+\[
+  Q\dsim Z \simeq_{\beta\eta} \downc{Q}=_{\PrTy}\downc{Z}
+\]
+via \code{CEV\_caie\_dsim}.  The generic replacement helper used at this
+stage is \code{CEV\_bicond\_replace\_left}.  Isabelle proves the instantiated
+surrogate, the bridge to the official theorem, and the package-level result:
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_wname\_dsim\_surrogacy\_instance},\\
+  \code{CEV\_caie\_Thm38\_from\_wname\_dsim\_surrogacy},\\
+  \code{beta\_eta\_caie\_Thm38\_wname\_dsim\_surrogacy},\\
+  \code{caie\_CEV\_derivable\_Thm38\_wname\_dsim\_surrogacy\_bridge},\\
+  \code{caie\_CEV\_derivable\_Thm38\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_seventh\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+The final local derivation now consumes the package's surrogate axiom together
+with this whole-form bridge via \code{caie\_CEV\_derivable\_bicond\_right}.
+
+Theorems 39 and 40 are now derived by the same method.  Theorem 39 uses
+\[
+  \code{caie\_hae\_wname\_dsim\_identity\_surrogacy\_principle},
+\]
+which states the haecceity-like/weak-name identity biconditional with
+\(\downc{Q}=_{\PrTy}\downc{Z}\) in place of \(Q\dsim Z\).  The proof uses
+\code{CEV\_caie\_dsim} and \code{CEV\_bicond\_replace\_left} to recover the
+official statement, and also records
+\code{beta\_eta\_caie\_Thm39\_hae\_wname\_dsim\_identity\_surrogacy} and
+\code{caie\_CEV\_derivable\_Thm39\_hae\_wname\_dsim\_identity\_surrogacy\_bridge}
+for the final derivability-level conversion.  Theorem 40 uses
+\[
+  \code{caie\_wname\_unique\_name\_down\_eq\_surrogacy\_principle}.
+\]
+This package member has Caie's unique-name existence shape, but both
+down-similarity atoms are replaced by equality of down-projections.  The file
+adds general beta-eta congruence helpers for conjunctions, implications,
+object-language biconditionals, and quantifier bodies, then proves
+\[
+  \code{beta\_eta\_caie\_Thm40\_down\_eq\_surrogacy}.
+\]
+From that beta-eta bridge, Isabelle derives the official theorem and the
+package-level result:
+\[
+\begin{array}{l}
+  \code{CEV\_caie\_Thm40\_of\_down\_eq\_surrogacy},\\
+  \code{caie\_CEV\_derivable\_Thm40\_down\_eq\_surrogacy\_bridge},\\
+  \code{caie\_CEV\_derivable\_Thm40\_from\_axiom\_package},\\
+  \code{caie\_appendix\_C\_ninth\_residual\_target\_from\_axiom\_package}.
+\end{array}
+\]
+
+\subsection{Appendix C statements}
+
+The file now contains exact object-language statements corresponding to
+Caie's Appendix C theorems 32--40.  The following table gives their report-level
+shape; the Isabelle definitions are the authoritative source for binder order
+and de Bruijn indexing.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}c>{\raggedright\arraybackslash}p{0.78\textwidth}@{}}
+32 & \(\forall Q:\ClTy.\; \mathsf{Name}(Q)\IC \mathsf{phae}(\downc{Q})\)\\[1mm]
+33 & \(\forall P:\PrTy.\; \mathsf{phae}(P)\IC \mathsf{Name}(\upc{P})\)\\[1mm]
+34 & \(\forall P:\PrTy.\; \mathsf{phae}(P)\IC
+      P =_{\PrTy} \downc{(\upc{P})}\)\\[1mm]
+35 & \(\forall Q:\ClTy.\; \mathsf{Name}(Q)\IC
+      Q =_{\ClTy} \upc{(\downc{Q})}\)\\[1mm]
+36 & If \(P\) is a possible haecceity and \(P=\heq(x)\), then \(\upc{P}\)
+     is the classifier \(\lambda R:\PrTy.\,R(x)\).\\[1mm]
+37 & If \(P\) is a possible haecceity but not an actual haecceity, then
+     \(\upc{P}\) applies to no actual haecceity property \(\heq(x)\).\\[1mm]
+38 & Weak names \(Q,Z\) are down-similar exactly under Caie's stated boxed
+     identity condition.\\[1mm]
+39 & A haecceity-like classifier and a weak name are down-similar iff they are
+     identical.\\[1mm]
+40 & Every weak name has a unique genuine name down-similar to it.
+\end{tabular}
+\end{center}
+
+\subsection{Current Appendix C dependency sort}
+
+The verified definitional material is the bridge package described above:
+\[
+\begin{array}{rcl}
+  \heq(x)(y) &\simeq_{\beta\eta}& y=_e x,\\
+  \downc{Q}(x) &\simeq_{\beta\eta}& Q(\heq(x)),\\
+  \upc{P}(R) &\simeq_{\beta\eta}& \code{caie\_up\_body}\;P\;R,\\
+  Q\dsim Z &\simeq_{\beta\eta}& \downc{Q}=_{\PrTy}\downc{Z}.
+\end{array}
+\]
+The file packages these facts as:
+\[
+  \code{caie\_CEV\_derivable\_definitional\_bridge\_package}.
+\]
+This theorem says that all four bridges are available inside arbitrary
+\(\Gamma;\Delta\vdash_{\Caie}\) contexts, provided the displayed terms are
+well-typed.  For the Appendix C axiom package itself, the specialization
+\[
+  \code{caie\_appendix\_C\_axiom\_package\_definitional\_bridge\_package}
+\]
+records the same four bridge facts over
+\code{caie\_appendix\_C\_axiom\_package}.
+
+For the full Appendix C theorem statements, the current verified sort is as
+follows.
+\begin{itemize}[leftmargin=2em]
+\item Definition and beta-eta conversion alone:
+  \code{caie\_appendix\_C\_definitional\_targets}, verified equal to the empty
+  list.
+\item Explicit Caie-style principles required:
+  \code{caie\_appendix\_C\_principle\_targets}, verified equal to
+  \code{caie\_appendix\_C\_theorems}.
+\end{itemize}
+Thus no full theorem among 32--40 is currently certified as a definitional-only
+consequence.  All nine remain principle targets:
+\[
+  \{32,33,34,35,36,37,38,39,40\}.
+\]
+This does not mean that all nine are still open.  Theorems 32--40 are now
+verified from the explicit axiom package.  They remain in the principle-target
+bucket only because those proofs use substantive Caie-style principles rather
+than definition and beta-eta conversion alone.  The formal frontier is
+recorded by the two lists
+\codeblock{caie\_appendix\_C\_axiom\_package\_verified\_targets
+  = [32,33,34,35,36,37,38,39,40],}
+\codeblock{caie\_appendix\_C\_axiom\_package\_remaining\_targets = [].}
+The Isabelle lemmas \code{caie\_appendix\_C\_sort\_covers} and
+\code{caie\_appendix\_C\_sort\_disjoint} verify that this is a partition of
+the current definitional-vs-principle target list.  The additional lemmas
+\code{caie\_appendix\_C\_axiom\_package\_target\_sort\_covers} and
+\code{caie\_appendix\_C\_axiom\_package\_target\_sort\_disjoint} verify the
+package-derived-vs-remaining split.  Every residual target is proved
+well-typed, and each one is locally derivable from the explicit package.
+
+This classification is a proof-status classification, not a semantic
+independence theorem.  It says that the currently verified beta-eta bridge
+package does not by itself certify any complete Appendix C theorem statement.
+The explicit counterfactual/name/weak-name/haecceity package has now been
+introduced, and Theorems 32--40 have been derived from it using definitional
+bridge facts, propositional reasoning, and pointwise-to-equality closure, with
+Theorems 34--36 using the contextual vector-equivalence rule in \(\CEV\).
+The final conversion steps for Theorems 32 and 40 now use
+\code{caie\_CEV\_derivable\_bicond\_right} together with the named bridge facts,
+so those bridge applications remain inside the local Caie derivability layer.
+The theorem
+\codeblock{caie\_appendix\_C\_residual\_target\_from\_axiom\_package}
+is the collective residual-target layer: every member of
+\code{caie\_appendix\_C\_theorems} is locally derivable from
+\code{caie\_appendix\_C\_axiom\_package}.  The intermediate list
+\codeblock{caie\_appendix\_C\_residual\_bridge\_pairs}
+records, for each target, the source principle or source bundle from which the
+target is derived.  The theorem
+\codeblock{caie\_appendix\_C\_residual\_target\_from\_axiom\_package\_using\_bridge\_pairs}
+is the explicit source-to-target version of this result.  Internally, it uses
+\code{caie\_appendix\_C\_axiom\_package\_derives\_residual\_bridge\_source}
+for the package derivation of the source side and
+\code{caie\_CEV\_derivable\_residual\_bridge\_pair\_imp} for the verified
+source-to-target implication, followed by local modus ponens in
+\code{caie\_CEV\_derivable}.  The theorem
+\codeblock{caie\_appendix\_C\_principle\_target\_from\_axiom\_package\_using\_bridges}
+states the same conclusion over the verified principle-target bucket.  The
+theorem
+\codeblock{caie\_appendix\_C\_axiom\_package\_closes\_targets\_from\_residual\_bridges}
+then packages that bucket-level result as the closure predicate.  The theorem
+\codeblock{caie\_appendix\_C\_axiom\_package\_closes\_targets\_from\_verified}
+records that the package closes the entire Appendix C principle-target bucket.
+
+\subsection{The finite model \(M^*\) and Proposition 29}
+
+The session now includes a shallow HOL reconstruction of Caie's finite model
+\(M^*\) in \code{Bacon\_Caie\_Mstar.thy}.  This file is separate from the
+deep-embedded proof system: it gives finite datatypes for the worlds, the two
+individuals, and the relevant property-domain elements, then defines the table
+interpretations \code{Astar} and \code{Pstar}.
+
+The currently verified model facts are:
+\begin{center}
+\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.48\textwidth}
+                    >{\raggedright\arraybackslash}p{0.44\textwidth}@{}}
+  \code{Pstar\_is\_Name} & \(P^*\) satisfies the finite Name clauses,\\
+  \code{Astar\_is\_Name} & \(A^*\) satisfies the finite Name clauses,\\
+  \code{bullet3\_P\_is\_empty} & \(P^*\) is empty at the actual world,\\
+  \code{Astar\_nonempty} & \(A^*\) is nonempty at the relevant point,\\
+  \code{Mstar\_name\_coverage} & \(A^*\) and \(P^*\) cover the finite individuals,\\
+  \code{name\_class\_is\_rigid} & the displayed Name class is rigid,\\
+  \code{name\_class\_boxed\_coverage} & the displayed Name class covers each accessible individual,\\
+  \code{Mstar\_name\_plenitude\_witness} & the finite rigid-class/plenitude witness,\\
+  \code{Mstar\_proposition29\_bullet1\_from\_NDS\_soundness}
+    & the conditional theorem-to-truth bridge for \(M^*\),\\
+  \code{Mstar\_proposition29\_core} & the earlier Name/emptiness/coverage package,\\
+  \code{Mstar\_proposition29\_finite\_bullets} & the combined finite bullets 2--4 package,\\
+  \code{Mstar\_proposition29\_from\_NDS\_soundness}
+    & the conditional all-bullets package.
+\end{longtable}
+\end{center}
+The new witness is \code{name\_class}, a world-indexed class of classifiers
+whose members are exactly the two displayed \(M^*\)-Names up to their finite
+domain table behaviour.  Isabelle verifies that this class is persistent and
+inextensible, hence rigid in the finite sense used here, and that at every
+world accessible from actuality each individual has one of its member Names
+applying to that individual's haecceity.  Thus the finite \(M^*\) layer now
+proves Proposition 29's Name, emptiness, and plenitude bullets.
+
+The file now also isolates Proposition 29's first bullet as an abstract
+soundness bridge.  The definition \code{nds\_background\_soundness} represents
+the Proposition 27-style premise that every theorem of the background logic is
+true in every NDS model.  The definition
+\code{mstar\_nds\_model\_obligation} records the separate obligation that the
+finite structure \(M^*\) is an NDS model.  From those two assumptions, the
+theorem
+\codeblock{Mstar\_proposition29\_bullet1\_from\_NDS\_soundness}
+proves theorem-truth at \(M^*\). The theorem
+\codeblock{Mstar\_proposition29\_from\_NDS\_soundness}
+combines that result with the finite bullets. This does not yet prove
+Proposition 27; it makes the remaining dependency exact.
+
+\section{What has intentionally not been done yet}
+
+Several important pieces of Bacon's framework are intentionally not yet
+formalized:
+\begin{itemize}[leftmargin=2em]
+\item no proof yet of \code{CEV\_context\_equiv\_abstract\_const\_admissible};
+\item no unconditional proof yet of the CE/CEV prefix internalization
+  principles;
+\item no embedding of the term model into the earlier full-function
+  \code{applicative\_structure} locale; the current term model deliberately
+  avoids that stronger lambda-denotation requirement;
+\item no full object-language/NDS-soundness proof yet proving
+  \code{nds\_background\_soundness} for Caie's background logic;
+\item no general NDS-model soundness theorem yet for Caie's Proposition 27;
+\item no further decomposition yet of the current Caie surrogate package
+  principles into still smaller philosophically natural components.
+\end{itemize}
+
+Those omissions are now quite narrow.  The H/C Henkin construction and
+term-model completeness package are verified.  The CE/CEV layer has been
+reduced to explicit closure and abstraction principles rather than left as a
+generic ``build a canonical model'' task.
+
+\section{Recommended next steps}
+
+There are now two natural tracks.
+
+For the general Baconian completeness project, the next milestone is to prove
+\begin{center}
+\code{CEV\_context\_equiv\_abstract\_const\_admissible}.
+\end{center}
+Technically, this means proving enough CEV renaming/substitution invariance to
+push abstraction through theoremhood cases involving \code{zeta\_body}.  Once
+that is verified, the existing conditional countermodel-property theorems can
+be instantiated.
+
+For the Caie application track, the next milestone is to connect the finite
+\(M^*\) witness layer to a general NDS-model soundness theorem for the
+background logic.  The Isabelle file now names the two exact obligations:
+prove \code{nds\_background\_soundness} for Caie's background theoremhood
+predicate and prove \code{mstar\_nds\_model\_obligation} for the finite \(M^*\)
+structure.  These two facts discharge Proposition 27 and Proposition 29's
+first bullet through the verified bridge.  After that, the remaining work is
+to refine the current Appendix C surrogate principles into still smaller
+philosophically natural components where appropriate.
+
+\end{document}
