@@ -1,4 +1,12 @@
-# Formalization Status
+# PP Consistency Status
+
+> **Driving handoff, 2026-07-25.** Start with **[CODEX_HANDOFF.md](CODEX_HANDOFF.md)**,
+> not this file. It states the problem precisely (X and A), records the audit of
+> this repo against Goodman's own notes, lists the ground rules (15s timeout,
+> no `sorry`, bisect don't guess), says exactly where the in-flight Intensionality
+> proof stands, and ranks what to do next. This file is the long-form record and
+> contains superseded material — every withdrawn claim is listed in §8 of the
+> handoff.
 
 Status date: 2026-07-25.
 
