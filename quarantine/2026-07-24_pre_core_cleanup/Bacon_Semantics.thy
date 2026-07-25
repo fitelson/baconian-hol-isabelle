@@ -1188,6 +1188,84 @@ proof -
     unfolding valid_in_context_def using formula_type by blast
 qed
 
+lemma CEV_ContextVectorEquivalence_valid:
+  assumes "\<Gamma> \<turnstile> A : Prop"
+    and "\<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop"
+    and "\<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop"
+    and "valid_in_context (\<sigma>s @ \<Gamma>)
+      (Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G))"
+  shows "valid_in_context \<Gamma> (Imp A (Eq (arrow_type \<sigma>s Prop) F G))"
+proof -
+  have eq_type: "\<Gamma> \<turnstile> Eq (arrow_type \<sigma>s Prop) F G : Prop"
+    using assms(2,3) by auto
+  have formula_type: "\<Gamma> \<turnstile> Imp A (Eq (arrow_type \<sigma>s Prop) F G) : Prop"
+    using assms(1) eq_type by auto
+  have "\<forall>\<rho>. env_typed \<Gamma> \<rho> \<longrightarrow>
+      holds (eval \<rho> (Imp A (Eq (arrow_type \<sigma>s Prop) F G)))"
+  proof (intro allI impI)
+    fix \<rho>
+    assume env: "env_typed \<Gamma> \<rho>"
+    show "holds (eval \<rho> (Imp A (Eq (arrow_type \<sigma>s Prop) F G)))"
+    proof (cases "holds (eval \<rho> A)")
+      case False
+      then show ?thesis
+        by simp
+    next
+      case True
+      have F_den: "eval \<rho> F \<in> D (arrow_type \<sigma>s Prop)"
+        using assms(2) env by (rule eval_type)
+      have G_den: "eval \<rho> G \<in> D (arrow_type \<sigma>s Prop)"
+        using assms(3) env by (rule eval_type)
+      have agreement: "\<And>xs. list_all2 (\<lambda>x \<sigma>. x \<in> D \<sigma>) xs \<sigma>s \<Longrightarrow>
+          holds (app_den_vec app_den (eval \<rho> F) xs) =
+          holds (app_den_vec app_den (eval \<rho> G) xs)"
+      proof -
+        fix xs
+        assume xs_type: "list_all2 (\<lambda>x \<sigma>. x \<in> D \<sigma>) xs \<sigma>s"
+        have len: "length xs = length \<sigma>s"
+          using xs_type by (rule list_all2_lengthD)
+        have env_ext: "env_typed (\<sigma>s @ \<Gamma>) (extend_envs xs \<rho>)"
+          using env xs_type by (rule env_typed_extends)
+        have premise_holds: "holds (eval (extend_envs xs \<rho>)
+            (Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G)))"
+          using assms(4) env_ext by (rule valid_holds)
+        have shift_A:
+            "eval (extend_envs xs \<rho>) (shift_by (length \<sigma>s) A) = eval \<rho> A"
+          using eval_shift_by_extend_envs[of xs \<rho> A] len by simp
+        have zeta_holds: "holds (eval (extend_envs xs \<rho>) (zeta_body \<sigma>s F G))"
+          using premise_holds True by (simp add: shift_A)
+        have shift_F:
+            "eval (extend_envs xs \<rho>) (shift_by (length \<sigma>s) F) = eval \<rho> F"
+          using eval_shift_by_extend_envs[of xs \<rho> F] len by simp
+        have shift_G:
+            "eval (extend_envs xs \<rho>) (shift_by (length \<sigma>s) G) = eval \<rho> G"
+          using eval_shift_by_extend_envs[of xs \<rho> G] len by simp
+        have fresh_eval:
+            "map (eval (extend_envs xs \<rho>)) (fresh_vars (length \<sigma>s)) = xs"
+          using map_eval_fresh_vars_extend_envs[of xs \<rho>] len by simp
+        have iff_holds:
+            "(holds (app_den_vec app_den (eval \<rho> F) xs) \<longrightarrow>
+                holds (app_den_vec app_den (eval \<rho> G) xs)) \<and>
+             (holds (app_den_vec app_den (eval \<rho> G) xs) \<longrightarrow>
+                holds (app_den_vec app_den (eval \<rho> F) xs))"
+          using zeta_holds
+          by (simp add: zeta_body_def eval_app_vec shift_F shift_G fresh_eval)
+        show "holds (app_den_vec app_den (eval \<rho> F) xs) =
+            holds (app_den_vec app_den (eval \<rho> G) xs)"
+          using iff_holds by blast
+      qed
+      have "eq_den (arrow_type \<sigma>s Prop) (eval \<rho> F) (eval \<rho> G)"
+        using F_den G_den agreement by (rule vector_extensionality)
+      then have "holds (eval \<rho> (Eq (arrow_type \<sigma>s Prop) F G))"
+        by simp
+      then show ?thesis
+        using True by simp
+    qed
+  qed
+  then show ?thesis
+    unfolding valid_in_context_def using formula_type by blast
+qed
+
 theorem CEV_soundness:
   assumes "\<Gamma> \<turnstile>\<^sub>CEV A"
   shows "valid_in_context \<Gamma> A"
@@ -1201,6 +1279,12 @@ next
   show ?case
     by (rule CEV_VectorEquivalence_valid
         [OF VectorEquivalence.hyps(1) VectorEquivalence.hyps(2) VectorEquivalence.IH])
+next
+  case (ContextVectorEquivalence \<Gamma> A F \<sigma>s G)
+  show ?case
+    by (rule CEV_ContextVectorEquivalence_valid
+        [OF ContextVectorEquivalence.hyps(1) ContextVectorEquivalence.hyps(2)
+          ContextVectorEquivalence.hyps(3) ContextVectorEquivalence.IH])
 next
   case (MP \<Gamma> A B)
   show ?case

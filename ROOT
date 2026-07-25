@@ -5,6 +5,19 @@ session Higher_Order_Metaphysics = HOL +
   sessions
     "HOL-Library"
   theories
-    Bacon_Canonical
-    Bacon_Caie
-    Bacon_Caie_Mstar
+    Bacon_CEV_Axiom_Extension
+
+session Higher_Order_Metaphysics_PP in "pp" = Higher_Order_Metaphysics +
+  description "
+    The Goodman Purity-of-Pure consistency question and diagonal analysis.
+  "
+theories
+  Bacon_PP_Diagonal
+  Bacon_PP_Generic_Witness
+  Bacon_PP_MSet
+  Bacon_PP_Parity
+  Bacon_PP_LevelClasses
+  Bacon_PP_Uniform_Index
+  Bacon_PP_TreeAut
+  Bacon_PP_Orbit_Stability
+  Bacon_PP_TreeAut_Functions

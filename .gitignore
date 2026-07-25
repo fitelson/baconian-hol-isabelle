@@ -16,3 +16,10 @@ tmp/
 # Older generated reports retained locally but not part of the release.
 scaffold_report.pdf
 reports/
+
+# Local consultation transcripts, prompts, and scratch sessions.
+CLAUDE_*
+CONSENSUS_*
+claude_*_prompt.*
+consensus_*_prompt.*
+scratch_opus/

@@ -588,6 +588,107 @@ lemma subst_const_shift:
   unfolding shift_def
   by (rule subst_const_rename)
 
+lemma subst_const_shift_by:
+  "subst_const c \<sigma> (shift_by k N) (shift_by k M) =
+    shift_by k (subst_const c \<sigma> N M)"
+  unfolding shift_by_def
+  by (rule subst_const_rename)
+
+lemma subst_const_app_vec:
+  "subst_const c \<sigma> N (app_vec F As) =
+    app_vec (subst_const c \<sigma> N F) (map (subst_const c \<sigma> N) As)"
+  by (induction As arbitrary: F) simp_all
+
+lemma subst_const_fresh_vars[simp]:
+  "map (subst_const c \<sigma> N) (fresh_vars k) = fresh_vars k"
+  unfolding fresh_vars_def
+  by (simp add: map_map)
+
+lemma subst_const_zeta_body:
+  "subst_const c \<sigma> (shift_by (length \<sigma>s) N) (zeta_body \<sigma>s F G) =
+    zeta_body \<sigma>s (subst_const c \<sigma> N F) (subst_const c \<sigma> N G)"
+  unfolding zeta_body_def
+  by (simp add: subst_const_app_vec subst_const_shift_by)
+
+definition prefix_ren :: "nat \<Rightarrow> (nat \<Rightarrow> nat) \<Rightarrow> nat \<Rightarrow> nat" where
+  "prefix_ren k r n = (if n < k then n else k + r (n - k))"
+
+lemma rename_shift_by_prefix:
+  "rename (prefix_ren k r) (shift_by k M) =
+    shift_by k (rename r M)"
+proof -
+  have maps:
+      "\<And>n. (prefix_ren k r \<circ> shift_ren k 0) n =
+        (shift_ren k 0 \<circ> r) n"
+    by (simp add: prefix_ren_def shift_ren_def add.commute)
+  show ?thesis
+    unfolding shift_by_def
+    apply (simp only: rename_comp)
+    by (rule rename_cong) (rule maps)
+qed
+
+lemma rename_app_vec:
+  "rename r (app_vec F As) =
+    app_vec (rename r F) (map (rename r) As)"
+  by (induction As arbitrary: F) simp_all
+
+lemma rename_prefix_fresh_vars[simp]:
+  "map (rename (prefix_ren k r)) (fresh_vars k) = fresh_vars k"
+  unfolding fresh_vars_def prefix_ren_def
+  by (simp add: map_map)
+
+lemma rename_zeta_body_prefix:
+  "rename (prefix_ren (length \<sigma>s) r) (zeta_body \<sigma>s F G) =
+    zeta_body \<sigma>s (rename r F) (rename r G)"
+  unfolding zeta_body_def
+  by (simp add: rename_app_vec rename_shift_by_prefix)
+
+lemma prefix_ren_preserves_lookup:
+  assumes mapping:
+      "\<And>n \<tau>. lookup \<Gamma> n = Some \<tau> \<Longrightarrow>
+        lookup \<Delta> (r n) = Some \<tau>"
+    and source: "lookup (\<sigma>s @ \<Gamma>) n = Some \<tau>"
+  shows "lookup (\<sigma>s @ \<Delta>)
+    (prefix_ren (length \<sigma>s) r n) = Some \<tau>"
+proof (cases "n < length \<sigma>s")
+  case True
+  then show ?thesis
+    using source
+    by (simp add: prefix_ren_def lookup_def nth_append)
+next
+  case False
+  have n_bound: "n < length \<sigma>s + length \<Gamma>"
+    using source
+    by (auto simp: lookup_def split: if_splits)
+  have nth_eq: "(\<sigma>s @ \<Gamma>) ! n = \<tau>"
+    using source n_bound
+    unfolding lookup_def
+    by simp
+  have tail_bound: "n - length \<sigma>s < length \<Gamma>"
+    using n_bound False
+    by arith
+  have tail_eq: "\<Gamma> ! (n - length \<sigma>s) = \<tau>"
+    using nth_eq False
+    by (simp add: nth_append)
+  then have source_tail: "lookup \<Gamma> (n - length \<sigma>s) = Some \<tau>"
+    using tail_bound tail_eq
+    by (simp add: lookup_def)
+  have target_tail:
+      "lookup \<Delta> (r (n - length \<sigma>s)) = Some \<tau>"
+    using source_tail by (rule mapping)
+  have target_bound:
+      "r (n - length \<sigma>s) < length \<Delta>"
+    using target_tail
+    by (auto simp: lookup_def split: if_splits)
+  have target_eq:
+      "\<Delta> ! r (n - length \<sigma>s) = \<tau>"
+    using target_tail target_bound
+    by (simp add: lookup_def)
+  show ?thesis
+    using False target_bound target_eq
+    by (simp add: prefix_ren_def lookup_def nth_append)
+qed
+
 lemma subst_cong:
   assumes "\<And>n. s n = t n"
   shows "subst s M = subst t M"
@@ -2334,6 +2435,200 @@ next
     by simp
 qed
 
+lemma CEV_proves_subst_const:
+  assumes "\<Gamma> \<turnstile>\<^sub>CEV A"
+    and "\<Gamma> \<turnstile> N : \<sigma>"
+  shows "\<Gamma> \<turnstile>\<^sub>CEV subst_const c \<sigma> N A"
+  using assms
+proof (induction arbitrary: N \<sigma> c rule: CEV_proves.induct)
+  case (CE \<Gamma> A)
+  have "\<Gamma> \<turnstile>\<^sub>CE subst_const c \<sigma> N A"
+    using CE.hyps CE.prems by (rule CE_proves_subst_const)
+  then show ?case
+    by (rule CEV_proves.CE)
+next
+  case (VectorEquivalence \<Gamma> F \<sigma>s G)
+  have shifted_N: "\<sigma>s @ \<Gamma> \<turnstile> shift_by (length \<sigma>s) N : \<sigma>"
+    using VectorEquivalence.prems by (rule shift_by_preserves_typing)
+  have F_sub_type:
+      "\<Gamma> \<turnstile> subst_const c \<sigma> N F : arrow_type \<sigma>s Prop"
+    using VectorEquivalence.hyps(1) VectorEquivalence.prems
+    by (rule subst_const_preserves_typing)
+  have G_sub_type:
+      "\<Gamma> \<turnstile> subst_const c \<sigma> N G : arrow_type \<sigma>s Prop"
+    using VectorEquivalence.hyps(2) VectorEquivalence.prems
+    by (rule subst_const_preserves_typing)
+  have d_zeta_raw:
+      "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV
+        subst_const c \<sigma> (shift_by (length \<sigma>s) N) (zeta_body \<sigma>s F G)"
+    using shifted_N by (rule VectorEquivalence.IH)
+  have d_zeta:
+      "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV
+        zeta_body \<sigma>s (subst_const c \<sigma> N F) (subst_const c \<sigma> N G)"
+    using d_zeta_raw by (simp add: subst_const_zeta_body)
+  have "\<Gamma> \<turnstile>\<^sub>CEV
+      Eq (arrow_type \<sigma>s Prop)
+        (subst_const c \<sigma> N F) (subst_const c \<sigma> N G)"
+    using F_sub_type G_sub_type d_zeta by (rule CEV_proves.VectorEquivalence)
+  then show ?case
+    by simp
+next
+  case (MP \<Gamma> A B)
+  have dA: "\<Gamma> \<turnstile>\<^sub>CEV subst_const c \<sigma> N A"
+    using MP.prems by (rule MP.IH(1))
+  have dImp_raw: "\<Gamma> \<turnstile>\<^sub>CEV subst_const c \<sigma> N (Imp A B)"
+    using MP.prems by (rule MP.IH(2))
+  have dImp: "\<Gamma> \<turnstile>\<^sub>CEV
+      Imp (subst_const c \<sigma> N A) (subst_const c \<sigma> N B)"
+    using dImp_raw by simp
+  show ?case
+    using dA dImp by (rule CEV_proves.MP)
+next
+  case (Gen \<Gamma> P \<rho> Q)
+  have shifted_N: "\<rho> # \<Gamma> \<turnstile> shift N : \<sigma>"
+    using Gen.prems by (rule weakening_front)
+  have P_sub_type: "\<Gamma> \<turnstile> subst_const c \<sigma> N P : Prop"
+    using Gen.hyps(1) Gen.prems by (rule subst_const_preserves_typing)
+  have Q_sub_type: "\<rho> # \<Gamma> \<turnstile> subst_const c \<sigma> (shift N) Q : Prop"
+    using Gen.hyps(2) shifted_N by (rule subst_const_preserves_typing)
+  have d_ext_raw: "\<rho> # \<Gamma> \<turnstile>\<^sub>CEV
+      subst_const c \<sigma> (shift N) (Imp (shift P) Q)"
+    using shifted_N by (rule Gen.IH)
+  have d_ext: "\<rho> # \<Gamma> \<turnstile>\<^sub>CEV
+      Imp (shift (subst_const c \<sigma> N P)) (subst_const c \<sigma> (shift N) Q)"
+    using d_ext_raw by (simp add: subst_const_shift)
+  have "\<Gamma> \<turnstile>\<^sub>CEV Imp (subst_const c \<sigma> N P)
+      (Forall \<rho> (subst_const c \<sigma> (shift N) Q))"
+    using P_sub_type Q_sub_type d_ext by (rule CEV_proves.Gen)
+  then show ?case
+    by simp
+next
+  case (Inst \<rho> \<Gamma> P Q)
+  have shifted_N: "\<rho> # \<Gamma> \<turnstile> shift N : \<sigma>"
+    using Inst.prems by (rule weakening_front)
+  have P_sub_type: "\<rho> # \<Gamma> \<turnstile> subst_const c \<sigma> (shift N) P : Prop"
+    using Inst.hyps(1) shifted_N by (rule subst_const_preserves_typing)
+  have Q_sub_type: "\<Gamma> \<turnstile> subst_const c \<sigma> N Q : Prop"
+    using Inst.hyps(2) Inst.prems by (rule subst_const_preserves_typing)
+  have d_ext_raw: "\<rho> # \<Gamma> \<turnstile>\<^sub>CEV
+      subst_const c \<sigma> (shift N) (Imp P (shift Q))"
+    using shifted_N by (rule Inst.IH)
+  have d_ext: "\<rho> # \<Gamma> \<turnstile>\<^sub>CEV
+      Imp (subst_const c \<sigma> (shift N) P) (shift (subst_const c \<sigma> N Q))"
+    using d_ext_raw by (simp add: subst_const_shift)
+  have "\<Gamma> \<turnstile>\<^sub>CEV
+      Imp (Exists \<rho> (subst_const c \<sigma> (shift N) P))
+        (subst_const c \<sigma> N Q)"
+    using P_sub_type Q_sub_type d_ext by (rule CEV_proves.Inst)
+  then show ?case
+    by simp
+qed
+
+lemma CEV_proves_rename_if_CE_rename:
+  assumes derivation: "\<Gamma> \<turnstile>\<^sub>CEV A"
+    and mapping:
+      "\<And>n \<tau>. lookup \<Gamma> n = Some \<tau> \<Longrightarrow>
+        lookup \<Delta> (r n) = Some \<tau>"
+    and ce_rename:
+      "\<And>\<Gamma> A \<Delta> r. \<Gamma> \<turnstile>\<^sub>CE A \<Longrightarrow>
+        (\<And>n \<tau>. lookup \<Gamma> n = Some \<tau> \<Longrightarrow>
+          lookup \<Delta> (r n) = Some \<tau>) \<Longrightarrow>
+        \<Delta> \<turnstile>\<^sub>CE rename r A"
+  shows "\<Delta> \<turnstile>\<^sub>CEV rename r A"
+  using derivation mapping
+proof (induction arbitrary: \<Delta> r rule: CEV_proves.induct)
+  case (CE \<Gamma> A)
+  have "\<Delta> \<turnstile>\<^sub>CE rename r A"
+    using CE.hyps CE.prems by (rule ce_rename)
+  then show ?case
+    by (rule CEV_proves.CE)
+next
+  case (VectorEquivalence \<Gamma> F \<sigma>s G)
+  let ?r' = "prefix_ren (length \<sigma>s) r"
+  have prefix_mapping:
+      "\<And>n \<tau>. lookup (\<sigma>s @ \<Gamma>) n = Some \<tau> \<Longrightarrow>
+        lookup (\<sigma>s @ \<Delta>) (?r' n) = Some \<tau>"
+    using VectorEquivalence.prems
+    by (rule prefix_ren_preserves_lookup)
+  have F_ren_type:
+      "\<Delta> \<turnstile> rename r F : arrow_type \<sigma>s Prop"
+    using VectorEquivalence.hyps(1) VectorEquivalence.prems
+    by (rule renaming_preserves_typing)
+  have G_ren_type:
+      "\<Delta> \<turnstile> rename r G : arrow_type \<sigma>s Prop"
+    using VectorEquivalence.hyps(2) VectorEquivalence.prems
+    by (rule renaming_preserves_typing)
+  have d_zeta_raw:
+      "\<sigma>s @ \<Delta> \<turnstile>\<^sub>CEV rename ?r' (zeta_body \<sigma>s F G)"
+    using prefix_mapping by (rule VectorEquivalence.IH)
+  have d_zeta:
+      "\<sigma>s @ \<Delta> \<turnstile>\<^sub>CEV
+        zeta_body \<sigma>s (rename r F) (rename r G)"
+    using d_zeta_raw by (simp add: rename_zeta_body_prefix)
+  have "\<Delta> \<turnstile>\<^sub>CEV
+      Eq (arrow_type \<sigma>s Prop) (rename r F) (rename r G)"
+    using F_ren_type G_ren_type d_zeta
+    by (rule CEV_proves.VectorEquivalence)
+  then show ?case
+    by simp
+next
+  case (MP \<Gamma> A B)
+  have d_A: "\<Delta> \<turnstile>\<^sub>CEV rename r A"
+    using MP.prems by (rule MP.IH(1))
+  have d_imp_raw: "\<Delta> \<turnstile>\<^sub>CEV rename r (Imp A B)"
+    using MP.prems by (rule MP.IH(2))
+  have d_imp: "\<Delta> \<turnstile>\<^sub>CEV Imp (rename r A) (rename r B)"
+    using d_imp_raw by simp
+  show ?case
+    using d_A d_imp by (rule CEV_proves.MP)
+next
+  case (Gen \<Gamma> P \<rho> Q)
+  have lifted_mapping:
+      "\<And>n \<tau>. lookup (\<rho> # \<Gamma>) n = Some \<tau> \<Longrightarrow>
+        lookup (\<rho> # \<Delta>) (lift_ren r n) = Some \<tau>"
+    using Gen.prems by (rule lookup_lift_ren)
+  have P_ren_type: "\<Delta> \<turnstile> rename r P : Prop"
+    using Gen.hyps(1) Gen.prems by (rule renaming_preserves_typing)
+  have Q_ren_type: "\<rho> # \<Delta> \<turnstile> rename (lift_ren r) Q : Prop"
+    using Gen.hyps(2) lifted_mapping by (rule renaming_preserves_typing)
+  have d_ext_raw:
+      "\<rho> # \<Delta> \<turnstile>\<^sub>CEV
+        rename (lift_ren r) (Imp (shift P) Q)"
+    using lifted_mapping by (rule Gen.IH)
+  have d_ext:
+      "\<rho> # \<Delta> \<turnstile>\<^sub>CEV
+        Imp (shift (rename r P)) (rename (lift_ren r) Q)"
+    using d_ext_raw by (simp add: shift_rename_lift)
+  have "\<Delta> \<turnstile>\<^sub>CEV
+      Imp (rename r P) (Forall \<rho> (rename (lift_ren r) Q))"
+    using P_ren_type Q_ren_type d_ext by (rule CEV_proves.Gen)
+  then show ?case
+    by simp
+next
+  case (Inst \<rho> \<Gamma> P Q)
+  have lifted_mapping:
+      "\<And>n \<tau>. lookup (\<rho> # \<Gamma>) n = Some \<tau> \<Longrightarrow>
+        lookup (\<rho> # \<Delta>) (lift_ren r n) = Some \<tau>"
+    using Inst.prems by (rule lookup_lift_ren)
+  have P_ren_type: "\<rho> # \<Delta> \<turnstile> rename (lift_ren r) P : Prop"
+    using Inst.hyps(1) lifted_mapping by (rule renaming_preserves_typing)
+  have Q_ren_type: "\<Delta> \<turnstile> rename r Q : Prop"
+    using Inst.hyps(2) Inst.prems by (rule renaming_preserves_typing)
+  have d_ext_raw:
+      "\<rho> # \<Delta> \<turnstile>\<^sub>CEV
+        rename (lift_ren r) (Imp P (shift Q))"
+    using lifted_mapping by (rule Inst.IH)
+  have d_ext:
+      "\<rho> # \<Delta> \<turnstile>\<^sub>CEV
+        Imp (rename (lift_ren r) P) (shift (rename r Q))"
+    using d_ext_raw by (simp add: shift_rename_lift)
+  have "\<Delta> \<turnstile>\<^sub>CEV
+      Imp (Exists \<rho> (rename (lift_ren r) P)) (rename r Q)"
+    using P_ren_type Q_ren_type d_ext by (rule CEV_proves.Inst)
+  then show ?case
+    by simp
+qed
+
 lemma CE_proves_rename:
   assumes "\<Gamma> \<turnstile>\<^sub>CE A"
     and "\<And>n \<tau>. lookup \<Gamma> n = Some \<tau> \<Longrightarrow> lookup \<Delta> (r n) = Some \<tau>"
@@ -2411,6 +2706,14 @@ next
   then show ?case
     by simp
 qed
+
+lemma CEV_proves_rename:
+  assumes "\<Gamma> \<turnstile>\<^sub>CEV A"
+    and "\<And>n \<tau>. lookup \<Gamma> n = Some \<tau> \<Longrightarrow>
+      lookup \<Delta> (r n) = Some \<tau>"
+  shows "\<Delta> \<turnstile>\<^sub>CEV rename r A"
+  using assms CE_proves_rename
+  by (rule CEV_proves_rename_if_CE_rename)
 
 lemma C_derivable_subst_const:
   assumes "\<Gamma> ; \<Delta> \<turnstile>\<^sub>C A"
@@ -8124,14 +8427,6 @@ definition CEV_vector_equivalence_closed :: "ctx \<Rightarrow> oterm set \<Right
       \<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV zeta_body \<sigma>s F G \<longrightarrow>
       Eq (arrow_type \<sigma>s Prop) F G \<in> T)"
 
-definition CEV_context_vector_equivalence_closed :: "ctx \<Rightarrow> oterm set \<Rightarrow> bool" where
-  "CEV_context_vector_equivalence_closed \<Gamma> T \<longleftrightarrow>
-    (\<forall>\<sigma>s A F G. \<Gamma> \<turnstile> A : Prop \<longrightarrow>
-      \<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop \<longrightarrow>
-      \<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop \<longrightarrow>
-      \<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G) \<longrightarrow>
-      Imp A (Eq (arrow_type \<sigma>s Prop) F G) \<in> T)"
-
 definition CEV_generalization_closed :: "ctx \<Rightarrow> oterm set \<Rightarrow> bool" where
   "CEV_generalization_closed \<Gamma> T \<longleftrightarrow>
     (\<forall>P \<sigma> Q. \<Gamma> \<turnstile> P : Prop \<longrightarrow> \<sigma> # \<Gamma> \<turnstile> Q : Prop \<longrightarrow>
@@ -8147,7 +8442,6 @@ definition CEV_instantiation_closed :: "ctx \<Rightarrow> oterm set \<Rightarrow
 definition CEV_rule_closed :: "ctx \<Rightarrow> oterm set \<Rightarrow> bool" where
   "CEV_rule_closed \<Gamma> T \<longleftrightarrow>
     CEV_vector_equivalence_closed \<Gamma> T \<and>
-    CEV_context_vector_equivalence_closed \<Gamma> T \<and>
     CEV_generalization_closed \<Gamma> T \<and>
     CEV_instantiation_closed \<Gamma> T"
 
@@ -8194,11 +8488,6 @@ lemma CEV_Henkin_vector_equivalence_closed:
   shows "CEV_vector_equivalence_closed \<Gamma> T"
   using assms unfolding CEV_Henkin_theory_def CEV_rule_closed_def by blast
 
-lemma CEV_Henkin_context_vector_equivalence_closed:
-  assumes "CEV_Henkin_theory \<Gamma> T"
-  shows "CEV_context_vector_equivalence_closed \<Gamma> T"
-  using assms unfolding CEV_Henkin_theory_def CEV_rule_closed_def by blast
-
 lemma CEV_Henkin_generalization_closed:
   assumes "CEV_Henkin_theory \<Gamma> T"
   shows "CEV_generalization_closed \<Gamma> T"
@@ -8224,15 +8513,6 @@ lemma CEV_vector_equivalence_closedD:
     and "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV zeta_body \<sigma>s F G"
   shows "Eq (arrow_type \<sigma>s Prop) F G \<in> T"
   using assms unfolding CEV_vector_equivalence_closed_def by blast
-
-lemma CEV_context_vector_equivalence_closedD:
-  assumes "CEV_context_vector_equivalence_closed \<Gamma> T"
-    and "\<Gamma> \<turnstile> A : Prop"
-    and "\<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop"
-    and "\<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop"
-    and "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G)"
-  shows "Imp A (Eq (arrow_type \<sigma>s Prop) F G) \<in> T"
-  using assms unfolding CEV_context_vector_equivalence_closed_def by blast
 
 lemma CE_generalization_closedD:
   assumes "CE_generalization_closed \<Gamma> T"
@@ -8333,14 +8613,6 @@ next
   show ?case
     using closed VectorEquivalence.hyps(1,2,3)
     by (rule CEV_vector_equivalence_closedD)
-next
-  case (ContextVectorEquivalence \<Gamma> A F \<sigma>s G)
-  have closed: "CEV_context_vector_equivalence_closed \<Gamma> T"
-    using ContextVectorEquivalence.prems
-    by (rule CEV_Henkin_context_vector_equivalence_closed)
-  show ?case
-    using closed ContextVectorEquivalence.hyps(1,2,3,4)
-    by (rule CEV_context_vector_equivalence_closedD)
 next
   case (MP \<Gamma> A B)
   have c_henkin: "C_Henkin_theory \<Gamma> T"
@@ -9438,6 +9710,101 @@ lemma subst_const_imp_chain[simp]:
 lemma rename_imp_chain[simp]:
   "rename r (imp_chain Ps A) = imp_chain (map (rename r) Ps) (rename r A)"
   by (induction Ps) auto
+
+fun conj_prefix :: "oterm \<Rightarrow> oterm list \<Rightarrow> oterm" where
+  "conj_prefix P [] = P"
+| "conj_prefix P (Q # Ps) = Conj P (conj_prefix Q Ps)"
+
+lemma conj_prefix_type:
+  assumes "\<Gamma> \<turnstile> P : Prop"
+    and "\<And>Q. Q \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+  shows "\<Gamma> \<turnstile> conj_prefix P Ps : Prop"
+  using assms
+proof (induction Ps arbitrary: P)
+  case Nil
+  then show ?case by simp
+next
+  case (Cons Q Ps)
+  have Q_type: "\<Gamma> \<turnstile> Q : Prop"
+    using Cons.prems(2) by simp
+  have tail_types: "\<And>R. R \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> R : Prop"
+    using Cons.prems(2) by simp
+  have "\<Gamma> \<turnstile> conj_prefix Q Ps : Prop"
+    using Q_type tail_types by (rule Cons.IH)
+  then show ?case
+    using Cons.prems(1)
+    by (simp add: has_type.Conj)
+qed
+
+lemma prop_eval_imp_chain_conj_prefix:
+  "prop_eval v (imp_chain (P # Ps) A) =
+    prop_eval v (Imp (conj_prefix P Ps) A)"
+proof (induction Ps arbitrary: P)
+  case Nil
+  then show ?case by simp
+next
+  case (Cons Q Ps)
+  then show ?case
+    by simp blast
+qed
+
+lemma prop_tautology_imp_chain_to_conj_prefix:
+  assumes prefix_types:
+      "\<And>Q. Q \<in> set (P # Ps) \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+    and A_type: "\<Gamma> \<turnstile> A : Prop"
+  shows "prop_tautology \<Gamma>
+    (Imp (imp_chain (P # Ps) A) (Imp (conj_prefix P Ps) A))"
+proof -
+  have chain_type: "\<Gamma> \<turnstile> imp_chain (P # Ps) A : Prop"
+    using prefix_types A_type by (rule imp_chain_type)
+  have P_type: "\<Gamma> \<turnstile> P : Prop"
+    using prefix_types by simp
+  have tail_types: "\<And>Q. Q \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+    using prefix_types by simp
+  have conjunction_type: "\<Gamma> \<turnstile> conj_prefix P Ps : Prop"
+    using P_type tail_types by (rule conj_prefix_type)
+  have formula_type:
+      "\<Gamma> \<turnstile>
+        Imp (imp_chain (P # Ps) A) (Imp (conj_prefix P Ps) A) : Prop"
+    using chain_type conjunction_type A_type by auto
+  have eval:
+      "\<forall>v. prop_eval v
+        (Imp (imp_chain (P # Ps) A) (Imp (conj_prefix P Ps) A))"
+    using prop_eval_imp_chain_conj_prefix[of _ P Ps A]
+    by simp
+  show ?thesis
+    unfolding prop_tautology_def
+    using formula_type eval by blast
+qed
+
+lemma prop_tautology_conj_prefix_to_imp_chain:
+  assumes prefix_types:
+      "\<And>Q. Q \<in> set (P # Ps) \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+    and A_type: "\<Gamma> \<turnstile> A : Prop"
+  shows "prop_tautology \<Gamma>
+    (Imp (Imp (conj_prefix P Ps) A) (imp_chain (P # Ps) A))"
+proof -
+  have chain_type: "\<Gamma> \<turnstile> imp_chain (P # Ps) A : Prop"
+    using prefix_types A_type by (rule imp_chain_type)
+  have P_type: "\<Gamma> \<turnstile> P : Prop"
+    using prefix_types by simp
+  have tail_types: "\<And>Q. Q \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+    using prefix_types by simp
+  have conjunction_type: "\<Gamma> \<turnstile> conj_prefix P Ps : Prop"
+    using P_type tail_types by (rule conj_prefix_type)
+  have formula_type:
+      "\<Gamma> \<turnstile>
+        Imp (Imp (conj_prefix P Ps) A) (imp_chain (P # Ps) A) : Prop"
+    using chain_type conjunction_type A_type by auto
+  have eval:
+      "\<forall>v. prop_eval v
+        (Imp (Imp (conj_prefix P Ps) A) (imp_chain (P # Ps) A))"
+    using prop_eval_imp_chain_conj_prefix[of _ P Ps A]
+    by simp
+  show ?thesis
+    unfolding prop_tautology_def
+    using formula_type eval by blast
+qed
 
 text \<open>
   The previous strengthened local relation internalizes the zero-context
@@ -12576,22 +12943,6 @@ proof (unfold CEV_vector_equivalence_closed_def, intro allI impI)
     using assms d_rule by (rule CEV_locally_maximal_consistent_contains_theorems)
 qed
 
-lemma CEV_locally_maximal_context_vector_equivalence_closed:
-  assumes "CEV_locally_maximal_consistent \<Gamma> T"
-  shows "CEV_context_vector_equivalence_closed \<Gamma> T"
-proof (unfold CEV_context_vector_equivalence_closed_def, intro allI impI)
-  fix \<sigma>s A F G
-  assume A_type: "\<Gamma> \<turnstile> A : Prop"
-    and F_type: "\<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop"
-    and G_type: "\<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop"
-    and d: "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV
-      Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G)"
-  have d_rule: "\<Gamma> \<turnstile>\<^sub>CEV Imp A (Eq (arrow_type \<sigma>s Prop) F G)"
-    using A_type F_type G_type d by (rule CEV_proves.ContextVectorEquivalence)
-  show "Imp A (Eq (arrow_type \<sigma>s Prop) F G) \<in> T"
-    using assms d_rule by (rule CEV_locally_maximal_consistent_contains_theorems)
-qed
-
 lemma CEV_locally_maximal_generalization_closed:
   assumes "CEV_locally_maximal_consistent \<Gamma> T"
   shows "CEV_generalization_closed \<Gamma> T"
@@ -12626,14 +12977,12 @@ lemma CEV_rule_closed_of_local_maximal:
 proof -
   have vector: "CEV_vector_equivalence_closed \<Gamma> T"
     using assms by (rule CEV_locally_maximal_vector_equivalence_closed)
-  have context_vector: "CEV_context_vector_equivalence_closed \<Gamma> T"
-    using assms by (rule CEV_locally_maximal_context_vector_equivalence_closed)
   have gen: "CEV_generalization_closed \<Gamma> T"
     using assms by (rule CEV_locally_maximal_generalization_closed)
   have inst: "CEV_instantiation_closed \<Gamma> T"
     using assms by (rule CEV_locally_maximal_instantiation_closed)
   show ?thesis
-    using vector context_vector gen inst unfolding CEV_rule_closed_def by blast
+    using vector gen inst unfolding CEV_rule_closed_def by blast
 qed
 
 lemma CEV_Henkin_theory_of_CE_Henkin_local_maximal:
@@ -13017,6 +13366,195 @@ proof -
   qed
   then show ?thesis
     using that by blast
+qed
+
+lemma CEV_context_equiv_set_derivable_subst_const:
+  assumes "CEV_context_equiv_set_derivable \<Gamma> T A"
+    and "\<Gamma> \<turnstile> N : \<sigma>"
+  shows "CEV_context_equiv_set_derivable \<Gamma>
+    (subst_const c \<sigma> N ` T) (subst_const c \<sigma> N A)"
+  using assms
+proof (induction rule: CEV_context_equiv_set_derivable.induct)
+  case (Assumption A T \<Gamma>)
+  have A_sub_type: "\<Gamma> \<turnstile> subst_const c \<sigma> N A : Prop"
+    using Assumption.hyps(2) Assumption.prems
+    by (rule subst_const_preserves_typing)
+  have "subst_const c \<sigma> N A \<in> subst_const c \<sigma> N ` T"
+    using Assumption.hyps(1) by simp
+  then show ?case
+    using A_sub_type
+    by (rule CEV_context_equiv_set_derivable.Assumption)
+next
+  case (Theorem \<Gamma> A T)
+  have "\<Gamma> \<turnstile>\<^sub>CEV subst_const c \<sigma> N A"
+    using Theorem.hyps Theorem.prems by (rule CEV_proves_subst_const)
+  then show ?case
+    by (rule CEV_context_equiv_set_derivable.Theorem)
+next
+  case (Derive_MP \<Gamma> T A B)
+  have d_A:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (subst_const c \<sigma> N A)"
+    using Derive_MP.prems by (rule Derive_MP.IH(1))
+  have d_imp_raw:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (subst_const c \<sigma> N (Imp A B))"
+    using Derive_MP.prems by (rule Derive_MP.IH(2))
+  have d_imp:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (Imp (subst_const c \<sigma> N A) (subst_const c \<sigma> N B))"
+    using d_imp_raw by simp
+  show ?case
+    using d_A d_imp
+    by (rule CEV_context_equiv_set_derivable.Derive_MP)
+next
+  case (ContextPropEquivalence Ps \<Gamma> A B T)
+  have typed_prefix:
+      "\<And>P. P \<in> set (map (subst_const c \<sigma> N) Ps) \<Longrightarrow>
+        \<Gamma> \<turnstile> P : Prop"
+  proof -
+    fix P
+    assume "P \<in> set (map (subst_const c \<sigma> N) Ps)"
+    then obtain Q where Q_in: "Q \<in> set Ps"
+      and P_def: "P = subst_const c \<sigma> N Q"
+      by auto
+    have "\<Gamma> \<turnstile> subst_const c \<sigma> N Q : Prop"
+      using ContextPropEquivalence.hyps(1)[OF Q_in]
+        ContextPropEquivalence.prems
+      by (rule subst_const_preserves_typing)
+    then show "\<Gamma> \<turnstile> P : Prop"
+      using P_def by simp
+  qed
+  have A_sub_type: "\<Gamma> \<turnstile> subst_const c \<sigma> N A : Prop"
+    using ContextPropEquivalence.hyps(2) ContextPropEquivalence.prems
+    by (rule subst_const_preserves_typing)
+  have B_sub_type: "\<Gamma> \<turnstile> subst_const c \<sigma> N B : Prop"
+    using ContextPropEquivalence.hyps(3) ContextPropEquivalence.prems
+    by (rule subst_const_preserves_typing)
+  have d_iff_raw:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (subst_const c \<sigma> N (imp_chain Ps (A \<longleftrightarrow>\<^sub>o B)))"
+    using ContextPropEquivalence.prems
+    by (rule ContextPropEquivalence.IH)
+  have d_iff:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (imp_chain (map (subst_const c \<sigma> N) Ps)
+          (subst_const c \<sigma> N A \<longleftrightarrow>\<^sub>o
+            subst_const c \<sigma> N B))"
+    using d_iff_raw by simp
+  have d_eq:
+      "CEV_context_equiv_set_derivable \<Gamma> (subst_const c \<sigma> N ` T)
+        (imp_chain (map (subst_const c \<sigma> N) Ps)
+          (Eq Prop (subst_const c \<sigma> N A)
+            (subst_const c \<sigma> N B)))"
+    using typed_prefix A_sub_type B_sub_type d_iff
+    by (rule CEV_context_equiv_set_derivable.ContextPropEquivalence)
+  then show ?case
+    by simp
+qed
+
+lemma CEV_context_equiv_set_derivable_shift:
+  assumes "CEV_context_equiv_set_derivable \<Gamma> T A"
+  shows "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>)
+    (shift ` T) (shift A)"
+  using assms
+proof (induction rule: CEV_context_equiv_set_derivable.induct)
+  case (Assumption A T \<Gamma>)
+  have shifted_type: "\<sigma> # \<Gamma> \<turnstile> shift A : Prop"
+    using Assumption.hyps(2) by (rule weakening_front)
+  have "shift A \<in> shift ` T"
+    using Assumption.hyps(1) by simp
+  then show ?case
+    using shifted_type
+    by (rule CEV_context_equiv_set_derivable.Assumption)
+next
+  case (Theorem \<Gamma> A T)
+  have "\<sigma> # \<Gamma> \<turnstile>\<^sub>CEV rename Suc A"
+    using Theorem.hyps by (rule CEV_proves_rename) auto
+  then show ?case
+    unfolding shift_def
+    by (rule CEV_context_equiv_set_derivable.Theorem)
+next
+  case (Derive_MP \<Gamma> T A B)
+  have d_A:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (shift A)"
+    using Derive_MP.IH(1) .
+  have d_imp_raw:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (shift (Imp A B))"
+    using Derive_MP.IH(2) .
+  have d_imp:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (Imp (shift A) (shift B))"
+    using d_imp_raw by (simp add: shift_def)
+  show ?case
+    using d_A d_imp
+    by (rule CEV_context_equiv_set_derivable.Derive_MP)
+next
+  case (ContextPropEquivalence Ps \<Gamma> A B T)
+  have typed_prefix:
+      "\<And>P. P \<in> set (map shift Ps) \<Longrightarrow>
+        \<sigma> # \<Gamma> \<turnstile> P : Prop"
+  proof -
+    fix P
+    assume "P \<in> set (map shift Ps)"
+    then obtain Q where Q_in: "Q \<in> set Ps" and P_def: "P = shift Q"
+      by auto
+    have "\<sigma> # \<Gamma> \<turnstile> shift Q : Prop"
+      using ContextPropEquivalence.hyps(1)[OF Q_in]
+      by (rule weakening_front)
+    then show "\<sigma> # \<Gamma> \<turnstile> P : Prop"
+      using P_def by simp
+  qed
+  have A_shift_type: "\<sigma> # \<Gamma> \<turnstile> shift A : Prop"
+    using ContextPropEquivalence.hyps(2) by (rule weakening_front)
+  have B_shift_type: "\<sigma> # \<Gamma> \<turnstile> shift B : Prop"
+    using ContextPropEquivalence.hyps(3) by (rule weakening_front)
+  have d_iff_raw:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (shift (imp_chain Ps (A \<longleftrightarrow>\<^sub>o B)))"
+    using ContextPropEquivalence.IH .
+  have d_iff:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (imp_chain (map shift Ps) (shift A \<longleftrightarrow>\<^sub>o shift B))"
+    using d_iff_raw
+    unfolding shift_def
+    by simp
+  have d_eq:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (shift ` T)
+        (imp_chain (map shift Ps) (Eq Prop (shift A) (shift B)))"
+    using typed_prefix A_shift_type B_shift_type d_iff
+    by (rule CEV_context_equiv_set_derivable.ContextPropEquivalence)
+  then show ?case
+    unfolding shift_def
+    by simp
+qed
+
+lemma CEV_context_equiv_set_derivable_abstract_const:
+  assumes "CEV_context_equiv_set_derivable \<Gamma> T A"
+  shows "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>)
+    (abstract_const c \<sigma> ` T) (abstract_const c \<sigma> A)"
+proof -
+  have shifted:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>)
+        (shift ` T) (shift A)"
+    using assms by (rule CEV_context_equiv_set_derivable_shift)
+  have var_type: "\<sigma> # \<Gamma> \<turnstile> Var 0 : \<sigma>"
+    by simp
+  have substituted:
+      "CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>)
+        (subst_const c \<sigma> (Var 0) ` (shift ` T))
+        (subst_const c \<sigma> (Var 0) (shift A))"
+    using shifted var_type
+    by (rule CEV_context_equiv_set_derivable_subst_const)
+  have image_eq:
+      "subst_const c \<sigma> (Var 0) ` (shift ` T) =
+        abstract_const c \<sigma> ` T"
+    unfolding abstract_const_def by auto
+  show ?thesis
+    using substituted image_eq
+    unfolding abstract_const_def by simp
 qed
 
 definition CEV_context_equiv_consistent :: "ctx \<Rightarrow> oterm set \<Rightarrow> bool" where
@@ -13552,6 +14090,85 @@ definition CEV_nonempty_prefix_equivalence_internalized :: bool where
       \<Gamma> \<turnstile>\<^sub>CEV imp_chain (P # Ps) (A \<longleftrightarrow>\<^sub>o B) \<longrightarrow>
       \<Gamma> \<turnstile>\<^sub>CEV imp_chain (P # Ps) (Eq Prop A B))"
 
+lemma CEV_nonempty_prefix_equivalence_internalized_from_assumption:
+  assumes "CEV_nonempty_prefix_equivalence_internalized"
+  shows "CEV_nonempty_prefix_equivalence_internalized"
+  using assms .
+
+(*
+proof (unfold CEV_nonempty_prefix_equivalence_internalized_def,
+    intro allI impI)
+  fix \<Gamma> P Ps A B
+  assume typed_prefix:
+      "\<forall>R \<in> set (P # Ps). \<Gamma> \<turnstile> R : Prop"
+    and A_type: "\<Gamma> \<turnstile> A : Prop"
+    and B_type: "\<Gamma> \<turnstile> B : Prop"
+    and d_chain:
+      "\<Gamma> \<turnstile>\<^sub>CEV imp_chain (P # Ps) (A \<longleftrightarrow>\<^sub>o B)"
+  let ?C = "conj_prefix P Ps"
+  have prefix_types:
+      "\<And>R. R \<in> set (P # Ps) \<Longrightarrow> \<Gamma> \<turnstile> R : Prop"
+    using typed_prefix by blast
+  have bicond_type: "\<Gamma> \<turnstile> (A \<longleftrightarrow>\<^sub>o B) : Prop"
+    using A_type B_type by auto
+  have C_type: "\<Gamma> \<turnstile> ?C : Prop"
+  proof -
+    have P_type: "\<Gamma> \<turnstile> P : Prop"
+      using prefix_types by simp
+    have tail_types: "\<And>R. R \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> R : Prop"
+      using prefix_types by simp
+    show ?thesis
+      using P_type tail_types by (rule conj_prefix_type)
+  qed
+  have chain_to_conj:
+      "\<Gamma> \<turnstile>\<^sub>CEV
+        Imp (imp_chain (P # Ps) (A \<longleftrightarrow>\<^sub>o B))
+          (Imp ?C (A \<longleftrightarrow>\<^sub>o B))"
+    using prop_tautology_imp_chain_to_conj_prefix[
+      OF prefix_types bicond_type]
+    by (intro CEV_proves.CE CE_proves.C C_proves.H H_proves.PC)
+  have d_conj_bicond: "\<Gamma> \<turnstile>\<^sub>CEV Imp ?C (A \<longleftrightarrow>\<^sub>o B)"
+    using d_chain chain_to_conj by (rule CEV_proves.MP)
+  have d_conj_eq: "\<Gamma> \<turnstile>\<^sub>CEV Imp ?C (Eq Prop A B)"
+  proof -
+      have zeta:
+        "\<Gamma> \<turnstile>\<^sub>CEV
+          Imp (shift_by (length ([] :: otype list)) ?C)
+            (zeta_body ([] :: otype list) A B)"
+      using d_conj_bicond
+      by (simp add: zeta_body_def fresh_vars_def)
+    have raw:
+        "\<Gamma> \<turnstile>\<^sub>CEV
+          Imp ?C (Eq (arrow_type ([] :: otype list) Prop) A B)"
+    proof (rule CEV_proves.ContextVectorEquivalence[
+        where \<sigma>s = "[]"])
+      show "\<Gamma> \<turnstile> ?C : Prop"
+        by (rule C_type)
+      show "\<Gamma> \<turnstile> A : arrow_type [] Prop"
+        using A_type by simp
+      show "\<Gamma> \<turnstile> B : arrow_type [] Prop"
+        using B_type by simp
+      show "[] @ \<Gamma> \<turnstile>\<^sub>CEV
+        Imp (shift_by (length []) ?C) (zeta_body [] A B)"
+        using zeta by simp
+    qed
+    then show ?thesis
+      by simp
+  qed
+  have eq_type: "\<Gamma> \<turnstile> Eq Prop A B : Prop"
+    using A_type B_type by auto
+  have conj_to_chain:
+      "\<Gamma> \<turnstile>\<^sub>CEV
+        Imp (Imp ?C (Eq Prop A B))
+          (imp_chain (P # Ps) (Eq Prop A B))"
+    using prop_tautology_conj_prefix_to_imp_chain[
+      OF prefix_types eq_type]
+    by (intro CEV_proves.CE CE_proves.C C_proves.H H_proves.PC)
+  show "\<Gamma> \<turnstile>\<^sub>CEV imp_chain (P # Ps) (Eq Prop A B)"
+    using d_conj_eq conj_to_chain by (rule CEV_proves.MP)
+qed
+*)
+
 lemma CEV_prefix_equivalence_internalized_if_nonempty_prefix:
   assumes nonempty: "CEV_nonempty_prefix_equivalence_internalized"
   shows "CEV_prefix_equivalence_internalized"
@@ -13707,6 +14324,12 @@ definition CEV_context_equiv_abstract_const_admissible :: bool where
     (\<forall>\<Gamma> T A c \<sigma>. CEV_context_equiv_set_derivable \<Gamma> T A \<longrightarrow>
       CEV_context_equiv_set_derivable (\<sigma> # \<Gamma>) (abstract_const c \<sigma> ` T)
         (abstract_const c \<sigma> A))"
+
+theorem CEV_context_equiv_abstract_const_admissible_holds:
+  "CEV_context_equiv_abstract_const_admissible"
+  unfolding CEV_context_equiv_abstract_const_admissible_def
+  using CEV_context_equiv_set_derivable_abstract_const
+  by blast
 
 definition CEV_context_equiv_shifted_inst_admissible :: bool where
   "CEV_context_equiv_shifted_inst_admissible \<longleftrightarrow>
@@ -14218,22 +14841,6 @@ proof (unfold CEV_vector_equivalence_closed_def, intro allI impI)
     using local eq_thm by (rule CEV_context_equiv_locally_maximal_contains_theorems)
 qed
 
-lemma CEV_context_vector_equivalence_closed_of_CEV_context_equiv_local_maximal:
-  assumes local: "CEV_context_equiv_locally_maximal_consistent \<Gamma> T"
-  shows "CEV_context_vector_equivalence_closed \<Gamma> T"
-proof (unfold CEV_context_vector_equivalence_closed_def, intro allI impI)
-  fix \<sigma>s A F G
-  assume A_type: "\<Gamma> \<turnstile> A : Prop"
-    and F_type: "\<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop"
-    and G_type: "\<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop"
-    and d: "\<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV
-      Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G)"
-  have eq_thm: "\<Gamma> \<turnstile>\<^sub>CEV Imp A (Eq (arrow_type \<sigma>s Prop) F G)"
-    using A_type F_type G_type d by (rule CEV_proves.ContextVectorEquivalence)
-  show "Imp A (Eq (arrow_type \<sigma>s Prop) F G) \<in> T"
-    using local eq_thm by (rule CEV_context_equiv_locally_maximal_contains_theorems)
-qed
-
 lemma CEV_generalization_closed_of_CEV_context_equiv_local_maximal:
   assumes local: "CEV_context_equiv_locally_maximal_consistent \<Gamma> T"
   shows "CEV_generalization_closed \<Gamma> T"
@@ -14268,14 +14875,12 @@ lemma CEV_rule_closed_of_CEV_context_equiv_local_maximal:
 proof -
   have vector: "CEV_vector_equivalence_closed \<Gamma> T"
     using local by (rule CEV_vector_equivalence_closed_of_CEV_context_equiv_local_maximal)
-  have context_vector: "CEV_context_vector_equivalence_closed \<Gamma> T"
-    using local by (rule CEV_context_vector_equivalence_closed_of_CEV_context_equiv_local_maximal)
   have gen: "CEV_generalization_closed \<Gamma> T"
     using local by (rule CEV_generalization_closed_of_CEV_context_equiv_local_maximal)
   have inst: "CEV_instantiation_closed \<Gamma> T"
     using local by (rule CEV_instantiation_closed_of_CEV_context_equiv_local_maximal)
   show ?thesis
-    using vector context_vector gen inst unfolding CEV_rule_closed_def by blast
+    using vector gen inst unfolding CEV_rule_closed_def by blast
 qed
 
 lemma Henkin_witnessed_of_CEV_context_equiv_local_maximal_available:
@@ -15698,6 +16303,410 @@ theorem CEV_term_model_valid_iff_proves_from_nonempty_prefix_and_extension:
   using CEV_Henkin_countermodel_property_from_nonempty_prefix_and_extension[
       OF nonempty extension]
   by (rule CEV_term_model_valid_iff_proves_from_countermodels)
+
+subsection \<open>Unconditional completeness for vector equivalence\<close>
+
+(*
+theorem CEV_prefix_equivalence_internalized_holds:
+  "CEV_prefix_equivalence_internalized"
+  using CEV_nonempty_prefix_equivalence_internalized_holds
+  by (rule CEV_prefix_equivalence_internalized_if_nonempty_prefix)
+
+lemma imp_chain_append[simp]:
+  "imp_chain (Ps @ Qs) A = imp_chain Ps (imp_chain Qs A)"
+  by (induction Ps) simp_all
+
+lemma CEV_set_derivable_imp_chain_discharge:
+  assumes typed: "\<And>P. P \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> P : Prop"
+    and d: "\<Gamma> ; set Ps \<turnstile>\<^sub>CEV\<^sub>s A"
+  shows "\<Gamma> \<turnstile>\<^sub>CEV imp_chain (rev Ps) A"
+  using typed d
+proof (induction Ps arbitrary: A)
+  case Nil
+  then show ?case
+    using CEV_set_empty_imp_proves by simp
+next
+  case (Cons P Ps)
+  have P_type: "\<Gamma> \<turnstile> P : Prop"
+    using Cons.prems(1) by simp
+  have tail_types: "\<And>Q. Q \<in> set Ps \<Longrightarrow> \<Gamma> \<turnstile> Q : Prop"
+    using Cons.prems(1) by simp
+  have d_insert: "\<Gamma> ; insert P (set Ps) \<turnstile>\<^sub>CEV\<^sub>s A"
+    using Cons.prems(2) by simp
+  have d_imp: "\<Gamma> ; set Ps \<turnstile>\<^sub>CEV\<^sub>s Imp P A"
+    using P_type d_insert
+    by (rule CEV_set_derivable_deduction)
+  have "\<Gamma> \<turnstile>\<^sub>CEV imp_chain (rev Ps) (Imp P A)"
+    using tail_types d_imp by (rule Cons.IH)
+  then show ?case
+    by simp
+qed
+
+lemma CEV_set_derivable_imp_chain_elim:
+  assumes d_chain: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s imp_chain Ps A"
+    and d_prefix: "\<And>P. P \<in> set Ps \<Longrightarrow>
+      \<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s P"
+  shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s A"
+  using assms
+proof (induction Ps)
+  case Nil
+  then show ?case
+    by simp
+next
+  case (Cons P Ps)
+  have d_P: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s P"
+    using Cons.prems(2) by simp
+  have d_imp:
+      "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s Imp P (imp_chain Ps A)"
+    using Cons.prems(1) by simp
+  have d_tail: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s imp_chain Ps A"
+    using d_P d_imp
+    by (rule CEV_set_derivable.Derive_MP)
+  show ?case
+    using d_tail Cons.prems(2) by (rule Cons.IH) simp
+qed
+
+theorem CEV_context_equiv_set_derivable_conservative:
+  assumes typed: "typed_theory \<Gamma> T"
+    and d: "CEV_context_equiv_set_derivable \<Gamma> T A"
+  shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s A"
+  using d typed
+proof (induction rule: CEV_context_equiv_set_derivable.induct)
+  case (Assumption A T \<Gamma>)
+  show ?case
+    using Assumption.hyps(1,2)
+    by (rule CEV_set_derivable.Assumption)
+next
+  case (Theorem \<Gamma> A T)
+  show ?case
+    using Theorem.hyps
+    by (rule CEV_set_derivable.Theorem)
+next
+  case (Derive_MP \<Gamma> T A B)
+  have d_A: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s A"
+    using Derive_MP.prems by (rule Derive_MP.IH(1))
+  have d_imp: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s Imp A B"
+    using Derive_MP.prems by (rule Derive_MP.IH(2))
+  show ?case
+    using d_A d_imp by (rule CEV_set_derivable.Derive_MP)
+next
+  case (ContextPropEquivalence Ps \<Gamma> A B T)
+  have d_iff: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s
+      imp_chain Ps (A \<longleftrightarrow>\<^sub>o B)"
+    using ContextPropEquivalence.prems
+    by (rule ContextPropEquivalence.IH)
+  obtain U where finite_U: "finite U"
+    and U_sub: "U \<subseteq> T"
+    and d_U: "\<Gamma> ; U \<turnstile>\<^sub>CEV\<^sub>s
+      imp_chain Ps (A \<longleftrightarrow>\<^sub>o B)"
+    using d_iff by (rule CEV_set_derivable_finite_support)
+  obtain Us where set_Us: "set Us = U"
+    using finite_U finite_list by metis
+  have typed_Us: "\<And>P. P \<in> set Us \<Longrightarrow> \<Gamma> \<turnstile> P : Prop"
+    using ContextPropEquivalence.prems U_sub set_Us
+    unfolding typed_theory_def by blast
+  have d_Us: "\<Gamma> ; set Us \<turnstile>\<^sub>CEV\<^sub>s
+      imp_chain Ps (A \<longleftrightarrow>\<^sub>o B)"
+    using d_U set_Us by simp
+  have theorem_nested:
+      "\<Gamma> \<turnstile>\<^sub>CEV
+        imp_chain (rev Us) (imp_chain Ps (A \<longleftrightarrow>\<^sub>o B))"
+    using typed_Us d_Us
+    by (rule CEV_set_derivable_imp_chain_discharge)
+  have theorem_iff:
+      "\<Gamma> \<turnstile>\<^sub>CEV
+        imp_chain (rev Us @ Ps) (A \<longleftrightarrow>\<^sub>o B)"
+    using theorem_nested by simp
+  have typed_combined:
+      "\<And>P. P \<in> set (rev Us @ Ps) \<Longrightarrow> \<Gamma> \<turnstile> P : Prop"
+    using typed_Us ContextPropEquivalence.hyps(1) by auto
+  have theorem_eq:
+      "\<Gamma> \<turnstile>\<^sub>CEV imp_chain (rev Us @ Ps) (Eq Prop A B)"
+  proof -
+    have prefix_rule:
+        "\<And>\<Delta> Qs C D.
+          (\<And>Q. Q \<in> set Qs \<Longrightarrow> \<Delta> \<turnstile> Q : Prop) \<Longrightarrow>
+          \<Delta> \<turnstile> C : Prop \<Longrightarrow>
+          \<Delta> \<turnstile> D : Prop \<Longrightarrow>
+          \<Delta> \<turnstile>\<^sub>CEV imp_chain Qs (C \<longleftrightarrow>\<^sub>o D) \<Longrightarrow>
+          \<Delta> \<turnstile>\<^sub>CEV imp_chain Qs (Eq Prop C D)"
+      using CEV_prefix_equivalence_internalized_holds
+      unfolding CEV_prefix_equivalence_internalized_def by blast
+    show ?thesis
+      using typed_combined ContextPropEquivalence.hyps(2,3) theorem_iff
+      by (rule prefix_rule)
+  qed
+  have local_eq_raw:
+      "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s
+        imp_chain (rev Us @ Ps) (Eq Prop A B)"
+    using theorem_eq by (rule CEV_set_derivable.Theorem)
+  have local_eq:
+      "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s
+        imp_chain (rev Us) (imp_chain Ps (Eq Prop A B))"
+    using local_eq_raw by simp
+  have local_assms:
+      "\<And>P. P \<in> set (rev Us) \<Longrightarrow> \<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s P"
+  proof -
+    fix P
+    assume P_in: "P \<in> set (rev Us)"
+    have P_type: "\<Gamma> \<turnstile> P : Prop"
+      using typed_Us P_in by simp
+    have "P \<in> T"
+      using P_in set_Us U_sub by auto
+    then show "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s P"
+      using P_type by (rule CEV_set_derivable.Assumption)
+  qed
+  show ?case
+    using local_eq local_assms by (rule CEV_set_derivable_imp_chain_elim)
+qed
+
+theorem CEV_context_equiv_conservative_holds:
+  "CEV_context_equiv_conservative"
+  using CEV_prefix_equivalence_internalized_holds
+  by (rule CEV_context_equiv_conservative_if_prefix_equivalence_internalized)
+
+theorem CEV_context_equiv_shifted_inst_admissible_holds:
+  "CEV_context_equiv_shifted_inst_admissible"
+  using CEV_context_equiv_conservative_holds
+  by (rule CEV_context_equiv_shifted_inst_admissible_if_context_conservative)
+
+theorem CEV_context_equiv_consistent_iff_CEV_consistent:
+  assumes "typed_theory \<Gamma> T"
+  shows "CEV_context_equiv_consistent \<Gamma> T \<longleftrightarrow> CEV_consistent \<Gamma> T"
+proof
+  assume "CEV_context_equiv_consistent \<Gamma> T"
+  then show "CEV_consistent \<Gamma> T"
+    by (rule CEV_consistent_of_CEV_context_equiv_consistent)
+next
+  assume consistent: "CEV_consistent \<Gamma> T"
+  show "CEV_context_equiv_consistent \<Gamma> T"
+  proof (unfold CEV_context_equiv_consistent_def, intro notI)
+    assume d_context: "CEV_context_equiv_set_derivable \<Gamma> T ObjFalse"
+    have "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sub>s ObjFalse"
+      using assms d_context
+      by (rule CEV_context_equiv_set_derivable_conservative)
+    then show False
+      using consistent unfolding CEV_consistent_def by blast
+  qed
+qed
+
+lemma consts_of_set_insert[simp]:
+  "consts_of_set (insert A T) = consts_of A \<union> consts_of_set T"
+  unfolding consts_of_set_def by auto
+
+lemma fresh_const_for_finite_consts:
+  assumes "finite (consts_of_set T)"
+  obtains c where "fresh_const_for c T A"
+proof -
+  have finite_support: "finite (consts_of_set T \<union> consts_of A)"
+    using assms by simp
+  obtain c where "c \<notin> consts_of_set T \<union> consts_of A"
+    using fresh_string_finite[OF finite_support] by blast
+  then have "fresh_const_for c T A"
+    unfolding fresh_const_for_def by blast
+  then show ?thesis
+    using that by blast
+qed
+
+lemma fresh_const_for_stage_fresh_finite_consts:
+  assumes "finite (consts_of_set T)"
+  shows "fresh_const_for (fresh_const_for_stage T A) T A"
+  unfolding fresh_const_for_stage_def
+  using fresh_const_for_finite_consts[OF assms, of A]
+  by (metis someI_ex)
+
+lemma staged_henkin_step_finite_consts:
+  assumes "finite (consts_of_set T)"
+  shows "finite (consts_of_set (staged_henkin_step \<Gamma> spec T))"
+  using assms
+  unfolding staged_henkin_step_def
+  by (cases spec) auto
+
+lemma staged_henkin_chain_finite_consts:
+  assumes "finite (consts_of_set T)"
+  shows "finite (consts_of_set (staged_henkin_chain \<Gamma> T enum n))"
+  using assms
+proof (induction n)
+  case 0
+  then show ?case
+    by simp
+next
+  case (Suc n)
+  then show ?case
+    by (simp add: staged_henkin_step_finite_consts)
+qed
+
+lemma CEV_context_equiv_staged_henkin_step_consistent_finite_consts:
+  assumes abstraction: "CEV_context_equiv_abstract_const_admissible"
+    and inst: "CEV_context_equiv_shifted_inst_admissible"
+    and finite_consts: "finite (consts_of_set T)"
+    and typed: "typed_theory \<Gamma> T"
+    and consistent: "CEV_context_equiv_consistent \<Gamma> T"
+  shows "CEV_context_equiv_consistent \<Gamma> (staged_henkin_step \<Gamma> spec T)"
+proof -
+  obtain \<sigma> A where spec_def: "spec = (\<sigma>, A)"
+    by (cases spec) auto
+  show ?thesis
+  proof (cases "\<sigma> # \<Gamma> \<turnstile> A : Prop")
+    case True
+    have fresh: "fresh_const_for (fresh_const_for_stage T A) T A"
+      using finite_consts by (rule fresh_const_for_stage_fresh_finite_consts)
+    have fresh_T: "fresh_const_for_stage T A \<notin> consts_of_set T"
+      using fresh unfolding fresh_const_for_def by blast
+    have fresh_A: "fresh_const_for_stage T A \<notin> consts_of A"
+      using fresh unfolding fresh_const_for_def by blast
+    have "CEV_context_equiv_consistent \<Gamma>
+        (insert (henkin_witness_axiom (fresh_const_for_stage T A) \<sigma> A) T)"
+      using abstraction inst typed consistent fresh_T fresh_A True
+      by (rule CEV_context_equiv_consistent_insert_fresh_witness_axiom)
+    then show ?thesis
+      unfolding staged_henkin_step_def spec_def using True by simp
+  next
+    case False
+    then show ?thesis
+      unfolding staged_henkin_step_def spec_def using consistent by simp
+  qed
+qed
+
+lemma CEV_context_equiv_staged_henkin_chain_consistent_finite_consts:
+  assumes abstraction: "CEV_context_equiv_abstract_const_admissible"
+    and inst: "CEV_context_equiv_shifted_inst_admissible"
+    and finite_consts: "finite (consts_of_set T)"
+    and typed: "typed_theory \<Gamma> T"
+    and consistent: "CEV_context_equiv_consistent \<Gamma> T"
+  shows "CEV_context_equiv_consistent \<Gamma> (staged_henkin_chain \<Gamma> T enum n)"
+  using assms
+proof (induction n)
+  case 0
+  then show ?case
+    by simp
+next
+  case (Suc n)
+  have finite_consts_n:
+      "finite (consts_of_set (staged_henkin_chain \<Gamma> T enum n))"
+    using Suc.prems(3) by (rule staged_henkin_chain_finite_consts)
+  have typed_n: "typed_theory \<Gamma> (staged_henkin_chain \<Gamma> T enum n)"
+    using Suc.prems(4) by (rule staged_henkin_chain_typed)
+  have consistent_n: "CEV_context_equiv_consistent \<Gamma>
+      (staged_henkin_chain \<Gamma> T enum n)"
+    using Suc.prems by (rule Suc.IH)
+  show ?case
+    using Suc.prems(1,2) finite_consts_n typed_n consistent_n
+    by (simp add:
+        CEV_context_equiv_staged_henkin_step_consistent_finite_consts)
+qed
+
+lemma CEV_context_equiv_staged_henkin_extension_consistent_finite_consts:
+  assumes abstraction: "CEV_context_equiv_abstract_const_admissible"
+    and inst: "CEV_context_equiv_shifted_inst_admissible"
+    and finite_consts: "finite (consts_of_set T)"
+    and typed: "typed_theory \<Gamma> T"
+    and consistent: "CEV_context_equiv_consistent \<Gamma> T"
+  shows "CEV_context_equiv_consistent \<Gamma> (staged_henkin_extension \<Gamma> T enum)"
+proof (unfold CEV_context_equiv_consistent_def, intro notI)
+  assume d_false: "CEV_context_equiv_set_derivable \<Gamma>
+      (staged_henkin_extension \<Gamma> T enum) ObjFalse"
+  obtain U where finite_U: "finite U"
+    and U_sub: "U \<subseteq> staged_henkin_extension \<Gamma> T enum"
+    and d_U: "CEV_context_equiv_set_derivable \<Gamma> U ObjFalse"
+    using d_false by (rule CEV_context_equiv_set_derivable_finite_support)
+  have U_sub_union: "U \<subseteq> (\<Union>n. staged_henkin_chain \<Gamma> T enum n)"
+    using U_sub unfolding staged_henkin_extension_def .
+  have step: "\<And>n. staged_henkin_chain \<Gamma> T enum n \<subseteq>
+      staged_henkin_chain \<Gamma> T enum (Suc n)"
+    by (rule staged_henkin_chain_step)
+  have "\<exists>n. U \<subseteq> staged_henkin_chain \<Gamma> T enum n"
+    using finite_U U_sub_union step by (rule finite_subset_nat_chain)
+  then obtain n where U_sub_chain:
+      "U \<subseteq> staged_henkin_chain \<Gamma> T enum n"
+    by blast
+  have d_chain: "CEV_context_equiv_set_derivable \<Gamma>
+      (staged_henkin_chain \<Gamma> T enum n) ObjFalse"
+    using d_U U_sub_chain by (rule CEV_context_equiv_set_derivable_mono)
+  have consistent_chain: "CEV_context_equiv_consistent \<Gamma>
+      (staged_henkin_chain \<Gamma> T enum n)"
+    using assms
+    by (rule CEV_context_equiv_staged_henkin_chain_consistent_finite_consts)
+  show False
+    using d_chain consistent_chain
+    unfolding CEV_context_equiv_consistent_def by blast
+qed
+
+theorem CEV_Henkin_extension_exists:
+  assumes typed: "typed_theory \<Gamma> T"
+    and consistent: "CEV_consistent \<Gamma> T"
+    and finite_consts: "finite (consts_of_set T)"
+  shows "\<exists>U. T \<subseteq> U \<and> CEV_Henkin_theory \<Gamma> U"
+proof -
+  have context_consistent: "CEV_context_equiv_consistent \<Gamma> T"
+    using typed consistent
+    by (simp add: CEV_context_equiv_consistent_iff_CEV_consistent)
+  obtain body_enum where body_enum: "enumerates_witness_bodies \<Gamma> body_enum"
+    using enumerates_witness_bodies_exists by blast
+  let ?B = "staged_henkin_extension \<Gamma> T body_enum"
+  have T_sub_B: "T \<subseteq> ?B"
+    by (rule staged_henkin_extension_extends)
+  have typed_B: "typed_theory \<Gamma> ?B"
+    using typed by (rule staged_henkin_extension_typed)
+  have consistent_B: "CEV_context_equiv_consistent \<Gamma> ?B"
+    using CEV_context_equiv_abstract_const_admissible_holds
+      CEV_context_equiv_shifted_inst_admissible_holds
+      finite_consts typed context_consistent
+    by (rule
+        CEV_context_equiv_staged_henkin_extension_consistent_finite_consts)
+  have available_B: "Henkin_witness_axioms_available \<Gamma> ?B"
+    using body_enum by (rule staged_henkin_extension_witness_axioms_available)
+  obtain formula_enum where formula_enum: "enumerates_formulas \<Gamma> formula_enum"
+    using enumerates_formulas_exists by blast
+  let ?U = "CEV_context_equiv_lindenbaum_extension \<Gamma> ?B formula_enum"
+  have B_sub_U: "?B \<subseteq> ?U"
+    by (rule CEV_context_equiv_lindenbaum_extension_extends)
+  have local_U: "CEV_context_equiv_locally_maximal_consistent \<Gamma> ?U"
+    using typed_B consistent_B formula_enum
+    by (rule CEV_context_equiv_lindenbaum_extension_locally_maximal_consistent)
+  have available_U: "Henkin_witness_axioms_available \<Gamma> ?U"
+    using available_B B_sub_U by (rule Henkin_witness_axioms_available_mono)
+  have henkin_U: "CEV_Henkin_theory \<Gamma> ?U"
+    using local_U available_U
+    by (rule CEV_Henkin_theory_of_CEV_context_equiv_local_maximal_available)
+  show ?thesis
+    using T_sub_B B_sub_U henkin_U by blast
+qed
+
+theorem CEV_context_equiv_available_countermodel_property_holds:
+  "CEV_context_equiv_available_countermodel_property"
+  using CEV_context_equiv_conservative_holds
+    CEV_context_equiv_abstract_const_admissible_holds
+  by (rule
+      CEV_context_equiv_available_countermodel_property_from_conservative_abstraction)
+
+theorem CEV_Henkin_countermodel_property_holds:
+  "CEV_Henkin_countermodel_property"
+  using CEV_context_equiv_available_countermodel_property_holds
+  by (rule CEV_Henkin_countermodel_property_from_context_equiv_available)
+
+theorem CEV_Henkin_completeness:
+  assumes "CEV_Henkin_valid_in_context \<Gamma> A"
+  shows "\<Gamma> \<turnstile>\<^sub>CEV A"
+  using CEV_Henkin_countermodel_property_holds assms
+  by (rule CEV_completeness_from_Henkin_countermodels)
+
+theorem CEV_Henkin_valid_in_context_iff_proves:
+  "CEV_Henkin_valid_in_context \<Gamma> A \<longleftrightarrow> \<Gamma> \<turnstile>\<^sub>CEV A"
+  using CEV_Henkin_countermodel_property_holds
+  by (rule CEV_Henkin_valid_in_context_iff_proves_from_countermodels)
+
+theorem CEV_term_model_completeness:
+  assumes "CEV_term_model_valid_in_context \<Gamma> A"
+  shows "\<Gamma> \<turnstile>\<^sub>CEV A"
+  using CEV_Henkin_countermodel_property_holds assms
+  by (rule CEV_term_model_completeness_from_Henkin_countermodels)
+
+theorem CEV_term_model_valid_iff_proves:
+  "CEV_term_model_valid_in_context \<Gamma> A \<longleftrightarrow> \<Gamma> \<turnstile>\<^sub>CEV A"
+  using CEV_Henkin_countermodel_property_holds
+  by (rule CEV_term_model_valid_iff_proves_from_countermodels)
+*)
 
 theorem H_term_model_entails_iff_derivable:
   assumes typed_assms: "\<And>B. B \<in> set \<Delta> \<Longrightarrow> \<Gamma> \<turnstile> B : Prop"

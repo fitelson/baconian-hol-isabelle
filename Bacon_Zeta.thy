@@ -241,6 +241,10 @@ text \<open>
   empty, the rule collapses to the propositional Equivalence rule.  When the
   vector is nonempty, the premise is checked in the freshly extended context
   \<open>\<sigma>s @ \<Gamma>\<close>, with the old terms shifted over that prefix.
+
+  This is the theorem-level Bacon--Dorr rule.  In particular, CEV has no rule
+  that internalizes an equivalence under an arbitrary antecedent.  Such a
+  contextual strengthening is not part of the background theory.
 \<close>
 
 inductive CEV_proves :: "ctx \<Rightarrow> oterm \<Rightarrow> bool" ("_ \<turnstile>\<^sub>CEV _" [50, 50] 50) where
@@ -250,12 +254,6 @@ inductive CEV_proves :: "ctx \<Rightarrow> oterm \<Rightarrow> bool" ("_ \<turns
       \<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop \<Longrightarrow>
       \<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV zeta_body \<sigma>s F G \<Longrightarrow>
       \<Gamma> \<turnstile>\<^sub>CEV Eq (arrow_type \<sigma>s Prop) F G"
-| ContextVectorEquivalence[intro]:
-    "\<Gamma> \<turnstile> A : Prop \<Longrightarrow>
-      \<Gamma> \<turnstile> F : arrow_type \<sigma>s Prop \<Longrightarrow>
-      \<Gamma> \<turnstile> G : arrow_type \<sigma>s Prop \<Longrightarrow>
-      \<sigma>s @ \<Gamma> \<turnstile>\<^sub>CEV Imp (shift_by (length \<sigma>s) A) (zeta_body \<sigma>s F G) \<Longrightarrow>
-      \<Gamma> \<turnstile>\<^sub>CEV Imp A (Eq (arrow_type \<sigma>s Prop) F G)"
 | MP[intro]: "\<Gamma> \<turnstile>\<^sub>CEV A \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>CEV Imp A B \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>CEV B"
 | Gen[intro]: "\<Gamma> \<turnstile> P : Prop \<Longrightarrow> \<sigma> # \<Gamma> \<turnstile> Q : Prop \<Longrightarrow>
     \<sigma> # \<Gamma> \<turnstile>\<^sub>CEV Imp (shift P) Q \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>CEV Imp P (Forall \<sigma> Q)"
@@ -272,10 +270,6 @@ proof (induction rule: CEV_proves.induct)
     by (rule CE_proves_formula)
 next
   case (VectorEquivalence \<Gamma> F \<sigma>s G)
-  then show ?case
-    by auto
-next
-  case (ContextVectorEquivalence \<Gamma> A F \<sigma>s G)
   then show ?case
     by auto
 next
@@ -480,13 +474,6 @@ next
   have "\<Gamma> \<turnstile>\<^sub>CEV Eq (arrow_type \<sigma>s Prop) F G"
     using VectorEquivalence.hyps
     by (rule CEV_proves.VectorEquivalence)
-  then show ?case
-    by (rule CEV_theorem_equiv_ObjTrue)
-next
-  case (ContextVectorEquivalence \<Gamma> A F \<sigma>s G)
-  have "\<Gamma> \<turnstile>\<^sub>CEV Imp A (Eq (arrow_type \<sigma>s Prop) F G)"
-    using ContextVectorEquivalence.hyps
-    by (rule CEV_proves.ContextVectorEquivalence)
   then show ?case
     by (rule CEV_theorem_equiv_ObjTrue)
 next
