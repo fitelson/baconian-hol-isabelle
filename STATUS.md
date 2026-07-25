@@ -951,6 +951,55 @@ Gap 2 is the *same* bridge the fixed-term theorem of `Bacon_PP_TypeCoherence`
 needs. The two outstanding gaps of this kind in the development have now
 converged into one.
 
+## The bridge to `oterm` is built, for the propositional fragment
+
+`frontier/Bacon_PP_Oterm_Bridge.thy`. Gap 2 above is now partly closed: the
+semantic closures are connected to the project's deep-embedded syntax.
+
+`pp_eval` gives `oterm` an M-set valuation, interpreting variables,
+propositional constants, the Boolean connectives, object-language identity and
+quantification at `Prop`. The modality needs no clause of its own, since
+`Bacon_Modal` defines `box A` as `Eq Prop A ObjTrue` and the identity clause
+already delivers it:
+
+```isabelle
+pp_eval_ObjBox     (* pp_eval Dom V (box A) env = pp_sem_box (pp_eval Dom V A env) *)
+```
+
+Two inductions over `oterm`:
+
+```isabelle
+pp_eval_in_qclosure           (* denotations lie in the propositional closure *)
+pp_eval_abstract_in_fclosure  (* abstracting a de Bruijn position gives an operator *)
+```
+
+The second is the one the `Pure` results need, and it yields the bridge proper:
+
+```isabelle
+pp_eval_abstract_cone_determined
+pp_eval_purity_in_pclosure
+```
+
+So for terms of the interpreted fragment, cone-determinedness is no longer a
+surrogate assumed of the operators --- it is derived from the syntax. Combined
+with `pp_pure_seed_decision_basis`, the seed is a decision basis for the
+denotations of these terms.
+
+### What the bridge does not cover
+
+Abstraction and application are given the value `{}`. This is a deliberate
+under-interpretation, harmless for the theorems above since `{}` lies in every
+closure, but it means the bridge says nothing about terms whose meaning depends
+on them --- in particular nothing about quantification at higher types, and
+nothing about *iterated* `Pure`, which is what the target PP instance itself
+involves.
+
+Interpreting those needs a value universe for the higher domains, which is the
+same obstacle `Bacon_PP_TypeCoherence` works around with a type class. So the
+standing gap has changed shape rather than vanished: it is no longer "no
+connection to the syntax at all" but "no connection above the propositional
+fragment".
+
 ## Session layout and build times
 
 The project is split so that work in progress verifies quickly.
