@@ -43,3 +43,5 @@ session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
   options [timeout = 60]
 theories
   Bacon_PP_Stock_Requirements
+  Bacon_PP_Diagonal_Reduction
+  Bacon_PP_Seed_Nontriviality

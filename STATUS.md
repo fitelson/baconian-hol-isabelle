@@ -374,6 +374,98 @@ tail-orbit requirements as well, and the all-worlds guarded theorem in
 presentation that cannot simply be substituted. And none of this yet shows the
 resulting structure models H, Classicism, CE and CEV.
 
+## Attacking the uniformity condition
+
+Two results, both machine-checked. Neither proves the condition; together they
+shrink it and close off the obvious way of achieving it.
+
+### The requirement reduces to a diagonal set
+
+`frontier/Bacon_PP_Diagonal_Reduction.thy`. For an equivariant binary family
+`Y` put `D_Y = {b. Y b b is true at the root}`. Then:
+
+```isabelle
+pp_equivariant_diagonal_is_classifier   (* Y b b = pp_classifier D_Y b *)
+pp_orbit_index_iff_diagonal             (* the reduction *)
+```
+
+The second says that when `Y r` is pure --- equivalently, when `Y` is constant
+along the orbit of `r` --- the orbit sits inside `pp_operator_index (Y r)`
+exactly when it sits inside `D_Y`. Note it needs only orbit-stability, not
+equivariance.
+
+This matters because `pp_operator_index (Y r)` is the quantity whose
+seed-independence was in doubt, and `D_Y` is a function of the family alone: it
+does not mention the seed and is obtained by a single root-truth test rather
+than by evaluating `Y` at the seed. The construction also shrinks to one
+required proposition per family instead of three, with separators needed only in
+the degenerate case where the diagonal is universal and the family is
+non-constant --- a constant family with universal diagonal has a universal index
+outright (`pp_constant_family_diagonal`):
+
+```isabelle
+pp_diagonal_stock_witness
+pp_diagonal_envelope_witness
+```
+
+### The domains cannot be frozen by choosing the seed inside them
+
+`frontier/Bacon_PP_Seed_Nontriviality.thy`. The cheapest route to
+seed-independence would be to take the seed from a domain that was already
+closed before the seed was introduced --- the term model over the seed-free
+language. Adjoining it would then enlarge nothing, the domains would stay
+fixed, and the envelope hypothesis would hold outright.
+
+That route is now closed. A closed seed-free term has no free parameter, so its
+denotation is invariant, and the only invariant propositions are `{}` and
+`UNIV`. An invariant proposition has a one-point orbit, and a one-point orbit is
+trapped inside a proper classifier index:
+
+```isabelle
+pp_invariant_orbit_singleton
+pp_invariant_seed_fails_recombination
+pp_no_seed_inside_an_invariant_domain
+```
+
+The trap is not exotic. The two relevant classifiers are exactly the modal
+operators,
+
+```isabelle
+pp_box_is_classifier_UNIV        (* pp_sem_box     = pp_classifier {UNIV} *)
+pp_box_neg_is_classifier_empty   (* pp_sem_box o - = pp_classifier {{}}   *)
+```
+
+so they are Pure-free definable and belong to any stock closed under the
+logical constants. The failure cannot be dodged by trimming the stock:
+
+```isabelle
+pp_extreme_seed_fails_definable_recombination
+pp_seed_must_be_contingent
+pp_seed_not_extreme
+```
+
+**The fundamental proposition must therefore be genuinely contingent, and must
+lie outside every seed-free domain.**
+
+### Verdict
+
+The uniformity condition is not proved, and the envelope form of it is very
+likely false: the syntax is countable but there are continuum-many seeds, and
+terms such as `\b. \c. forall X. (X --> c)` have values that move when the domain
+at `Prop` moves, so the union of the family sets over all seeds has no reason to
+be countable.
+
+What has changed is the shape of the remaining problem. What must be uniform is
+now the family of diagonal sets, not the family of indices of seed-evaluated
+operators; and the natural way of making the domains seed-independent is
+refuted rather than merely unproved. So the target should no longer be to prove
+the envelope condition. It should be either a genuine fixed-point argument on
+the map from seeds to diagonal requirements --- which the reduction makes
+tractable to state, since that map now lands in sets of propositions --- or a
+construction in which the seed is kept out of the range of the quantifiers,
+which the above shows must be delicate, since ordinary universal instantiation
+would then fail for terms denoting the seed.
+
 ## Session layout and build times
 
 The project is split so that work in progress verifies quickly.
