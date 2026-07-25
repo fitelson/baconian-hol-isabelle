@@ -278,18 +278,31 @@ text \<open>
 
   This does not settle the question, because \<open>D\<^sub>Y\<close> is still computed from \<open>Y\<close>, and
   \<open>Y\<close> is still the denotation of a term whose quantifiers range over seed-generated
-  domains.  A term such as \<open>\<lambda>b. \<lambda>c. \<forall>X. (X \<longrightarrow> c)\<close> has a value that moves when the
-  domain at \<open>Prop\<close> moves, and its diagonal moves with it.  So the envelope hypothesis
-  remains a hypothesis, and it is very likely false in its literal form: the syntax is
-  countable but there are continuum-many seeds, so the union of the family sets over
-  all seeds has no reason to be countable.
+  domains.  The diagonal really does move.  The witnessing term is the
+  membership test
 
-  The honest reading is therefore that the remaining problem is not to prove the
-  envelope condition, which is probably false, but to replace it: either by
-  constructing Henkin domains that do not depend on the seed at all, or by a genuine
-  fixed-point argument on the map from seeds to diagonal requirements.  The reduction
-  above is what makes the second option tractable to state, since the map now lands in
-  sets of propositions rather than in indices of seed-evaluated operators.
+  \begin{center}
+  \<open>T = \<lambda>b. \<lambda>c. \<exists>X : Prop. Id(X, b)\<close>,
+  \end{center}
+
+  whose diagonal set is the proposition domain of the seed itself, since root-level
+  identity is genuine equality: \<open>b \<in> D\<^sub>T\<^sub>s\<close> iff some \<open>X\<close> in the domain equals
+  \<open>b\<close>.  Note that a more obvious candidate does \emph{not} work: the term
+  \<open>\<lambda>b. \<lambda>c. \<forall>X. (X \<longrightarrow> c)\<close> has value \<open>c\<close> whenever the domain contains \<open>UNIV\<close>,
+  as any logical domain must, so its diagonal is seed-independent.
+
+  With the membership test in hand the envelope hypothesis is not merely unproved but
+  false.  Each fibre of \<open>s \<mapsto> D\<^bsub>Prop\<^esub>(s)\<close> is countable, because a seed belongs to
+  its own domain; so continuum-many seeds give continuum-many distinct domains, and
+  \<open>T\<close> turns distinct domains into distinct families.  Hence the union of the family
+  sets over all seeds has the cardinality of the continuum.
+
+  The remaining problem is therefore not to prove the envelope condition but to
+  replace it.  The reduction above is what makes a fixed-point formulation tractable
+  to state, since the map from seeds to requirements now lands in sets of
+  propositions rather than in indices of seed-evaluated operators.  The next theory
+  removes the requirements that are demonstrably spurious --- including, as it happens,
+  the one that \<open>T\<close> would otherwise impose.
 \<close>
 
 end

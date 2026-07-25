@@ -45,3 +45,4 @@ theories
   Bacon_PP_Stock_Requirements
   Bacon_PP_Diagonal_Reduction
   Bacon_PP_Seed_Nontriviality
+  Bacon_PP_Seed_Aware_Requirements

@@ -447,24 +447,69 @@ pp_seed_not_extreme
 **The fundamental proposition must therefore be genuinely contingent, and must
 lie outside every seed-free domain.**
 
-### Verdict
+### Requirements only where they are needed
 
-The uniformity condition is not proved, and the envelope form of it is very
-likely false: the syntax is countable but there are continuum-many seeds, and
-terms such as `\b. \c. forall X. (X --> c)` have values that move when the domain
-at `Prop` moves, so the union of the family sets over all seeds has no reason to
-be countable.
+`frontier/Bacon_PP_Seed_Aware_Requirements.thy`. The requirement sets above are
+imposed on every family whether or not it causes trouble at its own seed, and
+that waste is not harmless: it can demand escapes that are impossible to
+supply. The guarded version imposes a requirement only when the value at the
+seed is pure and its index is proper:
 
-What has changed is the shape of the remaining problem. What must be uniform is
-now the family of diagonal sets, not the family of indices of seed-evaluated
-operators; and the natural way of making the domains seed-independent is
-refuted rather than merely unproved. So the target should no longer be to prove
-the envelope condition. It should be either a genuine fixed-point argument on
-the map from seeds to diagonal requirements --- which the reduction makes
-tractable to state, since that map now lands in sets of propositions --- or a
-construction in which the seed is kept out of the range of the quantifiers,
-which the above shows must be delicate, since ordinary universal instantiation
-would then fail for terms denoting the seed.
+```isabelle
+pp_seed_aware_diagonal_stock_witness
+pp_seed_aware_below_diagonal          (* the guarded cover is the weakest *)
+```
+
+The sharpest instance is the membership test `T = \b. \c. exists X:Prop. Id(X,b)`
+below: its diagonal is the whole proposition domain, so the unguarded
+requirement demands a proposition escaping the domain, yet its value at its own
+seed has universal index and satisfies QLN outright. The guarded cover drops it.
+
+### Verdict: the envelope condition is false
+
+Not merely unproved. The argument, which is meta-level because it turns on the
+term semantics:
+
+1. A seed belongs to its own domain, so each fibre of `s |-> D_Prop(s)` is
+   countable; continuum-many seeds therefore give continuum-many distinct
+   proposition domains.
+2. The membership test `T = \b. \c. exists X:Prop. Id(X,b)` has diagonal set
+   exactly `D_Prop(s)`, since root-level identity is genuine equality. So `T`
+   turns distinct domains into distinct families.
+3. Hence the union of the family sets over all seeds has the cardinality of the
+   continuum, and no countable `Fam0` contains every `Fam s`.
+
+One correction to an earlier draft of this note. The obvious candidate
+`\b. \c. forall X. (X --> c)` does **not** witness seed-dependence: whenever the
+domain contains `UNIV`, as any logical domain must, that term has value `c` and
+its diagonal is seed-independent. The membership test is what does the work.
+
+### Verdict: no generic fixed-point theorem is available either
+
+The seed space is Cantor space, which is compact Polish, but that alone gives
+no fixed point --- continuous self-maps of Cantor space can be fixed-point-free.
+Nor is there monotonicity to exploit: `exists X. Id(X,b)` makes the diagonal
+`D_Prop(s)` while `forall X. not Id(X,b)` makes it the complement, so existential
+and universal occurrences have opposite variance and quantifier alternation
+destroys any uniform order behaviour. `pp_escape` is defined by `SOME` and has
+no reason to be continuous or monotone. So Banach needs a guardedness theorem
+that is not available, Knaster--Tarski needs monotonicity that fails, and Baire
+category yields no fixed point.
+
+### Where that leaves the route
+
+The shape of the problem has changed even though it is not solved. What must be
+uniform is now the family of diagonal sets rather than indices of seed-evaluated
+operators; the requirement set has been cut to those families that actually
+cause trouble; the natural way of freezing the domains is refuted; the envelope
+form of the hypothesis is false; and the off-the-shelf fixed-point theorems are
+ruled out.
+
+What survives as a target is a genuine persistence or finite-cone-dependence
+theorem for quantified term denotations --- something of the form "each term's
+denotation is eventually constant along the chain of domains" --- which would
+support a stage-wise fusion construction. That, and not a uniformity hypothesis,
+is the next thing to attempt.
 
 ## Session layout and build times
 
