@@ -50,3 +50,4 @@ theories
   Bacon_PP_Attainment
   Bacon_PP_Attainment_Failure
   Bacon_PP_Decided_Realization
+  Bacon_PP_Decision_Basis
