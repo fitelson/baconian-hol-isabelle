@@ -569,16 +569,84 @@ is monotone. Both variances are realized, so a term with alternating quantifiers
 has no uniform variance in the domain. This is the checked form of the
 obstruction noted earlier.
 
-### Where that leaves the route
+## Do Henkin closure chains admit finite-image bounds? No --- but that was the
+## wrong condition, and the right one holds
 
-The remaining obligation is now sharp and is a question about the *language*
-rather than about the witness: which terms of the Bacon--Dorr language admit a
-finite-image bound of the kind `pp_finite_image_persistence` requires, and for
-the rest, whether the intersection form of `pp_forall_over_Union` can be made to
-carry a fusion construction. Note the counterexample above is a statement about
-arbitrary chains; it does not by itself show that the chains actually arising
-from Henkin closure over a seed behave badly, and settling that is the natural
-next step.
+`frontier/Bacon_PP_Attainment.thy`. This answers the question left open above,
+and in doing so it defuses the counterexample.
+
+### Finite image is unusable here
+
+The simplest quantified term of all, `forall X : Prop. X`, has the identity as
+its body, so its image over the limit domain *is* the limit domain, which is
+infinite in any nondegenerate model:
+
+```isabelle
+pp_identity_image_is_the_domain
+pp_identity_body_has_no_finite_image_bound
+```
+
+So no Henkin chain satisfies the finite-image hypothesis for that term.
+
+### Attainment is the right condition, and it is weaker
+
+What the proof of `pp_finite_image_persistence` actually uses is only that some
+*finite* part of the domain already cuts the intersection down to its limit
+value:
+
+```isabelle
+pp_finitely_attained            (* the definition *)
+pp_finitely_attained_persistence
+pp_finite_image_gives_attainment   (* finite image is a special case *)
+```
+
+### Closure supplies attainment exactly where finite image fails
+
+Comprehension puts the value of `forall X. X` into the domain at the quantified
+type. That single element attains the intersection, so persistence holds for the
+identity body however large the domain is:
+
+```isabelle
+pp_closed_domain_attains_identity
+pp_closed_domain_identity_persistence
+```
+
+More generally a monotone body attains at the least proposition and an antitone
+body at the greatest, and any domain closed under the Boolean connectives
+contains both `{}` and `UNIV`:
+
+```isabelle
+pp_monotone_body_attains
+pp_antitone_body_attains
+```
+
+### The counterexample is not a Henkin chain
+
+```isabelle
+pp_counterexample_domain_not_closed
+```
+
+The chain that refutes persistence has a limit domain that provably does *not*
+contain the value of `forall X. X` over it. So it is not closed under
+comprehension, and the refutation does not transfer to the chains we care
+about. The earlier negative result stands as stated --- persistence is not a
+general fact about increasing chains --- but it does not obstruct the
+construction.
+
+### What is left
+
+Bodies at quantified type `Prop` that are neither monotone nor antitone. For
+those, closure does return the limit value `V` to the domain, but universal
+instantiation supplies `V subseteq f V`, which is the wrong inclusion; attainment
+needs some `X0` in the domain with `f X0 subseteq V`. Whether the Bacon--Dorr
+language can express a body defeating that is the precise remaining question,
+and it is now a question about a single inclusion rather than about chains,
+domains, or witnesses.
+
+Note also that at a quantified type of the form `sigma -> Prop` the difficulty
+does not arise at all, since the domain contains the constant function with
+value `V` and the body attains `V` there. Any counterexample must therefore
+quantify over `Prop` itself.
 
 ## Session layout and build times
 
