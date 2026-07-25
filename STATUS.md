@@ -1170,6 +1170,60 @@ theories down from `frontier/` into `pp/` once they are settled.
 Earlier Caie and contextual-rule material is preserved under
 `quarantine/2026-07-24_pre_core_cleanup/`.
 
+## Step 1 done: the axiom-extension soundness interface
+
+`frontier/Bacon_PP_Axiom_Soundness.thy`. The first ranked step is complete.
+
+It is deliberately **not** a model construction. It is a locale enumerating the
+semantic obligations plus the conditional theorem: global validity of every
+member of `T` implies axiom-extension consistency of `T`.
+
+```isabelle
+henkin_action_model                    (* the locale *)
+gvalid / gvalid_set                    (* global = every world, every env *)
+ObjFalse_not_gvalid
+CEV_axiom_soundness
+CEV_axiom_consistent_of_gvalid
+pp_recombination_question_of_gvalid    (* instantiated to the target *)
+pp_full_QLN_question_of_gvalid
+```
+
+Two design points, both answering defects the review found:
+
+- **Denotable, not full, function spaces.** The locale never quantifies over
+  meta-functions. It asks only that a well-typed *term* denote in the domain of
+  its type. `applicative_structure`'s `lam_den_type` demands a denotation for
+  every meta-function between domains, which makes countable Henkin domains
+  impossible; this locale admits them.
+- **Global validity.** `gvalid` quantifies over all worlds and all well-typed
+  environments, so a root-level theorem cannot be mistaken for the obligation.
+
+`base_sound` (all CEV theorems globally valid) and `zeta_sound` (vector
+equivalence) are carried as explicit hypotheses of the theorems rather than
+folded into the locale, because they are precisely what a concrete model must
+earn and they should be visible in the statement.
+
+**The locale is proved satisfiable** (`triv_model`, a collapsed boolean
+structure), so the conditional theorems are not vacuous. That witness does *not*
+satisfy `base_sound` or `zeta_sound` — supplying a structure that does is the
+remaining work.
+
+### The obligation checklist
+
+1. A structure satisfying the locale. Countable Henkin domains are admissible.
+2. `base_sound` — background modelhood, now one hypothesis rather than a
+   scattered obligation.
+3. `zeta_sound` — pointwise identity at `Prop`-valued arrow types, pushed
+   through the `app_vec`/`fresh_vars` bookkeeping of `zeta_body`.
+4. `gvalid_set pp_recombination_PP_axioms` — every axiom true at **every** world
+   under **every** well-typed environment. This is where the fixed-`Fun`
+   all-worlds core lives, and where the existing root-level witness theorems do
+   not reach.
+
+Four separable jobs with a machine-checked statement of how they combine. It
+also makes the discipline explicit: a word-action theorem bears on Goodman's
+question only by way of item 4, and only if stated at every world.
+
 ## Agreed next steps (consensus review, 2026-07-25)
 
 Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
