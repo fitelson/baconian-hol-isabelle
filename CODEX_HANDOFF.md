@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: MF and T6 encoding
+## 0. Live checkpoint: Goodman T2a verified
 
 Codex has resumed as driver.
 
@@ -22,14 +22,30 @@ Codex has resumed as driver.
   composition from the exact T6 core. It also provides versions of application
   closure and equality reasoning that are sound under temporary local
   assumptions.
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves Goodman T2a:
+  `fun′(p) ∧ G(Z) → fun′(Zp)`, `G(¬)`, and
+  `fun′(p) → fun′(¬p)`, over every extension of the §4 core.
+  The existential inverse in `G` is eliminated inside the object-language
+  calculus.  The sharper intermediate result needs only a right inverse and
+  does not use purity of the inverse or the left-inverse equation.
+- Claude Opus 5 adversarially audited T2a and returned PASS.  It independently
+  clean-built the frontier, found zero proof escapes, inspected the exported
+  theorem objects (zero oracles or residual hypotheses), checked the crucial
+  de Bruijn and local-assumption steps, and machine-checked exclusion of the
+  stronger Goodman principles from the core.  Full report:
+  `reports/CLAUDE_AUDIT_GOODMAN_T2A_2026-07-25.md`.
+- Standing qualification: T2a is conditional derivability in repository CEV.
+  Non-vacuity of CEV plus the core is not yet proved.  Moreover,
+  repository CEV takes ζ-Equivalence as primitive, whereas Goodman's `T₀`
+  obtains it through Modalized Functionality; their identification remains a
+  prose audit rather than a theorem internal to Isabelle.
 - Claude's full audit is
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal lemma: closure of `fun′` under a pure reversible operator
-  (Goodman T2a), first with an explicit inverse and then by eliminating the
-  inverse existential in `G`. This is the next reusable prerequisite for the
-  T6-Inv case split.
+- Next formal target: Goodman T2b,
+  `¬fun′(⊤)` and `¬fun′(⊥)`, followed by the consequences for a `fun′`
+  witness `r`: `r ≠ ⊤`, `r ≠ ⊥`, and `r ≠ ¬r`.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the

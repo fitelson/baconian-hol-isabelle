@@ -1,6 +1,19 @@
 # PP Consistency Status
 
-> **Current theorem-verification tranche, 2026-07-25.** Unary,
+> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a is now
+> machine-proved in
+> `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy`: `fun′(p)` is preserved by
+> every pure reversible operator, negation belongs to that group, and hence
+> `fun′(p) → fun′(¬p)`.  The proof genuinely eliminates the inverse
+> existential and, internally, needs only a right inverse.  Claude Opus 5's
+> adversarial audit passed after an independent clean build, exported-theorem
+> oracle inspection, de Bruijn audit, and explicit axiom-contamination checks.
+> The exact qualification is that these are conditional derivability results
+> in repository CEV; consistency of CEV plus the core remains open, and the
+> equation of repository CEV with Goodman's presentation of `T₀` remains a
+> prose audit.  The next target is T2b.
+>
+> Unary,
 > proposition-valued Modalized Functionality is now proved in bare CEV in
 > `frontier/Bacon_PP_Modalized_Functionality_Derived.thy`. Claude's adversarial
 > audit found the proof correct and non-circular, but emphasized that this is
@@ -13,7 +26,7 @@
 > layer: the composition beta law, both unit laws, associativity, purity of
 > composition over the exact T6 core (and arbitrary extensions of it), and
 > local-assumption versions of application closure and equality reasoning.
-> The final T6 contradiction and the `fun′`-under-`G` closure theorem are open.
+> The final T6 contradiction remains open.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
