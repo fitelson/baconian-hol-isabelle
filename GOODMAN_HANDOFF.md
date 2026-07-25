@@ -70,49 +70,87 @@ This is the precise parameter-freezing obstruction.
 5. The semantic cyclic construction is machine-checked, but the displayed
    Pure-free terms have not yet been connected to a full deep-embedded M-set
    evaluation theorem.
+6. Non-definability of invariance over the whole domain does not give
+   non-definability of a stock locus. The `in L` conjunct cancels the effect of
+   moving the parameter. This is now the theorem
+   `pp_stock_locus_conjugation_stable`; do not re-open the automorphism route
+   against base definability.
+7. `Bacon_PP_TypeCoherence.thy` does not contain a deep-embedded term-denotation
+   induction, and does not show the construction models H, C, CE and CEV at
+   every recursively generated type. Both remain open.
 
-## Important audit of the tree-automorphism route
+## Audit of the tree-automorphism route (now resolved)
 
 `Bacon_PP_TreeAut.thy` proves a propositional/frame result: `pp_tw` preserves
 the Boolean/modal fragment and can carry an invariant unary operator to a
-non-invariant one under conjugation.
+non-invariant one under conjugation. On its own that did not license any
+statement about higher-type definability; the missing obligations were a
+recursively coherent action on every Bacon type preserving the local function
+domains, application, higher-type equality, and all quantifier domains and
+logical constants.
 
-Do **not** cite this alone as proving that invariance is not Pure-free
-definable at higher type. That conclusion requires a recursively coherent
-action on every Bacon type preserving:
+`Bacon_PP_TreeAut_Functions.thy` proved the first two at `t -> t`.
+`Bacon_PP_TypeCoherence.thy` now proves all four at every type, and checks that
+its class notions coincide with Bacon's own at `t -> t`
+(`pp_carrier_fun_base_iff`, `pp_eqv_fun_base_iff_fun_view`,
+`pp_fixed_fun_base_iff`), so no substitution has been smuggled in.
 
-- the local function domains;
-- application;
-- higher-type equality;
-- all quantifier domains and logical constants.
+The conclusion licensed is `pp_purity_not_conjugation_fixed`, and nothing
+stronger. See item 6 above.
 
-`Bacon_PP_TreeAut_Functions.thy` now proves the first two obligations at
-`t -> t`: tree conjugation bijects Bacon's local unary function domain and
-preserves application. Equality and the recursive all-type diagram remain
-open.
+## Status of the recommended first attack: done, with a limitative verdict
 
-The earlier Claude correction report overstates this point. The source and
-project status files contain the corrected, conservative claim.
+Steps 1--3 below are now complete and machine-checked in
+`pp/Bacon_PP_TypeCoherence.thy`; step 4 has been carried out and its answer is
+negative for the base-definability condition.
 
-## Recommended first attack
+1. Higher-type equality is preserved --- `pb_id_conjugate`, `pb_id_fixed`. Done.
+2. The conjugation is generalized recursively to every Bacon type and bijects
+   each quantified domain --- the `pp_dom` class, `pb_all_fixed`,
+   `pb_ex_fixed`. Done.
+3. Application, equality and quantifier coherence hold at every type;
+   `pp_fixed_app`, `pb_S_fixed`, `pb_K_fixed` give the term induction via
+   combinatory completeness. Done.
+4. What follows is `pp_purity_not_conjugation_fixed`: invariance is not
+   definable as a predicate over the whole domain at `t -> t`. What does **not**
+   follow is any failure of base definability. The cancellation this document
+   warned about is real and is now itself a theorem,
+   `pp_stock_locus_conjugation_stable`: every stock locus is automatically
+   stable under any signature-fixing automorphism, so no argument of this shape
+   can refute base definability.
 
-Complete or refute the tree-conjugation coherence diagram.
+The `Fun` side condition is discharged: the fundamental witness can always be
+chosen tree-symmetric
+(`pp_countable_stock_has_symmetric_generic_QLN_witness`), so the whole Pure-free
+signature, not just its logical fragment, can be taken conjugation-fixed.
 
-1. Use the proved cone characterization and domain bijection to formalize and
-   prove preservation of the object-language equality proposition at type
-   `t -> t`.
-2. Generalize the conjugation recursively to Bacon's exponential types and
-   prove that it bijects each quantified domain.
-3. Prove application, equality, and quantifier coherence simultaneously by
-   induction on object-language types and terms.
-4. Only after those steps decide what non-definability follows. Invariance
-   itself may be undefinable while the stock locus `S_Y` remains definable by
-   cancellation, as the parity and cyclic examples warn.
+A separate result relocates the difficulty: PP is *true* in the full
+word-action M-set (`pp_purity_of_pure_holds_in_word_action`), and what fails
+there is Recombination (`pp_full_stock_has_no_recombination_witness`).
 
-In parallel, keep the alternative model route in view: construct a countable
-or otherwise orbit-generic self-classifying Henkin stock. A large
-self-classifying fixed point exists, but QLN for it is open; the countable
-Pure-free stock has QLN, but self-classification is open.
+## Recommended next attack
+
+Symmetry arguments are exhausted, so pursue the model route: construct a
+countable, orbit-generic, self-classifying Henkin stock. The generic-witness
+theorem already gives QLN for *any* countable stock, so the entire difficulty
+is self-classification, and the residual gap is a dependency rather than a
+cardinality obstruction:
+
+```text
+have:  for every Stock, there is an r with QLN(Stock, r)
+want:  there is an r with QLN(Stock(r), r)
+```
+
+since the stock of Pure-free denotations depends on `r` through `Fun`. Build
+the stock and the witness simultaneously, with reserved classifiers, rather
+than by repeatedly adjoining the classifier of the current approximation. The
+paired-cone construction is the natural raw material, since it leaves
+continuum-many cone pairs free after any countable list of requirements.
+
+There is no Cantor-style no-go: the self-classification condition is that the
+domain at `sigma -> Prop` contain the classifier of the pure elements of
+`sigma`, which is not a set membering itself, and simple typing blocks the
+Russell self-application.
 
 ## Working protocol
 

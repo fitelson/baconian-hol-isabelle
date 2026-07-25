@@ -21,3 +21,6 @@ theories
   Bacon_PP_TreeAut
   Bacon_PP_Orbit_Stability
   Bacon_PP_TreeAut_Functions
+  Bacon_PP_TypeCoherence
+  Bacon_PP_Purity_Operator
+  Bacon_PP_Symmetric_Witness

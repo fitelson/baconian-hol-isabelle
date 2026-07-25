@@ -74,14 +74,40 @@ The current machine-checked results include:
 - a tree automorphism preserving the propositional Boolean/modal fragment but
   not invariance of unary operators;
 - preservation of Bacon's unary function domain and application under the
-  induced tree conjugation.
+  induced tree conjugation;
+- the completed all-type coherence diagram for that conjugation, carried by a
+  type class whose instances are generated from a propositional base type by a
+  function-space instance, including higher-type identity, the quantifier
+  domains, application, and the `S`/`K` combinators;
+- the resulting non-definability theorem
+
+  ```isabelle
+  pp_purity_not_conjugation_fixed
+  ```
+
+- that PP itself is *true* in the full word-action M-set, since the purity
+  operator is invariant, while Recombination is what fails there:
+
+  ```isabelle
+  pp_purity_of_pure_holds_in_word_action
+  pp_full_stock_has_no_recombination_witness
+  ```
+
+- a tree-symmetric generic QLN witness for every countable stock, built by
+  pairing the cones `[0, n]` and `[1, n]`:
+
+  ```isabelle
+  pp_countable_stock_has_symmetric_generic_QLN_witness
+  ```
 
 Goodman's consistency question is not yet settled. The exact remaining model
 obligation is a countable or orbit-generic self-classifying pure stock.
-Equivalently, in the current Pure-free route, one must prove the base
-definability condition for every Pure-free family. The present
-tree-automorphism argument does not yet establish non-definability: its
-higher-type equality and all-type coherence steps remain open.
+
+One correction to the earlier reading of the tree-automorphism route: it
+refutes definability of invariance over the whole function domain, but it
+cannot refute the base-definability condition, because every stock locus is
+automatically stable under any signature-fixing automorphism
+(`pp_stock_locus_conjugation_stable`). See [`STATUS.md`](STATUS.md).
 
 ## Verification
 

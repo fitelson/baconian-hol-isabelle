@@ -8,15 +8,21 @@ Open. We have neither a contradiction nor a complete model of PP plus the
 Bacon--Dorr background and a fundamental proposition, with Purity of Fun
 omitted.
 
-The evidence now separates the problem into two parts.
+What has changed is that the problem is now much more sharply localized, and
+one of the two previously live attacks has been closed off.
 
-1. The fundamental-proposition and QLN side is modeled by the generic-witness
-   construction for any countable stock of invariant unary operators.
-2. PP requires that the chosen pure stock classify itself. A large
-   self-classifying stock can be obtained by an inflationary fixed-point
-   construction, but no QLN witness is known for it. The Pure-free stock is
-   countable and therefore has a QLN witness, but its self-classification is
-   the remaining open condition.
+1. PP is not obstructed *semantically*. In the word-action M-set the purity
+   predicate for unary propositional operators is itself invariant, hence pure,
+   so the target PP instance is true there. What fails in that model is
+   Recombination, because the full function domain gives an uncountable stock
+   of classifier indices and no single witness escapes them all.
+2. The purity operator is nevertheless not Pure-free definable. Adding it to
+   the language is therefore a genuine enlargement of the Henkin domains, and
+   the enlarged domains change which classifier indices the Recombination
+   witness must escape.
+
+The residual obstruction is exactly that circularity: a simultaneous choice of
+a countable stock and of a witness generic for the stock that choice produces.
 
 ## Verified background
 
@@ -61,6 +67,31 @@ pp_countable_invariant_function_stock_has_QLN_witness
 
 Thus the classifier/generic-witness semantics is not an ad hoc replacement for
 Bacon's function domain.
+
+### PP holds in the word-action M-set; Recombination is what fails
+
+`Bacon_PP_Purity_Operator.thy` gives the purity predicate at type
+`(t -> t) -> t` its natural value and shows that value is invariant:
+
+```isabelle
+pp_purity_operator_root
+pp_purity_operator_equivariant
+pp_purity_operator_necessitated
+pp_purity_operator_second_order_equivariant
+pp_purity_of_pure_holds_in_word_action
+```
+
+So `Pure` for unary propositional operators is itself pure, and purity is
+necessitated when true. With the full function domain, however:
+
+```isabelle
+pp_full_stock_has_no_recombination_witness
+```
+
+No proposition has an orbit escaping every proper classifier index, because the
+orbit is indexed by words while the indices exhaust the powerset. The
+consistency question is therefore a size question about the Henkin domains, not
+a question about whether invariance is preserved.
 
 ### FIN-base is false
 
@@ -118,49 +149,167 @@ evaluation moves every free parameter together, whereas invariance compares
 the current root fibre with the fibre obtained after moving only the indexed
 parameter.
 
-### Tree-automorphism route
+## The tree-conjugation coherence diagram is complete
 
-`Bacon_PP_TreeAut.thy` gives an explicit accessibility automorphism that
-preserves the propositional Boolean/modal fragment but carries an invariant
-unary operator, under conjugation, to a non-invariant one.
+`Bacon_PP_TreeAut.thy` gives an explicit accessibility automorphism preserving
+the propositional Boolean/modal fragment but carrying an invariant unary
+operator, under conjugation, to a non-invariant one.
+`Bacon_PP_TreeAut_Functions.thy` proves the domain and application obligations
+at the single type `t -> t`.
 
-`Bacon_PP_TreeAut_Functions.thy` proves that the conjugation nevertheless
-bijects Bacon's local unary function domain and preserves application:
+`Bacon_PP_TypeCoherence.thy` now closes the remaining obligations at every
+Bacon type. The recursion over types is carried by an Isabelle type class
+`pp_dom` with three parameters: a carrier, the family of local equivalences the
+monoid action induces, and the conjugation. The class deliberately omits the
+action itself, since tree conjugation does not commute with it; what
+conjugation does preserve is the induced local equivalences, and those suffice
+to define higher-type identity, the local function domains, and the quantifier
+domains. The single class axiom that drives everything is
 
-```isabelle
-pp_img_cone_equal_iff
-pp_tree_conjugate_member_iff
-pp_tree_conjugate_bijects_function_space
-pp_tree_conjugate_can_destroy_invariance_inside_domain
+```text
+eqv i (conj x) (conj y)  =  eqv (tw i) x y
 ```
 
-This is evidence for a non-definability theorem, not yet that theorem.
-Higher-type equality and the recursively induced conjugations at every type
-must still be shown coherent before Pure-free definability can be inferred to
-be tree-stable.
+whose base instance is exactly `pp_img_cone_equal_iff`.
+
+Nothing has been quietly replaced by a convenient substitute. At the concrete
+type `t -> t` the class notions are proved to coincide with Bacon's own:
+
+```isabelle
+pp_carrier_fun_base_iff        (* the carrier IS pp_function_space_member *)
+pp_eqv_fun_base_iff_fun_view   (* the equivalence IS equality of pp_fun_view *)
+pp_fixed_fun_base_iff          (* the conjugation IS pp_tree_conjugate *)
+```
+
+Obligations now discharged at every Bacon type:
+
+```isabelle
+pb_id_conjugate   pb_id_carrier   pb_id_fixed     (* higher-type equality *)
+pb_all_carrier    pb_all_fixed                    (* universal quantification *)
+pb_ex_carrier     pb_ex_fixed                     (* existential quantification *)
+pb_neg_fixed      pb_and_fixed    pb_box_fixed    (* Boolean and modal *)
+pp_fixed_app      pb_K_fixed      pb_S_fixed      (* application, combinators *)
+```
+
+The last line is the induction on object-language terms: conjugation-fixedness
+is closed under application, and `S` and `K` are fixed outright, so by
+combinatory completeness every closed term built from fixed constants denotes a
+fixed carrier element.
+
+### The resulting non-definability theorem
+
+```isabelle
+pp_purity_not_conjugation_fixed
+```
+
+There is no conjugation-fixed carrier member at type `(t -> t) -> t` whose root
+truth tracks invariance. Hence invariance is not definable from
+conjugation-fixed constants.
+
+### The signature side condition is discharged
+
+The Pure-free language contains `Fun` as well as the logical constants, and in
+the intended model `Fun` is the local identity predicate for the fundamental
+proposition. So `Fun` is conjugation-fixed exactly when that witness is.
+`Bacon_PP_Symmetric_Witness.thy` shows the witness can always be so chosen.
+Local symmetrization fails --- gluing symmetric views cone by cone runs into the
+proper index `{P. pp_swap_all P = P}` (`pp_symmetric_propositions_proper`).
+Global symmetrization across the cone pair `[0, n]`, `[1, n]`, which `pp_tw`
+exchanges, works:
+
+```isabelle
+pp_paired_witness_symmetric
+pp_view_paired_witness
+pp_symmetric_generic_witness_for_countable_proper_stock
+pp_countable_stock_has_symmetric_generic_QLN_witness
+pp_countable_function_stock_has_symmetric_QLN_witness
+```
+
+For every countable stock there is a QLN witness `R` with `pp_img R = R`.
+
+## Correction: tree conjugation cannot refute base definability
+
+This supersedes the earlier handoff's "recommended first attack". The
+coherence diagram completes, and the non-definability theorem is real, but it
+does **not** touch the base-definability condition. Machine-checked:
+
+```isabelle
+pp_stock_locus_conjugation_stable
+```
+
+The base-definability condition quantifies over the loci
+`{b. Y b is an invariant member of L}`, where `L` is the stock of denotations of
+closed Pure-free terms of type `t -> t`. Every member of `L` is
+conjugation-fixed, so `L` is conjugation-stable and pointwise fixed, and for a
+Pure-free family `Y` we have `Y (pp_img b) = pp_tree_conjugate (Y b)`. Then:
+
+- if `Y b` is in `L`, then `pp_tree_conjugate (Y b) = Y b`, so the invariance
+  claims at `b` and at `pp_img b` are literally the same claim;
+- if `Y b` is not in `L`, the membership conjunct fails at both parameters.
+
+Either way the locus is `pp_img`-stable. This is the cancellation the earlier
+handoff warned about, and the argument uses nothing special about `pp_tw`: it
+applies to every automorphism fixing the signature. The parity family is not a
+counterexample either --- what its non-stability shows is that its values are
+not in `L`, not that the locus moves.
+
+**Tree conjugation is therefore removed from the list of live attacks on base
+definability.** It refutes only the stronger claim that invariance is definable
+as a predicate over the whole function domain at `t -> t`.
 
 ## Exact remaining consistency frontier
 
-Let `L` be the stock of denotations of closed Pure-free terms. The current
-model strategy succeeds if, for every Pure-free family
-`Y : t -> (t -> t)`, the set
+Two attacks remain, and they are no longer symmetric in promise.
+
+1. Base definability, now known to be immune to automorphism arguments. Any
+   refutation must come from a diagonal or counting argument that constructs a
+   Pure-free family defeating an enumeration of candidate Pure-free
+   definitions. Plain cardinality does not suffice: there are countably many
+   Pure-free families and countably many Pure-free formulas, and one definable
+   set may contain continuum-many propositions.
+2. The alternative model route: construct a countable, orbit-generic,
+   self-classifying Henkin stock. The generic-witness theorem already supplies
+   QLN for *any* countable stock, so the whole difficulty is
+   self-classification. Correctly typed, the condition is that the domain at
+   `sigma -> Prop` contain the classifier of the pure elements of `sigma`; it is
+   not a set membering itself, and simple typing blocks the Russell
+   self-application, so there is no Cantor-style no-go in sight.
+
+The residual quantifier difficulty on route 2 is a dependency, not a
+cardinality obstruction. The generic-witness theorem has the form
 
 ```text
-{b : Y b is an invariant member of L}
+for every Stock, there is an r with QLN(Stock, r)
 ```
 
-is itself Pure-free definable. This is the remaining base-definability
-condition.
+whereas what is needed is
 
-There are now two live attacks:
+```text
+there is an r with QLN(Stock(r), r)
+```
 
-1. complete the tree-conjugation coherence theorem and determine whether it
-   yields a genuine counterexample to base definability;
-2. bypass Pure-free base definability by constructing a countable or
-   orbit-generic Henkin fixed point satisfying PP and QLN simultaneously.
+because the stock of Pure-free denotations depends on `r` through `Fun`. The
+paired-cone witness of `Bacon_PP_Symmetric_Witness.thy` is the natural raw
+material for a priority or forcing construction that closes that gap, since it
+leaves continuum-many cone pairs free after any countable list of requirements.
 
-Failure of the first route would not prove inconsistency. Success on the
-second route would give an affirmative answer to Goodman.
+## Scope notes
+
+- `pp_purity_not_conjugation_fixed` is an internal theorem about
+  conjugation-fixed carrier members. The step from it to "Purity is not
+  Pure-free definable" uses combinatory completeness at the meta level, each of
+  whose steps is one of the checked closure theorems above, together with
+  fixedness of the non-logical constants, which
+  `Bacon_PP_Symmetric_Witness.thy` supplies for `Fun`.
+- `Bacon_PP_TypeCoherence.thy` establishes the recursive carriers,
+  conjugations, higher-type identity, and quantifier coherence. It does not
+  contain a deep-embedded object-language term-denotation induction, and does
+  not by itself establish that the construction models H, Classicism, CE, and
+  CEV at every recursively generated type. Those remain open.
+- At a function type, `pp_eqv []` is extensional equality on the carrier, not
+  HOL equality on arbitrary representatives. Statements about `L` should be
+  read modulo that equality. At `t -> t` the source carrier is everything, so
+  there the two coincide.
 
 ## Hygiene
 
