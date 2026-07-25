@@ -1,17 +1,20 @@
 # PP Consistency Status
 
-> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a is now
-> machine-proved in
-> `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy`: `fun′(p)` is preserved by
-> every pure reversible operator, negation belongs to that group, and hence
-> `fun′(p) → fun′(¬p)`.  The proof genuinely eliminates the inverse
-> existential and, internally, needs only a right inverse.  Claude Opus 5's
-> adversarial audit passed after an independent clean build, exported-theorem
-> oracle inspection, de Bruijn audit, and explicit axiom-contamination checks.
-> The exact qualification is that these are conditional derivability results
-> in repository CEV; consistency of CEV plus the core remains open, and the
-> equation of repository CEV with Goodman's presentation of `T₀` remains a
-> prose audit.  The next target is T2b.
+> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a and T2b are
+> machine-proved.  `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves
+> that `fun′(p)` is preserved by every pure reversible operator, that negation
+> belongs to that group, and hence that `fun′(p) → fun′(¬p)`.
+> `frontier/Bacon_PP_Goodman_Fun_Prime_Nontriviality.thy` proves
+> `¬fun′(⊤)`, `¬fun′(⊥)`, and, for any typed `p`,
+> `fun′(p) → (p ≠ ⊤ ∧ p ≠ ⊥ ∧ p ≠ ¬p)`.  It also proves the last
+> inequality already in bare CEV.  Claude Opus 5 independently clean-built
+> and adversarially audited both developments; the T2b audit additionally
+> machine-checked that its two refutations need only the purity of `id`,
+> `K⊤`, and `K⊥`, so neither PP nor application closure is used there.
+> These remain conditional derivability results: consistency and non-vacuity
+> of CEV plus the core are open, and the equation of repository CEV with
+> Goodman's presentation of `T₀` remains a prose audit.  The next target is
+> T2c, `Pure(p) → ◇(r=p)`.
 >
 > Unary,
 > proposition-valued Modalized Functionality is now proved in bare CEV in
