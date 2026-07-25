@@ -1,6 +1,6 @@
 # PP Consistency Status
 
-> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a--T2c are
+> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a--T2d are
 > machine-proved.  `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves
 > that `fun′(p)` is preserved by every pure reversible operator, that negation
 > belongs to that group, and hence that `fun′(p) → fun′(¬p)`.
@@ -20,10 +20,22 @@
 > de Bruijn step, and returned PASS.  Its audit also machine-reproved T2c over
 > only the purity schema plus application closure: PP itself, QSS,
 > Recombination, Persistence, and fundamentality are unused.
+> `frontier/Bacon_PP_Goodman_Fun_Prime_Possibly_Pure.thy` proves T2d:
+> `fun′(r) → ◇Pure(r)`.  The proof specializes T2c to `p=⊤`, transports
+> purity along `r=⊤`, and uses derived possibility monotonicity.  It does not
+> need PP or Persistence: `Pure(⊤)` is itself a purity-schema axiom and hence
+> is necessitable in the axiom-extension calculus.  Claude Opus 5 returned
+> PASS after independently re-proving possibility monotonicity, identity
+> transport, the PP-free strengthening, and Goodman's original arbitrary-`p`
+> route with Persistence.  The exact qualification is that this strengthening
+> uses axiom-extension necessitation; it is not a local-consequence result.
+> Its report is `reports/CLAUDE_AUDIT_GOODMAN_T2D_2026-07-25.md`.
+> The literal-modal T2e formula `□r ∨ □¬r` and the main T1 universal
+> `∀p(Pure(p) → (p=⊤ ∨ p=⊥))` are now machine-proved but await adversarial
+> audit.  T2f infrastructure is under construction.
 > These remain conditional derivability results: consistency and non-vacuity
 > of CEV plus the core are open, and the equation of repository CEV with
-> Goodman's presentation of `T₀` remains a prose audit.  The next target is
-> Persistence-based T2d, `fun′(r) → ◇Pure(r)`.
+> Goodman's presentation of `T₀` remains a prose audit.
 >
 > Unary,
 > proposition-valued Modalized Functionality is now proved in bare CEV in

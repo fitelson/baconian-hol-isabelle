@@ -69,3 +69,7 @@ theories
   Bacon_PP_Goodman_Fun_Prime_Closure
   Bacon_PP_Goodman_Fun_Prime_Nontriviality
   Bacon_PP_Goodman_Fun_Prime_Attainment
+  Bacon_PP_Goodman_Fun_Prime_Possibly_Pure
+  Bacon_PP_Goodman_Fun_Prime_Noncontingency
+  Bacon_PP_Goodman_Fun_Prime_Six_Distinct
+  Bacon_PP_Goodman_Pure_Proposition_Triviality

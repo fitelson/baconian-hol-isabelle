@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T2a--T2c verified
+## 0. Live checkpoint: Goodman T2a--T2d verified
 
 Codex has resumed as driver.
 
@@ -56,7 +56,23 @@ Codex has resumed as driver.
   Thus PP itself, QSS, Recombination, Persistence, fundamentality, L2, Inv,
   and classification are all unused.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2C_2026-07-25.md`.
-- Standing qualification: T2a--T2c are conditional derivability results in
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Possibly_Pure.thy` proves T2d,
+  `fun′(r) → ◇Pure(r)`, from T2c at `⊤`, identity transport for purity, and
+  derived possibility monotonicity.  Neither PP nor Persistence is needed:
+  the required `Pure(⊤)` instance is a purity-schema axiom and is therefore
+  necessitable in CEV's axiom-extension calculus.
+- Claude Opus 5 adversarially audited T2d and returned PASS.  It independently
+  re-proved the modal and identity-transport lemmas, machine-reproved the
+  PP-free strengthening, and also machine-checked Goodman's original
+  arbitrary-pure-`p` derivation using Persistence.  Full report:
+  `reports/CLAUDE_AUDIT_GOODMAN_T2D_2026-07-25.md`.
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Noncontingency.thy` now machine-proves
+  T2e using the literal modal rendering `□r ∨ □¬r`; it awaits adversarial
+  audit.  `frontier/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`
+  machine-proves T1's main universal claim from zeroary Exhaustion and awaits
+  audit.  T2f infrastructure is in
+  `frontier/Bacon_PP_Goodman_Fun_Prime_Six_Distinct.thy`.
+- Standing qualification: T2a--T2d are conditional derivability results in
   repository CEV.
   Non-vacuity of CEV plus the core is not yet proved.  Moreover,
   repository CEV takes ζ-Equivalence as primitive, whereas Goodman's `T₀`
@@ -66,8 +82,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: Goodman T2d,
-  `fun′(r) → ◇Pure(r)`, using T2c plus Persistence.
+- Next formal targets: adversarially audit T2e and the main T1 theorem, then
+  settle the exact T2f pairwise-distinctness claim.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
