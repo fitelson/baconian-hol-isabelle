@@ -1437,6 +1437,83 @@ work. The conditional from the previous section is unchanged: if CEV proves 5
 then `base_sound` fails for the word action; if not, the word action survives.
 Neither disjunct is established.
 
+## AUDIT against Goodman's own notes, §2 (2026-07-25)
+
+Source: `PP_project_notes` (Goodman, July 2026). These notes are the
+**specification**; where the repo differs, the repo is wrong. Two divergences,
+both material. Everything else matches.
+
+### T₀ (core theory)
+
+| §2 item | Repo | Verdict |
+|---|---|---|
+| H: tautologies, MP, Gen, UI, βη bidirectional at type t | `H_proves` PC/MP/Gen/UI/Beta/Eta (+EG, Inst, Ref, LL) | MATCH |
+| Rule of Equivalence, **on open formulas** | `CE_proves.PropEquivalence`, stated in context `Γ` | MATCH |
+| **Modalized Functionality** `□∀x(Xx = Yx) → X = Y` | — | **ABSENT** |
+| `□ := (= ⊤)` | `ObjBox A = Eq Prop A ObjTrue` | MATCH |
+| Purity schema (closed, only logical vocabulary) | `pp_purity_schema` (`consts_of M = {}`) | MATCH |
+| Application closure | `pp_application_closure` | MATCH |
+| Persistence (only where flagged) | `pp_persistence`, in flagged set only | MATCH |
+| — | `C_proves`: BooleanIdentity, IdentityIdentity, Absorb/Dist Disj-Forall, Absorb/Dist Conj-Exists as **primitive axioms** | **UNRESOLVED — possibly EXTRA** |
+
+### Bacon's appendix model
+
+| §2 item | Repo | Verdict |
+|---|---|---|
+| M = finite sequences under concatenation | `pp_word = nat list` | MATCH |
+| `D_t = P(M)` | `pp_sem_prop = pp_word set` | MATCH |
+| `i·p = {j : j∘i ∈ p}` | `pp_view i P = {j. j @ i ∈ P}` | MATCH |
+| true iff contains the root | `pp_root_true P ⟷ [] ∈ P` | MATCH |
+| function domains = maps respecting the action (Def 7.2) | `pp_function_space_member` | MATCH |
+| invariant = fixed by every substitution | `pp_invariant_proposition`, `pp_fun_invariant` | MATCH |
+| `Fun_t` = applies to denotations of the constants (just `r`) | `pp_fundamental_classifier r = {i. pp_view i P = r}` | MATCH |
+| **`Pure_σ` = applies, at each substitution, to denotations of closed terms with no non-logical constants** | `pp_purity_operator F = {i. pp_fun_invariant (pp_fun_view i F)}` | **DIVERGES — invariance, not definability** |
+
+### Divergence 1: Modalized Functionality is absent, and it is load-bearing
+
+The repo's `CEV_proves.VectorEquivalence` is *derivable* in T₀ (RoE on open
+formulas → Gen → necessitation, available since `□A := A = ⊤` and RoE turns a
+theorem `A` into `A = ⊤` → MF). The converse fails: **MF applies under
+hypotheses; the rule is theorem-level only** — [Bacon_Zeta.thy:245](Bacon_Zeta.thy:245)
+says so deliberately. So repo ⊊ T₀, strictly.
+
+MF is exactly the identity-introduction principle QSS needs (concluding `X = Y`
+from pointwise agreement, under hypotheses). No MF ⟹ no QSS ⟹ no `fun′` ⟹ the
+T6 liar `D := λp.∀X∀q(Pure(X) ∧ fun′(q) ∧ p = Xq → ¬Xp)` is **inexpressible**.
+That, not consistency, is why the step-2 refutation search found nothing.
+
+### Divergence 2: the repo uses the invariance reading of purity
+
+Goodman's M2 is titled "**The invariance reading of purity is not an option**":
+identifying purity with invariance contradicts QSS given a fundamental
+proposition; exotic invariant operators are unavoidable background structure,
+and "the live question is only ever which invariants are *certified* pure."
+
+The repo's `pp_purity_operator` is the invariance reading. Consequently
+`pp_purity_of_pure_holds_in_word_action` — which proves
+`pp_second_order_invariant pp_purity_operator`, correctly — does **not** show PP
+holds in the word action. And Goodman's **M1 says PP fails at t→t in this very
+model, necessarily so** (the model verifies Purity of Fun, QSS and a fundamental
+proposition, so by Bacon's fn.-59 argument it cannot also verify PP there).
+So the repo's interpretive claim is not merely unsupported, it is **false**.
+
+Corroboration that the underlying model is right and only the reading is wrong:
+M1 computes `Pure_t` at the bottom type as the non-contingency operator
+`λp.(□p ∨ □¬p)`, and the repo's `pp_purity_of_meet` gives
+`pp_purity_operator (λP. b ∩ P) = pp_decided b` with
+`pp_decided X = □X ∪ □(−X)` — the same operator.
+
+### Consequences for the record
+
+- **Withdraw** the claim that PP holds in the word action. It contradicts M1.
+- **Withdraw** all consistency credences (~0.55, ~0.40–0.45). They concern a
+  theory strictly weaker than T₀ in one respect and possibly stronger in
+  another (the `C_proves` axiom stock), so **neither** refutations **nor**
+  consistency results transfer cleanly until the `C` question is resolved.
+- Step 2's null result is **not** evidence for consistency; it is evidence the
+  formalized theory is too weak to state the argument.
+- A sweep is needed of every result depending on the invariance reading.
+
 ## Agreed next steps (consensus review, 2026-07-25)
 
 Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
