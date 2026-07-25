@@ -505,11 +505,80 @@ cause trouble; the natural way of freezing the domains is refuted; the envelope
 form of the hypothesis is false; and the off-the-shelf fixed-point theorems are
 ruled out.
 
-What survives as a target is a genuine persistence or finite-cone-dependence
-theorem for quantified term denotations --- something of the form "each term's
-denotation is eventually constant along the chain of domains" --- which would
-support a stage-wise fusion construction. That, and not a uniformity hypothesis,
-is the next thing to attempt.
+## The persistence theorem: false in general, with two usable substitutes
+
+`frontier/Bacon_PP_Domain_Persistence.thy`. The stage-wise construction would
+need each term's denotation to settle down along an increasing chain of domains.
+It does not.
+
+### It fails
+
+```isabelle
+pp_universal_denotation_does_not_persist
+```
+
+Along an increasing chain whose stages are even *finite*, the denotation of the
+single term `forall X : Prop. X` --- read semantically as
+`pp_forall_over D id` --- differs from its limit value at **every** finite stage.
+The chain is `D n = {- {0^k} | k < n}`, so the stage values are
+`- {0^k | k < n}`, strictly decreasing forever. A stage-wise construction
+therefore cannot assume persistence; it has to earn it.
+
+### Substitute one: the limit is always recoverable from the stages
+
+```isabelle
+pp_forall_over_Union    (* limit = intersection of the stage values *)
+pp_exists_over_Union    (* limit = union of the stage values        *)
+```
+
+Neither needs the chain to be increasing. The limit denotation need not equal
+any stage denotation, but it is always determined by the sequence of them. For a
+fusion construction this is the correct replacement for persistence.
+
+### Substitute two: persistence under a finite-image bound
+
+```isabelle
+pp_finite_image_persistence
+```
+
+If the quantified body takes only finitely many values over the limit domain,
+the denotation does stabilize. This is exactly what the counterexample violates
+--- there the body is the identity and takes infinitely many values. Note this
+is a condition on the term and the limit domain together, not on the chain.
+
+### Persistence is exactly finite attainment
+
+```isabelle
+pp_persistence_iff_attained
+```
+
+For an increasing chain the stage values decrease, so eventual stabilization is
+equivalent to the limit value being reached at one single finite stage. That
+converts persistence from a statement about tails into a concrete attainment
+question.
+
+### Variance, and why Knaster--Tarski is unavailable
+
+```isabelle
+pp_forall_over_antitone
+pp_exists_over_monotone
+```
+
+Universal quantification is antitone in the domain and existential quantification
+is monotone. Both variances are realized, so a term with alternating quantifiers
+has no uniform variance in the domain. This is the checked form of the
+obstruction noted earlier.
+
+### Where that leaves the route
+
+The remaining obligation is now sharp and is a question about the *language*
+rather than about the witness: which terms of the Bacon--Dorr language admit a
+finite-image bound of the kind `pp_finite_image_persistence` requires, and for
+the rest, whether the intersection form of `pp_forall_over_Union` can be made to
+carry a fusion construction. Note the counterexample above is a statement about
+arbitrary chains; it does not by itself show that the chains actually arising
+from Henkin closure over a seed behave badly, and settling that is the natural
+next step.
 
 ## Session layout and build times
 
