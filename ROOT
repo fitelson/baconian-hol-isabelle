@@ -48,3 +48,4 @@ theories
   Bacon_PP_Seed_Aware_Requirements
   Bacon_PP_Domain_Persistence
   Bacon_PP_Attainment
+  Bacon_PP_Attainment_Failure
