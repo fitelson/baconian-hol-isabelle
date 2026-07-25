@@ -3,10 +3,17 @@
 > **Driving handoff, 2026-07-25.** Start with **[CODEX_HANDOFF.md](CODEX_HANDOFF.md)**,
 > not this file. It states the problem precisely (X and A), records the audit of
 > this repo against Goodman's own notes, lists the ground rules (15s timeout,
-> no `sorry`, bisect don't guess), says exactly where the in-flight Intensionality
-> proof stands, and ranks what to do next. This file is the long-form record and
+> no `sorry`, bisect don't guess), records the completed unary Intensionality
+> theorem, and ranks what to do next. This file is the long-form record and
 > contains superseded material — every withdrawn claim is listed in §8 of the
 > handoff.
+
+> **Codex checkpoint.** `frontier/Bacon_PP_Intensionality.thy` now proves
+> `CEV_unary_intensionality`, following Bacon--Dorr's guarded ζ route without
+> contextual Equivalence. The shared biconditional step is derived through
+> proposition identity rather than by the previously timing-out expanded
+> tautology. The next target is unary Modalized Functionality, then QSS and
+> `fun′`.
 
 Status date: 2026-07-25.
 

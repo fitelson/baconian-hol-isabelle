@@ -140,51 +140,41 @@ independently gives `pp_purity_operator (λP. b ∩ P) = pp_decided b` with
 
 ---
 
-## 5. What is in flight, and exactly where it stands
+## 5. First Codex checkpoint: Unary Intensionality is complete
 
 **Unary Intensionality in repo-CEV**, `frontier/Bacon_PP_Intensionality.thy`.
-Currently green; Codex has been asked to finish it. Target:
+Codex completed it after this handoff was written. Machine-checked theorem:
 
 ```
-Γ ⊢CEV Imp (□ (Forall σ (App (shift X) (Var 0) ↔ₒ App (shift Y) (Var 0))))
-           (Eq (σ →ₒ Prop) X Y)
+CEV_unary_intensionality:
+  Γ ⊢CEV Imp (□ (intens_condition σ X Y))
+             (Eq (σ →ₒ Prop) X Y)
 ```
-
-then MF as a corollary (`X z = Y z` gives `X z ↔ Y z` by Ref and LL).
 
 Route (Classicism §1.5): ζ is theorem-level and so cannot be applied to the
 hypothesis. Instantiate ζ at the **guarded** pair `F := λz.(Xz ∧ C)`,
 `G := λz.(Yz ∧ C)` with `C := ∀z.(Xz ↔ Yz)`, whose pointwise biconditional *is*
 an H-theorem (from the UI instance `C → (Xz ↔ Yz)`); then use `□C`, i.e.
 `C = ⊤`, with LL to replace `C` by `⊤`; then discharge `λz.(Xz ∧ ⊤) = X`; then
-assemble with `CEV_eq_trans_from`.
+assemble by identity transitivity. This is now exactly what the theory proves.
 
-**Already checked, do not redo:** `subst_rename_to_rename`,
+**Checked infrastructure:** `subst_rename_to_rename`,
 `subst_lift_shift_by_2`, `subst0_var0_shift_by_2`, `subst0_var0_lift_ren_Suc`,
 `shift_ObjTrue` (de Bruijn infrastructure the repo lacked — it had only the
 identity case, `subst_rename_inverse`); `intens_conj`, `intens_pred`, their
 typing lemmas, `typed_shift_ctx`/`typed_var0`/`typed_shift_app`; and
-`intens_pred_beta`, the one beta step.
+`intens_pred_beta`.
 
-**The open obstacle.** All four remaining steps need transitivity of the object
-biconditional, and the direct route via a `prop_tautology` instance for
-`(A ↔ B) → ((B ↔ C) → (A ↔ C))` blows the 15s budget. Even the semantic half
-alone —
+The expensive biconditional tautology was avoided, not optimized. New helper
+`CEV_biconditional_trans` follows the identity route:
+`CEV_zeroary_equivalence` → `CEV_eq_trans_from` → Leibniz at `prop_id`.
+The guarded ζ theorem is `CEV_intens_guarded_eq`; guard transport is
+`CEV_intens_guarded_true_from_box`; truth discharge is
+`CEV_intens_conj_true_eq`. The full project remains green under the 15-second
+session timeout.
 
-```isabelle
-lemma "∀v. prop_eval v (Imp (A ↔ₒ B) (Imp (B ↔ₒ C) (A ↔ₒ C)))" by auto
-```
-
-— times out, which I do not understand and did not resolve. `prop_tautology Γ F`
-unfolds to `Γ ⊢ F : Prop ∧ (∀v. prop_eval v F)`; `prop_eval` reduces on the
-constructors; the residue is a three-atom propositional tautology. And
-`CEV_uncurry_conj` (`Bacon_S4.thy:138`) does a three-variable `prop_tautology`
-with plain `by auto` and is fine. The difference may be that `ObjIff` expands so
-the term carries six `Imp` subterms. Leading hypothesis: the `[intro]` blanket
-(ground rule 6) makes `auto`'s classical search explode. **Unconfirmed — I was
-wrong about this twice already.** If it can't be made cheap, avoid it: route
-through `CEV_zeroary_equivalence` → `CEV_eq_trans_from` → Leibniz at `prop_id`,
-so no large propositional tautology is ever checked.
+**Immediate next target:** derive unary Modalized Functionality from
+`CEV_unary_intensionality`, then build QSS and `fun′`.
 
 ---
 
@@ -206,11 +196,12 @@ so no large propositional tautology is ever checked.
 Ranked, with the notes taken into account. The internal consensus plan in
 `STATUS.md` predates the notes and its top items are stale.
 
-1. **Finish Intensionality** (§5). Unblocks QSS → `fun′` → `Pure(fun′)` → T6.
-   Without `fun′` the T6 liar `D := λp.∀X∀q(Pure(X) ∧ fun′(q) ∧ p = Xq → ¬Xp)`
-   cannot even be *stated* here, which is the real reason the earlier CEV⁺
-   refutation search found nothing — it searched `Prop → Prop` operators built
-   from `Pure` and `K`, a far too small space.
+1. **Derive unary MF, then QSS and `fun′`.** Unary Intensionality is now done.
+   The next proof turns pointwise proposition identity into pointwise
+   biconditional, applies `CEV_unary_intensionality`, and packages the resulting
+   MF instance. This unblocks QSS → `fun′` → `Pure(fun′)` → T6. Without `fun′`
+   the T6 liar `D := λp.∀X∀q(Pure(X) ∧ fun′(q) ∧ p = Xq → ¬Xp)` cannot be stated
+   here; the earlier CEV⁺ search considered only `Pure` and `K`.
 2. **Mechanize Goodman's open problem #1** — calibrate L2 in Bacon's appendix
    model. He flags it as suited to mechanization; the model is this repo's word
    action; the machinery largely exists. Either refutes L2 (killing the main
