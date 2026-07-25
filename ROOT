@@ -68,3 +68,4 @@ theories
   Bacon_PP_Goodman_Composition
   Bacon_PP_Goodman_Fun_Prime_Closure
   Bacon_PP_Goodman_Fun_Prime_Nontriviality
+  Bacon_PP_Goodman_Fun_Prime_Attainment

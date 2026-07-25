@@ -1,6 +1,6 @@
 # PP Consistency Status
 
-> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a and T2b are
+> **Current theorem-verification tranche, 2026-07-25.** Goodman T2a--T2c are
 > machine-proved.  `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves
 > that `fun′(p)` is preserved by every pure reversible operator, that negation
 > belongs to that group, and hence that `fun′(p) → fun′(¬p)`.
@@ -11,10 +11,19 @@
 > and adversarially audited both developments; the T2b audit additionally
 > machine-checked that its two refutations need only the purity of `id`,
 > `K⊤`, and `K⊥`, so neither PP nor application closure is used there.
+> `frontier/Bacon_PP_Goodman_Fun_Prime_Attainment.thy` proves both the
+> parameter and exact object-language universal forms of T2c:
+> `fun′(r) → ∀p(Pure(p) → ◇(r=p))`.  The proof uses the inequality operator
+> `λq.¬(q=p)` and the constant-truth operator to diagonalize against
+> `fun′(r)`.  Claude Opus 5 independently clean-built and adversarially
+> audited the theory, inspected the exported theorem objects, recomputed every
+> de Bruijn step, and returned PASS.  Its audit also machine-reproved T2c over
+> only the purity schema plus application closure: PP itself, QSS,
+> Recombination, Persistence, and fundamentality are unused.
 > These remain conditional derivability results: consistency and non-vacuity
 > of CEV plus the core are open, and the equation of repository CEV with
 > Goodman's presentation of `T₀` remains a prose audit.  The next target is
-> T2c, `Pure(p) → ◇(r=p)`.
+> Persistence-based T2d, `fun′(r) → ◇Pure(r)`.
 >
 > Unary,
 > proposition-valued Modalized Functionality is now proved in bare CEV in

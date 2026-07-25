@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T2a and T2b verified
+## 0. Live checkpoint: Goodman T2a--T2c verified
 
 Codex has resumed as driver.
 
@@ -44,7 +44,19 @@ Codex has resumed as driver.
   not used.  It also generalized the argument to every closed constant-free
   proposition `M`, for which `¬fun′(M)` follows.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2B_2026-07-25.md`.
-- Standing qualification: T2a and T2b are conditional derivability results in
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Attainment.thy` proves Goodman T2c in
+  both parameter and exact quantified form:
+  `fun′(r) → ∀p(Pure(p) → ◇(r=p))`.  Its diagonal proof identifies
+  `λq.¬(q=p)` with the constant-truth operator under the supposition
+  `□¬(r=p)`, then evaluates at `p` to contradict reflexivity.
+- Claude Opus 5 adversarially audited T2c and returned PASS.  It independently
+  clean-built the frontier, inspected the theorem objects, recomputed both
+  beta reductions and the final binder shift, and machine-reproved the entire
+  theorem over only `pp_purity_schema ∪ pp_application_closure_schema`.
+  Thus PP itself, QSS, Recombination, Persistence, fundamentality, L2, Inv,
+  and classification are all unused.  Full report:
+  `reports/CLAUDE_AUDIT_GOODMAN_T2C_2026-07-25.md`.
+- Standing qualification: T2a--T2c are conditional derivability results in
   repository CEV.
   Non-vacuity of CEV plus the core is not yet proved.  Moreover,
   repository CEV takes ζ-Equivalence as primitive, whereas Goodman's `T₀`
@@ -54,9 +66,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: Goodman T2c,
-  `Pure(p) → ◇(r=p)` for a `fun′` witness `r`, followed by Persistence-based
-  T2d, `◇Pure(r)`.
+- Next formal target: Goodman T2d,
+  `fun′(r) → ◇Pure(r)`, using T2c plus Persistence.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
