@@ -275,6 +275,18 @@ Two attacks remain, and they are no longer symmetric in promise.
    not a set membering itself, and simple typing blocks the Russell
    self-application, so there is no Cantor-style no-go in sight.
 
+   Note where the cost is and is not. Reading `pp_unary_recombination` and
+   `pp_unary_exhaustion` in `Bacon_PP_Question.thy`, the only nonzero-arity QLN
+   instance required is the unary one, quantifying over the *pure* elements of
+   the domain at `Prop -> Prop` together with the fundamental proposition. So
+   the escapability burden falls only on the invariant part of that one domain.
+   The domain at `(Prop -> Prop) -> Prop` may be as large as one likes, which is
+   why housing the purity operator costs nothing by itself, and why the zeroary
+   instances are free (pure propositions are `{}` or `UNIV`, and `pp_sem_box`
+   fixes both). The entire difficulty is that the stock of pure elements at
+   `Prop -> Prop` grows when the language is enlarged by `Pure` and by a name
+   for the witness.
+
 The residual quantifier difficulty on route 2 is a dependency, not a
 cardinality obstruction. The generic-witness theorem has the form
 
