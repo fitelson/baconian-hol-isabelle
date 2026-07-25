@@ -62,3 +62,4 @@ theories
   Bacon_PP_Minimal_Axioms
   Bacon_PP_Modalized_Functionality
   Bacon_PP_Definable_Purity
+  Bacon_PP_Intensionality
