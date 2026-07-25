@@ -1282,6 +1282,78 @@ no-other-fundamentals schema, and used the unique-fundamentality axiom only as
 the base camp already does. This is therefore **weak** evidence for consistency
 and should not move the ~0.6 credence much — call it ~0.62.
 
+## Step 2 follow-on: the named question, answered — and it is bad news
+
+`frontier/Bacon_PP_Modal_Five.thy`. Step 2 named one question as highest-value:
+does the background give a 5 principle? It is now settled on the semantic side,
+and the answer is more drastic than expected.
+
+```isabelle
+modal_5 A = Imp (Neg (□A)) (□ (Neg (□A)))
+applicative_structure.eval_ObjTrue
+applicative_structure.modal_5_valid          (* no extra hypotheses *)
+pp_sem_box_not_two_valued                    (* checked, not asserted *)
+```
+
+**5 is valid in every applicative structure**, from two of the locale's own
+axioms. The reason is structural, not modal. `□A` abbreviates
+`Eq Prop A ObjTrue`, and the evaluation clause is
+
+```isabelle
+eval ρ (Eq σ M N) = truth_den (eq_den σ (eval ρ M) (eval ρ N))
+```
+
+so every identity proposition — hence every `□` — denotes in the two-element
+image of `truth_den`. `Neg` likewise. So `¬□A`, when true, denotes
+`truth_den True`, and `eq_den_refl` makes `□(¬□A)` true. The modal fragment of
+this semantics is not S4-with-extras; **`□` is two-valued**.
+
+### Consequence 1 (for the refutation): the only concrete objection is gone
+
+Codex's objection to `◇Pure (K R) ⟹ □Pure (K R)` was that a reflexive
+transitive branching frame can have it false at the root and persistently true
+on a branch. **No such frame is a model of this semantics.** This is not yet a
+proof of 5 in CEV — validity in all models needs a completeness theorem, and
+whether the repository's completeness results cover this schema is not settled.
+But the refutation can no longer be blocked by exhibiting an S4 countermodel.
+
+### Consequence 2 (against this project's own route): `base_sound` FAILS
+
+This is the sharper consequence and it is negative for the main semantic route.
+`pp_sem_box {w. w ≠ []} = {i. i ≠ []}`, which is neither `{}` nor `UNIV`
+(`pp_sem_box_not_two_valued`). So the word-action `□` is genuinely
+three-or-more-valued, and **no structure in which `pp_sem_box` interprets
+`ObjBox` can be an `applicative_structure`.**
+
+Obligation item 2 of the checklist is therefore **not** a routine verification
+for the word action. It fails, for a reason visible in one line of the
+evaluation function rather than in any detail of the construction. The
+consensus review rated this "a real risk" but treated it as a verification task;
+that rating was too generous.
+
+### What survives, and what does not
+
+The word-action results stand as mathematics about a concrete M-set: the
+invariance analysis, generic-witness theorems, decision-basis and attainment
+results are untouched. What they lose is the claim to bear on Goodman's question
+by way of `base_sound`. They bear on it only for a background in which `□` is
+*not* `Eq Prop A ObjTrue` — i.e. a weaker background than the one at issue.
+
+**Credence.** This does not move the consistency credence much either way
+(~0.6 stands; the step-2 bump to ~0.62 is withdrawn as it rested on the S4
+countermodel picture). What it moves is the *plan*: the word-action route to a
+model is closed, and the remaining ranked steps that presuppose it should be
+re-scoped before more work goes into them.
+
+### Immediate follow-ups this creates
+
+1. Does CEV *prove* `modal_5`? Check whether `Bacon_Completeness` /
+   `Bacon_Clean_Completeness` covers the schema. If yes, the step-2 refutation
+   branch may close outright.
+2. Re-scope the model programme. Any candidate model must have two-valued `□`.
+   That is a severe constraint and rules out the whole M-set family as
+   interpretations of `ObjBox`, not just the word action.
+
 ## Agreed next steps (consensus review, 2026-07-25)
 
 Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
