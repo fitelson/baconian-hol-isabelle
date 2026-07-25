@@ -54,3 +54,4 @@ theories
   Bacon_PP_Pure_Decision_Basis
   Bacon_PP_Cone_Determined
   Bacon_PP_Oterm_Bridge
+  Bacon_PP_Higher_Bridge

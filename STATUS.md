@@ -995,10 +995,77 @@ nothing about *iterated* `Pure`, which is what the target PP instance itself
 involves.
 
 Interpreting those needs a value universe for the higher domains, which is the
-same obstacle `Bacon_PP_TypeCoherence` works around with a type class. So the
-standing gap has changed shape rather than vanished: it is no longer "no
-connection to the syntax at all" but "no connection above the propositional
-fragment".
+same obstacle `Bacon_PP_TypeCoherence` works around with a type class.
+
+## Extending the bridge above the propositional fragment
+
+`frontier/Bacon_PP_Higher_Bridge.thy`.
+
+First, what the type class can and cannot do here, since this is easy to get
+wrong. `pp_dom` supplies a carrier, the local equivalence and the conjugation at
+*every* object type, and the coherence theorems hold at all of them. What it does
+not supply is a single HOL type in which values of *different* object types sit
+together --- and an evaluation function on `oterm` needs exactly that, because a
+de Bruijn environment mixes types. The class and the bridge are therefore
+complementary, not alternatives: the class gives type-indexed coherence with no
+evaluation function, the bridge gives an evaluation function up to a fixed level.
+
+The universe here goes to level two --- `Prop`, `Prop -> Prop` where the pure
+stock lives, and `(Prop -> Prop) -> Prop` where `Pure_{t->t}` itself lives --- and
+is tied back to the class by
+
+```isabelle
+pp_fclosure_is_class_carrier
+```
+
+which says the operator level is Bacon's local function domain, i.e. the class
+carrier at `pp_base => pp_base`.
+
+```isabelle
+pp_veval                        (* the higher-type valuation *)
+pp_veval_ok
+pp_veval_prop_in_pclosure
+pp_gok_purity                   (* Pure at Prop -> Prop is a good value *)
+pp_fok_decided                  (* Pure at Prop is non-contingency *)
+pp_fok_fundamental              (* Fun is local identity with the seed *)
+```
+
+Covered: application at both levels, quantification at `Prop` and at
+`Prop -> Prop`, and `Pure` at both types. Since a variable bound by a
+`Prop -> Prop` quantifier may be fed to `Pure_{Prop->Prop}` and the result to
+`Pure_{Prop}`, **iterated `Pure` is inside the fragment**, which the propositional
+bridge could not reach. Denotations lie in `pp_pclosure G`, so
+`pp_pure_seed_decision_basis` applies.
+
+### Two different reasons things are still missing
+
+These should not be run together.
+
+**A design limit.** `Lam` is left uninterpreted in this theory. Certifying an
+operator built by abstraction needs it to lie in `pp_fclosure`, and the natural
+induction breaks at `App`: an application whose operator *and* argument both vary
+with the abstracted variable is not covered by the operator closure, which has no
+application rule. So operators enter only through the domain `DF` and the
+constants. The propositional bridge does certify abstractions
+(`pp_eval_abstract_in_fclosure`), so the two bridges are complementary --- that
+one has `Lam` but no higher types, this one has higher types but no `Lam`.
+Closing the overlap needs an operator closure with an application rule, and that
+is a real piece of work not done here.
+
+**A hard limit.** The target PP instance is
+`Pure_{(t->t)->Prop} (Pure_{t->t})`, whose outer constant lives at
+`((Prop->Prop)->Prop)->Prop`, one level above this universe. That particular
+level is a mechanical extension. Adding *all* levels is not, and cannot be done
+this way: a HOL datatype has values at only finitely many type levels, while the
+object language has terms at unboundedly many.
+
+So the gap is now precise rather than vague. Any *fixed* instance of the question
+is reachable by extending the universe far enough. A statement quantifying over
+*all* object types is not, and would need either a set-theoretic model of the
+type hierarchy or a class-indexed family of evaluation functions in place of a
+single one. The class already supplies the type-indexed coherence side; what no
+HOL type can supply is the single evaluation function such a statement would have
+to quantify over.
 
 ## Session layout and build times
 
