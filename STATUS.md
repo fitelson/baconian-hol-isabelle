@@ -1392,34 +1392,50 @@ euclideanness**, "not necessary here, necessary at a successor."
 well as sufficient: **the 5 question just is this consistency question.** The
 reduction loses nothing.
 
-### The one missing lemma, named exactly
+**The premises are proved satisfiable** (`modal_5_reduction_premises_satisfiable`,
+via `CEV_supported_counterworld` and a new `CEV_not_proves_box_const`). So the
+reduction is not vacuous.
 
-The natural discharge is genericity: take `A` to be a constant `c` not occurring
-in the diagram. The diagram then says nothing about `c`, and substituting
-`ObjTrue` for `c` would turn a derivation of `¬□c` into one of `¬□ObjTrue`,
-which is refutable. This needs:
+### Two corrections to the first version of this section
 
-```isabelle
-Γ ⊢CEV A  ⟹  Γ ⊢ N : σ  ⟹  Γ ⊢CEV (A[N/c])
-```
+Both found by Codex, both confirmed against the sources.
 
-— **CEV-derivability is preserved under substituting a well-typed closed term
-for a constant.** The repository does not have it. `Bacon_Substitution` is about
-*variables*; the constant apparatus (`consts_of`, `fresh_const_for`) provides
-freshness bookkeeping and Henkin witnesses but no substitution principle for
-constants.
+1. **The first version of this theorem was vacuous.** It used the *full*
+   identity diagram and required `CEV_fresh_extendible_base` of it. But
+   reflexive identities `Eq Prop (Const c Prop) (Const c Prop)` are theorems,
+   so they lie in every clean Henkin theory and its diagram; hence
+   `CEV_identity_diagram_consts_UNIV` — **no constant is ever fresh for the
+   full diagram**, and the premise is unsatisfiable. Repaired by moving to the
+   `C`-supported diagram, where `UNIV - C` is an infinite reserve, and using
+   `CEV_clean_Henkin_extension_from_block`.
+2. **"The constant-substitution lemma is missing" was wrong.** It exists:
+   `CEV_proves_subst_const` (`Bacon_Clean_Canonical_Base.thy:2438`) and
+   `CEV_set_derivable_subst_const_clean` (`Bacon_Clean_Completeness.thy:785`).
+   My earlier search reported no matches because the shell command errored on a
+   zsh glob, which I misread as a negative result.
 
-Cost estimate: an induction over the H rules (Taut, UI, EG, Ref, LL, Beta, Eta,
-MP, Gen, Inst, …) plus the C/CE/CEV additions, and a companion induction for
-preservation of typing. Roughly 300–600 lines, unglamorous but self-contained.
-It is now the **only** thing between the development and a decision on 5.
+### The genericity route is closed, not merely unfinished
+
+With substitution available, the obstruction is freshness, and it is structural.
+Step `box_negbox_not_S` needs `□(¬□c)` to lie in the `C`-supported diagram,
+forcing `c ∈ C`. Genericity needs `c` fresh for that same diagram, forcing
+`c ∉ C`. Shrinking to `C' ⊆ C` with `c ∉ C'` restores freshness but drops
+`□(¬□c)` from the diagram, breaking inheritance.
+
+> **The diagram must mention `c` to transmit the modal fact, and must not
+> mention `c` to be generic in it.**
+
+So deciding the residue needs a different idea — a direct analysis of which
+boxed formulas a supported diagram can derive, or a proof-theoretic argument
+about CEV itself.
 
 ### Status, stated honestly
 
-The countermodel is **not built**. What is built is a lossless reduction plus an
-exact identification of the blocker. The conditional from the previous section
-is unchanged: if CEV proves 5 then `base_sound` fails for the word action; if
-not, the word action survives. Neither disjunct is established.
+The countermodel is **not built**. What is built is a lossless reduction with
+*satisfiable* premises, plus a proof that the obvious way of finishing cannot
+work. The conditional from the previous section is unchanged: if CEV proves 5
+then `base_sound` fails for the word action; if not, the word action survives.
+Neither disjunct is established.
 
 ## Agreed next steps (consensus review, 2026-07-25)
 

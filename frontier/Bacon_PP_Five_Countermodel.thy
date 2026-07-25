@@ -28,25 +28,27 @@ text \<open>
 
 subsection \<open>The reduction\<close>
 
-theorem CEV_not_proves_modal_5_of_consistent_diagram:
-  assumes henkin: "CEV_clean_Henkin_theory \<Gamma> S"
+theorem CEV_not_proves_modal_5_of_consistent_supported_diagram:
+  assumes world: "CEV_supported_world K C \<Gamma> S"
     and A_type: "\<Gamma> \<turnstile> A : Prop"
+    and A_supported: "CEV_supported_term C A"
     and box_absent: "\<box>\<^sub>o A \<notin> S"
-    and reserve: "CEV_fresh_extendible_base
-      (insert (\<box>\<^sub>o A) (CEV_identity_diagram \<Gamma> S))"
     and consistent: "CEV_consistent \<Gamma>
-      (insert (\<box>\<^sub>o A) (CEV_identity_diagram \<Gamma> S))"
+      (insert (\<box>\<^sub>o A) (CEV_supported_identity_diagram C \<Gamma> S))"
   shows "\<not> \<Gamma> \<turnstile>\<^sub>CEV modal_5 A"
 proof -
-  let ?B = "insert (\<box>\<^sub>o A) (CEV_identity_diagram \<Gamma> S)"
+  let ?B = "insert (\<box>\<^sub>o A) (CEV_supported_identity_diagram C \<Gamma> S)"
+  have henkin: "CEV_clean_Henkin_theory \<Gamma> S"
+    and inf_out: "infinite (UNIV - C)"
+    using world unfolding CEV_supported_world_def by blast+
   have box_type: "\<Gamma> \<turnstile> \<box>\<^sub>o A : Prop"
     using A_type by (rule typed_ObjBox)
   have negbox_type: "\<Gamma> \<turnstile> Neg (\<box>\<^sub>o A) : Prop"
     using box_type by (rule has_type.Neg)
 
   text \<open>The base is typed: the diagram sits inside the typed theory \<open>S\<close>.\<close>
-  have diagram_sub: "CEV_identity_diagram \<Gamma> S \<subseteq> S"
-    by (auto simp: CEV_identity_diagram_iff)
+  have diagram_sub: "CEV_supported_identity_diagram C \<Gamma> S \<subseteq> S"
+    by (auto simp: CEV_supported_identity_diagram_def)
   have S_typed: "typed_theory \<Gamma> S"
     using henkin
     unfolding CEV_clean_Henkin_theory_def CEV_locally_maximal_consistent_def
@@ -60,18 +62,37 @@ proof -
       assume "X = \<box>\<^sub>o A"
       then show ?thesis using box_type by simp
     next
-      assume "X \<in> CEV_identity_diagram \<Gamma> S"
+      assume "X \<in> CEV_supported_identity_diagram C \<Gamma> S"
       then have "X \<in> S" using diagram_sub by blast
       then show ?thesis
         using S_typed unfolding typed_theory_def by blast
     qed
   qed
 
+  text \<open>
+    The support restriction is what makes a reserve of fresh constants available.
+    For the \emph{full} identity diagram no reserve exists at all: reflexive
+    identities \<open>Eq Prop (Const c Prop) (Const c Prop)\<close> for every \<open>c\<close> are theorems and
+    so lie in every clean Henkin theory, whence
+    \<open>CEV_identity_diagram_consts_UNIV\<close>.  Restricting to \<open>C\<close>-supported terms leaves
+    \<open>UNIV - C\<close> infinite and untouched.
+  \<close>
+  have consts_B: "consts_of_set ?B \<subseteq> C"
+  proof -
+    have "consts_of (\<box>\<^sub>o A) \<subseteq> C"
+      using A_supported unfolding CEV_supported_term_def by simp
+    then show ?thesis
+      using CEV_supported_identity_diagram_consts[of C \<Gamma> S]
+      by (auto simp: consts_of_set_insert)
+  qed
+  have D_disjoint: "(UNIV - C) \<inter> consts_of_set ?B = {}"
+    using consts_B by blast
+
   text \<open>So the base extends to a clean Henkin theory \<open>T\<close>, a successor of \<open>S\<close>.\<close>
   obtain T where T_henkin: "CEV_clean_Henkin_theory \<Gamma> T"
     and B_sub: "?B \<subseteq> T"
-    using reserve typed_B consistent
-    by (rule CEV_clean_Henkin_extension_from_fresh_extendible_base)
+    using typed_B consistent inf_out D_disjoint
+    by (rule CEV_clean_Henkin_extension_from_block)
   have box_in_T: "\<box>\<^sub>o A \<in> T" using B_sub by blast
 
   text \<open>\<open>T\<close> makes \<open>A\<close> necessary, so it does not contain \<open>\<not> \<box>A\<close>.\<close>
@@ -92,9 +113,14 @@ proof -
   proof
     assume in_S: "\<box>\<^sub>o (Neg (\<box>\<^sub>o A)) \<in> S"
     have true_type: "\<Gamma> \<turnstile> ObjTrue : Prop" by (rule typed_ObjTrue)
-    have "Eq Prop (Neg (\<box>\<^sub>o A)) ObjTrue \<in> CEV_identity_diagram \<Gamma> S"
-      unfolding CEV_identity_diagram_iff
-      using negbox_type true_type in_S
+    have negbox_supported: "CEV_supported_term C (Neg (\<box>\<^sub>o A))"
+      using A_supported unfolding CEV_supported_term_def by simp
+    have true_supported: "CEV_supported_term C ObjTrue"
+      unfolding CEV_supported_term_def by simp
+    have "Eq Prop (Neg (\<box>\<^sub>o A)) ObjTrue
+        \<in> CEV_supported_identity_diagram C \<Gamma> S"
+      unfolding CEV_supported_identity_diagram_def
+      using negbox_type true_type negbox_supported true_supported in_S
       by (auto simp: ObjBox_def)
     then have in_T: "Eq Prop (Neg (\<box>\<^sub>o A)) ObjTrue \<in> T"
       using B_sub by blast
@@ -158,6 +184,54 @@ proof -
   qed
 qed
 
+subsection \<open>The hypotheses are satisfiable\<close>
+
+text \<open>
+  A reduction whose premises cannot all be met proves nothing.  The first version of
+  this theory had exactly that defect --- it used the full identity diagram and
+  demanded \<open>CEV_fresh_extendible_base\<close> of it, which \<open>CEV_identity_diagram_consts_UNIV\<close>
+  makes impossible.  So the supported version is discharged here up to the consistency
+  condition, using a constant as the witness.
+\<close>
+
+lemma CEV_not_proves_box_const:
+  "\<not> [] \<turnstile>\<^sub>CEV \<box>\<^sub>o (Const c Prop)"
+proof
+  assume d: "[] \<turnstile>\<^sub>CEV \<box>\<^sub>o (Const c Prop)"
+  have false_type: "[] \<turnstile> ObjFalse : Prop"
+    by (rule typed_ObjFalse)
+  have "[] \<turnstile>\<^sub>CEV subst_const c Prop ObjFalse (\<box>\<^sub>o (Const c Prop))"
+    using d false_type by (rule CEV_proves_subst_const)
+  moreover have
+    "subst_const c Prop ObjFalse (\<box>\<^sub>o (Const c Prop)) = \<box>\<^sub>o ObjFalse"
+    by (simp add: ObjBox_def ObjTrue_def)
+  ultimately have "[] \<turnstile>\<^sub>CEV \<box>\<^sub>o ObjFalse" by simp
+  then show False using CEV_not_proves_box_ObjFalse by blast
+qed
+
+theorem modal_5_reduction_premises_satisfiable:
+  obtains K C S where
+    "CEV_supported_world K C [] S"
+    and "[] \<turnstile> Const c Prop : Prop"
+    and "CEV_supported_term C (Const c Prop)"
+    and "\<box>\<^sub>o (Const c Prop) \<notin> S"
+proof -
+  have box_type: "[] \<turnstile> \<box>\<^sub>o (Const c Prop) : Prop"
+    by (rule typed_ObjBox) auto
+  obtain K C S where finK: "finite K" and neK: "K \<noteq> {}"
+    and consts_sub: "consts_of (\<box>\<^sub>o (Const c Prop)) \<subseteq> K"
+    and world: "CEV_supported_world K C [] S"
+    and absent: "\<box>\<^sub>o (Const c Prop) \<notin> S"
+    using box_type CEV_not_proves_box_const
+    by (rule CEV_supported_counterworld)
+  have KC: "K \<subseteq> C"
+    using world unfolding CEV_supported_world_def by blast
+  have "CEV_supported_term C (Const c Prop)"
+    using consts_sub KC unfolding CEV_supported_term_def by auto
+  then show ?thesis
+    using that[OF world _ _ absent] by auto
+qed
+
 subsection \<open>The residue, and why it is exactly the right residue\<close>
 
 text \<open>
@@ -174,29 +248,36 @@ text \<open>
   not merely sufficient but necessary: the reduction has not thrown anything away, and
   the 5 question \emph{is} this consistency question.
 
-  \<^bold>\<open>What blocks the last step, precisely.\<close>  The natural discharge is genericity: take
-  \<open>A\<close> to be a constant \<open>c\<close> not occurring in the diagram; then the diagram says nothing
-  about \<open>c\<close>, and substituting \<open>ObjTrue\<close> for \<open>c\<close> would send a derivation of \<open>\<not> \<box>c\<close> to a
-  derivation of \<open>\<not> \<box>ObjTrue\<close>, which is refutable.  This needs a lemma stating that
-  \<^bold>\<open>CEV-derivability is preserved when a well-typed closed term is substituted for a
-  constant\<close>.  The repository does not have it.  \<open>Bacon_Substitution\<close> is about
-  \emph{variables}; the constant apparatus (\<open>consts_of\<close>, \<open>fresh_const_for\<close>) supplies
-  freshness bookkeeping and Henkin witnesses but no substitution principle for
-  constants.  The relevant lemma would be, in outline,
+  \<^bold>\<open>Why the obvious discharge cannot work.\<close>  The natural idea is genericity: take \<open>A\<close>
+  to be a constant \<open>c\<close> that the diagram says nothing about, so that substituting
+  \<open>ObjTrue\<close> for \<open>c\<close> sends a derivation of \<open>\<not> \<box>c\<close> to a derivation of \<open>\<not> \<box>ObjTrue\<close>,
+  which is refutable.  The substitution principle this needs \emph{does} exist ---
+  \<open>CEV_proves_subst_const\<close> and \<open>CEV_set_derivable_subst_const_clean\<close>.  What fails is
+  the freshness, and it fails structurally:
 
-  \begin{center}
-  \<open>\<Gamma> \<turnstile>\<^sub>CEV A \<Longrightarrow> \<Gamma> \<turnstile> N : \<sigma> \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>CEV (A[N/c])\<close>
-  \end{center}
+  \<^item> For the \emph{full} diagram no constant is ever fresh.  Reflexive identities
+    \<open>Eq Prop (Const c Prop) (Const c Prop)\<close> are theorems, hence lie in every clean
+    Henkin theory, hence in its diagram; so \<open>CEV_identity_diagram_consts_UNIV\<close> holds
+    and \<open>CEV_fresh_extendible_base\<close> of that diagram is outright unsatisfiable.
 
-  proved by induction over the CEV rules, with the vector-equivalence rule the only
-  interesting case.  That is a self-contained and unglamorous piece of work, and it is
-  now the \emph{only} thing between the development and a decision on 5.
+  \<^item> For the \emph{supported} diagram at \<open>C\<close> the reserve \<open>UNIV - C\<close> is infinite, which is
+    why the theorem above is not vacuous.  But the two requirements on \<open>c\<close> now pull
+    apart irreconcilably.  Step \<open>box_negbox_not_S\<close> needs \<open>\<box> (\<not> \<box>c)\<close> to lie in the
+    \<open>C\<close>-supported diagram, which forces \<open>c \<in> C\<close>.  Genericity needs \<open>c\<close> fresh for that
+    same diagram, which forces \<open>c \<notin> C\<close>.  Shrinking the support to some \<open>C' \<subseteq> C\<close> with
+    \<open>c \<notin> C'\<close> restores freshness but removes \<open>\<box> (\<not> \<box>c)\<close> from the diagram, breaking the
+    inheritance step.  \<^bold>\<open>The diagram must mention \<open>c\<close> to transmit the modal fact, and
+    must not mention \<open>c\<close> to be generic in it.\<close>
 
-  \<^bold>\<open>Honest status.\<close>  The countermodel is not built.  What is built is a reduction that
-  is provably lossless, plus an exact identification of the missing lemma.  The
-  conditional consequence from the previous theory therefore stands unchanged: if CEV
-  proves 5 then \<open>base_sound\<close> fails for the word action, and if not, the word action
-  survives.  Neither disjunct is established here.
+  So the genericity route is not merely unfinished, it is closed.  Deciding the residue
+  needs a different idea --- e.g. a direct analysis of which boxed formulas a supported
+  diagram can derive, or an entirely syntactic proof-theoretic argument about CEV.
+
+  \<^bold>\<open>Honest status.\<close>  The countermodel is not built.  What is built is a lossless
+  reduction whose premises are proved satisfiable, together with a proof that the
+  obvious way of finishing cannot work.  The conditional consequence from the previous
+  theory stands unchanged: if CEV proves 5 then \<open>base_sound\<close> fails for the word action,
+  and if not, the word action survives.  Neither disjunct is established here.
 \<close>
 
 end
