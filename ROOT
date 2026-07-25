@@ -9,7 +9,11 @@ session Higher_Order_Metaphysics = HOL +
 
 session Higher_Order_Metaphysics_PP in "pp" = Higher_Order_Metaphysics +
   description "
-    The Goodman Purity-of-Pure consistency question and diagonal analysis.
+    Settled results on the Goodman Purity-of-Pure consistency question.
+
+    This session is the stable base.  Work in progress belongs in the
+    Frontier session below, so that editing it does not force a rebuild
+    of everything here.
   "
 theories
   Bacon_PP_Diagonal
@@ -24,3 +28,18 @@ theories
   Bacon_PP_TypeCoherence
   Bacon_PP_Purity_Operator
   Bacon_PP_Symmetric_Witness
+
+session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
+    Higher_Order_Metaphysics_PP +
+  description "
+    Work in progress on the self-classifying stock.
+
+    A leaf session over the stored heap of Higher_Order_Metaphysics_PP, so a
+    single theory here rebuilds in seconds rather than forcing the whole PP
+    chain to be rechecked.  The timeout makes a runaway proof fail fast
+    instead of hanging a build.  Move theories down into the PP session once
+    they are settled.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_Stock_Requirements

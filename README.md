@@ -109,6 +109,21 @@ cannot refute the base-definability condition, because every stock locus is
 automatically stable under any signature-fixing automorphism
 (`pp_stock_locus_conjugation_stable`). See [`STATUS.md`](STATUS.md).
 
+### `Higher_Order_Metaphysics_PP_Frontier`
+
+The `frontier/` session holds work in progress on the self-classifying stock.
+It is a leaf session over the stored heap of the PP session, so editing a
+theory there rebuilds only that theory, and it carries `options [timeout = 60]`
+so a runaway proof fails fast with a line number instead of hanging the build.
+Move theories down into `pp/` once they are settled.
+
+Current frontier results: the simultaneous-requirement construction that makes
+every invariant value of a countable family stock parameter-free and
+QLN-satisfying, with no priority ordering and no injury
+(`pp_countable_family_stock_has_generic_witness`), together with its
+seed-dependent form under a uniform requirement cover
+(`pp_seed_dependent_stock_has_generic_witness`).
+
 ## Verification
 
 The project requires Isabelle2025-2 and no AFP or third-party theory.
@@ -121,6 +136,12 @@ or:
 
 ```sh
 ./check_isabelle.sh
+```
+
+To iterate on the frontier only:
+
+```sh
+isabelle build -d . Higher_Order_Metaphysics_PP_Frontier
 ```
 
 No active theory contains `sorry`, `oops`, `admit`, or `quick_and_dirty`.

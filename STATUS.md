@@ -287,23 +287,107 @@ Two attacks remain, and they are no longer symmetric in promise.
    `Prop -> Prop` grows when the language is enlarged by `Pure` and by a name
    for the witness.
 
-The residual quantifier difficulty on route 2 is a dependency, not a
-cardinality obstruction. The generic-witness theorem has the form
+## The self-classifying stock: the priority problem largely collapses
 
-```text
-for every Stock, there is an r with QLN(Stock, r)
+`frontier/Bacon_PP_Stock_Requirements.thy` (see the session layout note below)
+begins route 2, and the first finding is that most of the anticipated
+priority/forcing machinery is not needed.
+
+Every element of the term-generated domain at `t -> t` over the seed `r` is
+`Y r` for an equivariant binary family `Y` in which the seed occurs only as the
+argument: abstracting the seed turns `Fun` into `\x. \P. Id(P, x)`, and `Pure`
+is `pp_purity_operator`, which is parameter-free and equivariant. And
+`Bacon_PP_Orbit_Stability.thy` already proves that `Y r` is invariant exactly
+when `Y` is constant on the orbit of `r`.
+
+So build the witness to defeat orbit-constancy. For each *non-constant* family,
+place two propositions separating it into the orbit; for each *constant*
+family, place one proposition escaping the index of its constant value. Both
+kinds of requirement are met by prescribing values at reserved cones, the
+paired cones are independent and inexhaustible, and hence the requirements do
+not interact: no priority ordering, no injury.
+
+```isabelle
+pp_prescribed_orbit_witness
+pp_two_orbit_values_defeat_stability
+pp_nonconstant_family_not_invariant
+pp_countable_family_stock_has_generic_witness
 ```
 
-whereas what is needed is
+The last is the main theorem: for every countable set of equivariant families
+there is a tree-symmetric `r` such that every *invariant* value of the stock
+comes from a globally constant family --- so it is parameter-free --- and
+satisfies unary QLN. The pure part of the stock is thereby made independent of
+the witness, which is what removes the circularity.
+
+Sanity check, also proved: at such a witness `Fun` is *not* pure
+(`pp_fundamentality_not_pure_when_required`), since it is the value of the
+non-constant family `pp_operator_equal`. That is as it should be --- Purity of
+Fun is exactly what this question does not assume, and a construction that made
+it true for free would be answering a different question.
+
+### What the collapse does not cover
+
+The dependence of the family set on the seed is not fully removed, and the
+residue is now identified exactly: it is the object-language *quantifier
+domains*, and nothing else. `Fun` is handled by abstraction and `Pure` is
+parameter-free, but a quantified term is interpreted over the Henkin domains,
+which are generated from the seed.
+
+This residue is not repaired by the separation requirements, and the reason is
+worth recording. Consider a family of the shape
 
 ```text
-there is an r with QLN(Stock(r), r)
+Y b P  =  forall X in D. Psi X P
 ```
 
-because the stock of Pure-free denotations depends on `r` through `Fun`. The
-paired-cone witness of `Bacon_PP_Symmetric_Witness.thy` is the natural raw
-material for a priority or forcing construction that closes that gap, since it
-leaves continuum-many cone pairs free after any countable list of requirements.
+in which the parameter `b` does not occur. It is constant, so the separation
+requirements never touch it, yet its index `{P. forall X in D. Psi X P}` moves
+when `D` moves. So `pp_family_constant_index` gives
+`index (Y_r r) = index (Y_r {})` but not `index (Y_r {}) = index (Y_s {})`, and
+the escape requirement can no longer be posed independently of the seed. Nor
+does a monotone union of domains repair it: enlarging a domain changes the
+denotation of quantified terms already present, so it is not merely that new
+families arrive. A stage-wise construction would additionally need a
+persistence theorem, to the effect that each term's denotation is eventually
+constant along the chain of domains.
+
+What can be stated exactly is the hypothesis under which the construction goes
+through unchanged, and it is now a theorem:
+
+```isabelle
+pp_seed_dependent_stock_has_generic_witness
+pp_uniform_envelope_gives_generic_witness
+```
+
+If one countable set of propositions covers the requirements of every family
+that any seed can produce --- for instance because a single countable envelope
+`Fam0` contains `Fam s` for every seed `s` --- then the witness exists outright,
+with no priority ordering and no injury. **The remaining obligation on route 2
+is therefore that one uniformity condition on the object language, not a
+forcing construction.**
+
+Two scope notes on this part. The conclusion is root-level QLN; validating PP
+at every world with `Fun_r = pp_operator_equal r` needs the corresponding
+tail-orbit requirements as well, and the all-worlds guarded theorem in
+`Bacon_PP_Generic_Witness.thy` uses a different, shifting-fundamental
+presentation that cannot simply be substituted. And none of this yet shows the
+resulting structure models H, Classicism, CE and CEV.
+
+## Session layout and build times
+
+The project is split so that work in progress verifies quickly.
+
+- `Higher_Order_Metaphysics` --- the background session.
+- `Higher_Order_Metaphysics_PP` in `pp/` --- settled PP results. Stable base.
+- `Higher_Order_Metaphysics_PP_Frontier` in `frontier/` --- work in progress, a
+  leaf session over the stored heap of the PP session, with
+  `options [timeout = 60]`.
+
+Editing a frontier theory rebuilds only that theory, in about five seconds; the
+whole project rebuilds in a few seconds when cached. The timeout makes a
+runaway proof fail fast with a line number instead of hanging the build. Move
+theories down from `frontier/` into `pp/` once they are settled.
 
 ## Scope notes
 
