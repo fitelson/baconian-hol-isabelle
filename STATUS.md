@@ -1490,7 +1490,43 @@ for non-logical constants, which the repo has as `CEV_proves_subst_const`.
 | `Fun_t` = applies to denotations of the constants (just `r`) | `pp_fundamental_classifier r = {i. pp_view i P = r}` | MATCH |
 | **`Pure_σ` = applies, at each substitution, to denotations of closed terms with no non-logical constants** | `pp_purity_operator F = {i. pp_fun_invariant (pp_fun_view i F)}` | **DIVERGES — invariance, not definability** |
 
-### Divergence 1: Modalized Functionality is absent, and it is load-bearing
+### Divergence 1 is WITHDRAWN (checked against the Classicism PDF)
+
+Reading Bacon–Dorr's *Classicism* directly overturns this. **Footnote 18 (p. 16):
+"C includes Modalized Functionality (see §1.5)."** And §1.5 (p. 17) exhibits
+
+> **Intensionality** `□∀z⃗(Xz⃗ ↔ Yz⃗) → X = Y`
+
+and proves it is a **theorem of Classicism**, from the Logical Equivalence
+instance `λz⃗.(Xz⃗ ∧ ∀z⃗.(Xz⃗ ↔ Yz⃗)) = λz⃗.(Yz⃗ ∧ ∀z⃗.(Xz⃗ ↔ Yz⃗))` plus Booleanism and
+η-conversion. Intensionality has the *weaker* antecedent (`↔`, not `=`), so it is
+stronger than MF; hence `C ⊢ MF`.
+
+The bridge to this repo is p. 15: any H-theory closed under Propositional
+Equivalence together with ξ or ζ is closed under Logical Equivalence. The repo
+has both — `CE_proves.PropEquivalence` and `CEV_proves.VectorEquivalence`, whose
+`zeta_body` *is* Bacon–Dorr's ζ-Equivalence. So repo-CEV contains Classicism,
+proves Intensionality, and proves MF.
+
+**Three things follow, all corrections to what I reported earlier:**
+
+1. The repo's theory was **not weaker** than T₀. Both refutations and consistency
+   results transfer.
+2. My explanation of step 2's null result — that Goodman's liar was
+   *inexpressible* because QSS and `fun′` were out of reach — is **withdrawn**.
+   QSS is reachable. Step 2 found nothing because it searched too small a space.
+3. `frontier/Bacon_PP_Modalized_Functionality.thy` is retained but re-framed: MF
+   is a **derivation target**, not a missing axiom. Its `pp_T0_*` sets are
+   expected to be deductively equivalent to the originals, and
+   `pp_T0_consistency_implies_old` should have a converse.
+
+**Next task, precisely.** Prove unary Intensionality in repo-CEV by the §1.5
+route (instantiate ζ at `F := λz.(Xz ∧ ∀w.(Xw ↔ Yw))`, `G := λz.(Yz ∧ ∀w.(Xw ↔ Yw))`,
+whose pointwise biconditional is an H-theorem; rewrite the shared conjunct to `⊤`
+via `□A = (A = ⊤)`; discharge by the Boolean identity for `A ∧ ⊤`; finish with η).
+Then MF follows since `Xz = Yz` gives `Xz ↔ Yz` by Ref and LL.
+
+### Superseded: the original Divergence 1 write-up
 
 The repo's `CEV_proves.VectorEquivalence` is *derivable* in T₀ (RoE on open
 formulas → Gen → necessitation, available since `□A := A = ⊤` and RoE turns a

@@ -2,30 +2,44 @@ theory Bacon_PP_Modalized_Functionality
   imports "Higher_Order_Metaphysics_PP.Bacon_PP_Diagonal"
 begin
 
-section \<open>Fix 1: Modalized Functionality\<close>
+section \<open>Modalized Functionality --- a target, not a missing axiom\<close>
 
 text \<open>
-  The audit against \<open>\<section>2\<close> of Goodman's notes found that \<open>T\<^sub>0\<close> contains
+  \<^bold>\<open>Correction.\<close>  The first version of this theory recorded Modalized Functionality as
+  \emph{absent} from the repository's theory and added it as an axiom, on the strength
+  of the audit against \<open>\<section>2\<close> of Goodman's notes.  That was wrong, and checking
+  Bacon--Dorr's \emph{Classicism} directly settles it against the audit:
 
-  \begin{center}
-  \<open>\<box> \<forall>x (X x = Y x) \<longrightarrow> X = Y\<close>
-  \end{center}
+  \<^item> Footnote 18 (p.\ 16) states outright that \<open>C\<close> \emph{includes} Modalized
+    Functionality, referring to \<open>\<section>1.5\<close>.
+  \<^item> \<open>\<section>1.5\<close> (p.\ 17) exhibits \<^bold>\<open>Intensionality\<close>, \<open>\<box>\<forall>z\<^sub>1\<dots>z\<^sub>n (X z\<^sub>1\<dots>z\<^sub>n \<longleftrightarrow> Y z\<^sub>1\<dots>z\<^sub>n) \<longrightarrow> X = Y\<close>,
+    and proves it \emph{is a theorem of Classicism}, from the Logical Equivalence
+    instance
+    \<open>\<lambda>z\<^sub>1\<dots>z\<^sub>n. (X z\<^sub>1\<dots>z\<^sub>n \<and> \<forall>z\<^sub>1\<dots>z\<^sub>n. (X z\<^sub>1\<dots>z\<^sub>n \<longleftrightarrow> Y z\<^sub>1\<dots>z\<^sub>n))
+      = \<lambda>z\<^sub>1\<dots>z\<^sub>n. (Y z\<^sub>1\<dots>z\<^sub>n \<and> \<forall>z\<^sub>1\<dots>z\<^sub>n. (X z\<^sub>1\<dots>z\<^sub>n \<longleftrightarrow> Y z\<^sub>1\<dots>z\<^sub>n))\<close>,
+    together with Booleanism and \<open>\<eta>\<close>-conversion.
+  \<^item> Intensionality has the \emph{weaker} antecedent (\<open>\<longleftrightarrow>\<close> rather than \<open>=\<close>), so it is
+    stronger than Modalized Functionality; \<open>C \<turnstile> Intensionality\<close> therefore gives
+    \<open>C \<turnstile> MF\<close>.
 
-  and the repository does not.  \emph{Plain} Functionality \<open>\<forall>x (X x = Y x) \<longrightarrow> X = Y\<close> is
-  \emph{not} part of \<open>T\<^sub>0\<close> (it is true in Bacon's models but not in the theory), so the
-  \<open>\<box>\<close> is essential and must not be dropped.
+  And p.\ 15 supplies the bridge to \emph{this} repository: any H-theory closed under
+  Propositional Equivalence together with \<open>\<xi>\<close> or \<open>\<zeta>\<close> is closed under Logical
+  Equivalence.  The repository has Propositional Equivalence (\<open>CE_proves.PropEquivalence\<close>)
+  and \<open>\<zeta>\<close> (\<open>CEV_proves.VectorEquivalence\<close>, whose \<open>zeta_body\<close> is literally Bacon--Dorr's
+  \<open>\<zeta>\<close>-Equivalence).  So repo-CEV contains Classicism, hence proves Intensionality, hence
+  proves MF.
 
-  Why this matters, in one line: MF is the identity-\emph{introduction} principle, and
-  it applies under hypotheses.  The repository's \<open>CEV_proves.VectorEquivalence\<close> is
-  derivable in \<open>T\<^sub>0\<close> --- Rule of Equivalence on open formulas, then \<open>Gen\<close>, then
-  necessitation (available because \<open>\<box>A\<close> abbreviates \<open>A = \<top>\<close>, so the Rule of
-  Equivalence turns a theorem \<open>A\<close> into \<open>A = \<top>\<close>), then MF --- but the converse fails,
-  because the vector rule is theorem-level only.  \<open>Bacon_Zeta\<close> says as much in its own
-  commentary.  So the repository's theory is \emph{strictly weaker} than \<open>T\<^sub>0\<close>, and QSS,
-  \<open>fun\<acute>\<close> and hence Goodman's liar are all out of reach in it.
+  \<^bold>\<open>Consequences.\<close>  Divergence 1 of the audit is \<^bold>\<open>withdrawn\<close>: the repository's theory was
+  not weaker than \<open>T\<^sub>0\<close> after all, and the transfer of both refutations \emph{and}
+  consistency results is unobstructed.  In particular the explanation I attached to
+  step 2's null result --- that Goodman's liar was \emph{inexpressible} because QSS and
+  \<open>fun\<acute>\<close> were out of reach --- is also withdrawn.  QSS is reachable.  Step 2 found
+  nothing because it searched too small a space.
 
-  The axiom sets of \<open>Bacon_PP_Question\<close> are left untouched; the corrected sets are
-  defined here so that no existing result silently changes meaning.
+  What remains below is therefore a \emph{target}, not an axiom: the definition of MF,
+  and the axiom sets that would result from adding it, kept only so the derivation has
+  something to aim at and so the transfer lemmas are available if MF is ever wanted as
+  a primitive.  \<^bold>\<open>Nothing here asserts that the addition is a strengthening.\<close>
 \<close>
 
 subsection \<open>The axiom\<close>
@@ -145,18 +159,26 @@ theorem pp_T0_consistency_implies_old:
   using CEV_axiom_proves_transfer_to_T0 by blast
 
 text \<open>
-  \<^bold>\<open>Direction of transfer, stated so it is not misread.\<close>  The corrected question is
-  \emph{harder}: consistency of the \<open>T\<^sub>0\<close> set implies consistency of the old set, not
-  conversely (\<open>pp_T0_consistency_implies_old\<close>).  Symmetrically, a refutation in the
-  old set transfers up to the \<open>T\<^sub>0\<close> set (\<open>CEV_axiom_proves_transfer_to_T0\<close>).  So the
-  repository's negative results remain usable, and its positive ones do not.
+  \<^bold>\<open>How to read these transfer lemmas now.\<close>  They are formally correct but, given the
+  correction above, they carry much less weight than first advertised.  Since \<open>CEV\<close>
+  already proves MF, the \<open>T\<^sub>0\<close> sets are expected to be \emph{deductively equivalent} to
+  the originals rather than strictly stronger, and \<open>pp_T0_consistency_implies_old\<close>
+  should turn out to have a converse.  Establishing that converse is exactly the
+  content of the derivation targeted next.
 
-  This is only half the transfer story.  The audit also left open whether the
-  \<open>C_proves\<close> primitive axiom stock --- \<open>BooleanIdentity\<close>, \<open>IdentityIdentity\<close>, and the
-  quantifier absorption and distribution axioms --- is \emph{extra} relative to \<open>T\<^sub>0\<close>,
-  in which case the repository would be stronger in that respect and even refutations
-  would not transfer cleanly.  That question is about Bacon's \<open>H\<close>, not about Isabelle,
-  and is not settled here.
+  \<^bold>\<open>The remaining task, stated precisely.\<close>  Prove, in repo-\<open>CEV\<close>:
+
+  \begin{center}
+  \<open>\<Gamma> \<turnstile>\<^sub>CEV Imp (\<box>\<^sub>o (Forall \<sigma> (App X (Var 0) \<longleftrightarrow>\<^sub>o App Y (Var 0)))) (Eq (\<sigma> \<rightarrow>\<^sub>o Prop) X Y)\<close>
+  \end{center}
+
+  --- unary Intensionality --- following the \<open>\<section>1.5\<close> route: instantiate \<open>\<zeta>\<close>-Equivalence at
+  \<open>F := \<lambda>z. (X z \<and> \<forall>w. (X w \<longleftrightarrow> Y w))\<close> and \<open>G := \<lambda>z. (Y z \<and> \<forall>w. (X w \<longleftrightarrow> Y w))\<close>, whose
+  pointwise biconditional \emph{is} an H-theorem; then use \<open>\<box>A = (A = \<top>)\<close> to rewrite
+  the shared conjunct to \<open>\<top>\<close>, discharge it by the Boolean identity for \<open>A \<and> \<top>\<close>, and
+  finish with \<open>\<eta>\<close>.  \<open>pp_modalized_functionality\<close> then follows because \<open>X z = Y z\<close> implies
+  \<open>X z \<longleftrightarrow> Y z\<close> by \<open>Ref\<close> and \<open>LL\<close>.  This is a real derivation, not a rewording, and it is
+  not attempted here.
 \<close>
 
 end
