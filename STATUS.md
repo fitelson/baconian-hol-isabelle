@@ -4,25 +4,73 @@ Status date: 2026-07-25.
 
 ## Current verdict on Goodman's question
 
-Open. We have neither a contradiction nor a complete model of PP plus the
-Bacon--Dorr background and a fundamental proposition, with Purity of Fun
-omitted.
+Open, and further from settled than earlier drafts of this file suggested. A
+consensus review (Claude Fable 5 + Codex gpt-5.6-sol, transcript at
+`reports/PP_consensus_stocktaking_2026-07-25.md`) produced corrections that are
+recorded here and applied below.
 
-What has changed is that the problem is now much more sharply localized, and
-one of the two previously live attacks has been closed off.
+**The formal target is not what the semantic work has been aiming at.** The
+natural formalization of Goodman's question in this repository is the
+*axiom-extension* consistency statement over
+`pp_recombination_PP_axioms` (`Bacon_PP_Question.thy`), whose calculus proves
+necessitation for added principles. Answering it positively requires **global,
+all-worlds** validity of the whole axiom set. **No formal statement of any kind
+connects a word-action theorem to that target.** Semantic progress below must
+not be read as progress on the defined question until that bridge exists.
 
-1. PP is not obstructed *semantically*. In the word-action M-set the purity
-   predicate for unary propositional operators is itself invariant, hence pure,
-   so the target PP instance is true there. What fails in that model is
-   Recombination, because the full function domain gives an uncountable stock
-   of classifier indices and no single witness escapes them all.
-2. The purity operator is nevertheless not Pure-free definable. Adding it to
-   the language is therefore a genuine enlargement of the Henkin domains, and
-   the enlarged domains change which classifier indices the Recombination
-   witness must escape.
+Three specific discrepancies, all verified against the sources:
 
-The residual obstruction is exactly that circularity: a simultaneous choice of
-a countable stock and of a witness generic for the stock that choice produces.
+1. The positive witness theorems are **root-level**, and the all-worlds guarded
+   theorem uses a *shifting*-fundamental presentation,
+   `pp_fundamental_at i r P <-> pp_view i P = r`. That is **not** the fixed-`Fun`
+   condition the target needs, which is `pp_view i P = pp_view i r` --- since
+   `Fun_r = \P. Id(P, r)` and local identity is `pp_operator_equal`. The two
+   coincide only where `pp_view i r = r`. The guarded theorem therefore does not
+   discharge the necessitated instances.
+2. `Bacon_Semantics.thy`'s `applicative_structure` locale requires `lam_den_type`
+   for *every* meta-function between domains --- full-function comprehension ---
+   so it **cannot host countable Henkin domains** at all. A new Henkin soundness
+   interface with denotable rather than full function spaces is needed before
+   modelhood is even statable.
+3. The interpreted universes stop one type level **below** the target PP
+   instance, whose outer constant lives at `((Prop->Prop)->Prop)->Prop`.
+
+What genuinely has changed is that the problem is sharply localized and several
+of the project's own conjectures have been correctly killed: FIN-base, the naive
+IDX repair, the automorphism attack on base definability, and the unguarded
+envelope condition. The hard kernel --- a countable self-classifying stock in its
+all-worlds fixed-`Fun` form --- has never been constructed or even approximated.
+
+Consensus credence: **~0.6 that the axiom-extension package is consistent**
+(~0.7 for the weaker local-consequence version; the implication runs one way
+only), and **~0.25--0.30 that the word-action geometric core can be completed**
+after the interface redesign.
+
+### Corrections applied
+
+- "PP is true in the word-action M-set" is **overstated**; see the corrected
+  statement under that heading below.
+- "The entire difficulty is self-classification" is **withdrawn**. For the
+  axiom-extension question, fixed-`Fun` all-worlds validity, the unbounded typed
+  evaluator, a new soundness interface, and background modelhood are
+  *independent* obligations.
+- "The envelope condition is false" is an informal meta-argument with no
+  corresponding lemma, and refutes only the *unguarded* sufficient condition;
+  the guarded seed-aware cover's satisfiability is open.
+- "The priority problem largely collapses" concerns requirement bookkeeping for
+  a fixed countable family set only. The construction secures QLN by *pruning* ---
+  making every pure member of the stock parameter-free --- not by exhibiting a
+  rich self-classifying stock.
+- The decision-basis verdict carries a cone-determinedness asterisk: the
+  `p_pure` rule covers `Pure` only on cone-determined operators, so operators
+  with the argument occurring *under* a `Pure` are outside the shield, and
+  inclusion of the actual term-generated domain in the closure is unproved.
+- Both `oterm` bridges under-interpret `App` as well as `Lam`, so the
+  propositional bridge covers **no** `Pure`- or `Fun`-application at all.
+- "Exactly one fundamental proposition" means existence plus uniqueness *up to
+  object-language identity at each world*, together with the separate all-type
+  schema forbidding fundamentals at every other type. Neither is discharged by
+  any existing witness theorem.
 
 ## Verified background
 
@@ -68,7 +116,17 @@ pp_countable_invariant_function_stock_has_QLN_witness
 Thus the classifier/generic-witness semantics is not an ad hoc replacement for
 Bacon's function domain.
 
-### PP holds in the word-action M-set; Recombination is what fails
+### The purity operator is equivariant; Recombination is what fails
+
+**Corrected billing.** What is proved is `pp_second_order_invariant
+pp_purity_operator`: the intended denotation of `Pure_{t->t}` is equivariant and
+necessitated under a natural *shallow second-order action* routed through the
+section `pp_fun_lift`. Three things are missing before "the target PP instance is
+true in the word-action M-set" is licensed: (i) membership of
+`pp_purity_operator` in the recursive Bacon carrier at `(t -> t) -> t`;
+(ii) agreement of that shallow action with the `pp_dom` class action there;
+(iii) a compositional interpretation reaching type `((Prop->Prop)->Prop)->Prop`,
+one level above where the universes stop.
 
 `Bacon_PP_Purity_Operator.thy` gives the purity predicate at type
 `(t -> t) -> t` its natural value and shows that value is invariant:
@@ -81,8 +139,9 @@ pp_purity_operator_second_order_equivariant
 pp_purity_of_pure_holds_in_word_action
 ```
 
-So `Pure` for unary propositional operators is itself pure, and purity is
-necessitated when true. With the full function domain, however:
+So the intended denotation is equivariant and necessitated; *under the intended
+but unformalized interpretation* this would verify the target instance. With the
+full function domain, however:
 
 ```isabelle
 pp_full_stock_has_no_recombination_witness
@@ -1110,3 +1169,47 @@ theories down from `frontier/` into `pp/` once they are settled.
 
 Earlier Caie and contextual-rule material is preserved under
 `quarantine/2026-07-24_pre_core_cleanup/`.
+
+## Agreed next steps (consensus review, 2026-07-25)
+
+Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
+
+1. **Axiom-extension Henkin soundness interface.** A typed Henkin action-model
+   interface with *denotable* (not full) function spaces, plus the conditional
+   theorem *global validity of every member of `T` implies axiom-extension
+   consistency for `T`*, stated for the complete axiom set. Not a model
+   construction --- strictly the contract. Medium, 2--4 weeks. Fixes what every
+   downstream result must meet, and stops root-level results being mistaken for
+   consistency evidence.
+
+2. **Time-boxed refutation attack in CEV+.** Look for a finite inconsistent core
+   from the target PP instance, application closure, necessitated Recombination
+   and unique fundamentality, using the existing `Bacon_PP_Diagonal` derivations
+   as base camp. First attention to the argument-under-`Pure` seam --- the one
+   place the unrealizability shield does not reach --- but the search must be
+   broad across the four principles jointly. Medium, 3--4 weeks, sharply
+   time-boxable. A refutation settles everything; a mapped-out failure closes the
+   seam and legitimately raises the consistency credence.
+
+3. **All-worlds fixed-`Fun` self-classifying core.** A countable typed stock and
+   one contingent `r` such that at *every* world, for every *locally* pure member
+   of the `Prop->Prop` domain, Recombination holds with `Fun = \P. Id(P, r)`
+   throughout. The live risk is **entanglement**, not counting: prescribing a
+   cone of `r` constrains every tail view through it, so requirements at
+   different worlds are no longer independent, which is what breaks the old
+   no-injury argument. Confront that first. High to very high.
+
+4. **All-type relational evaluator and `Lam`/`App` closure.** A type-indexed
+   interpretation relation over an *untyped applicative structure*, with object
+   types interpreted as PERs by plain recursion --- no datatype, hence no ceiling.
+   Acceptance criteria: an operator closure with an application rule covering
+   argument-under-`Pure` (or an explicit counterexample to the corresponding
+   decidedness-preservation lemma), and all-type discharge of the
+   no-other-fundamentals schema. High. Upgrades several results to their billed
+   strength.
+
+5. **One-week cross-class calibration probe.** Test the package in one
+   structurally different arena --- e.g. a Fraenkel--Mostowski group action with
+   finite supports, where purity is empty support --- asking only whether the same
+   self-classification knot reappears. Strictly diagnostic. Low to medium.
+   Settles whether the tree action deserves the remaining months.
