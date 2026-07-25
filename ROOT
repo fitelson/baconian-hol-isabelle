@@ -61,3 +61,4 @@ theories
   Bacon_PP_Five_Countermodel
   Bacon_PP_Minimal_Axioms
   Bacon_PP_Modalized_Functionality
+  Bacon_PP_Definable_Purity

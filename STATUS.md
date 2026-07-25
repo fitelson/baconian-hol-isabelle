@@ -1454,7 +1454,28 @@ both material. Everything else matches.
 | Purity schema (closed, only logical vocabulary) | `pp_purity_schema` (`consts_of M = {}`) | MATCH |
 | Application closure | `pp_application_closure` | MATCH |
 | Persistence (only where flagged) | `pp_persistence`, in flagged set only | MATCH |
-| — | `C_proves`: BooleanIdentity, IdentityIdentity, Absorb/Dist Disj-Forall, Absorb/Dist Conj-Exists as **primitive axioms** | **UNRESOLVED — possibly EXTRA** |
+| — | `C_proves`: BooleanIdentity, IdentityIdentity, Absorb/Dist Disj-Forall, Absorb/Dist Conj-Exists as primitive axioms | **RESOLVED — not extra** |
+
+**`C_proves` resolved against Bacon–Dorr, *Classicism*, Figure 4.** The four
+quantifier identities there — Absorption-∨∀, Distribution-∨∀, Absorption-∧∃,
+Distribution-∧∃ — match the repo's exactly, and the text states: *"All of these
+identities are easily seen to be instances of Logical Equivalence"* (with the
+worked case for Absorption-∨∀), while Appendix A proves the converse, that they
+recover the remaining instances. So Figure 4 and Logical Equivalence are
+equivalent axiomatizations, and T₀'s Rule of Equivalence already yields the
+whole stock. **The repo is not stronger than T₀ anywhere.**
+
+Consequence: repo ⊊ T₀ strictly (weaker only, by MF). So **refutations do
+transfer up cleanly**, and my mid-audit worry that they might not is withdrawn.
+Consistency results still do not transfer down.
+
+**H resolved against Bacon's book and the Classicism paper.** The book's
+Definition 5.1 lists PC1–PC3, UI, β, η with MP and Gen; the Classicism paper
+additionally treats Ref, LL and EG as H-axioms (*"the Absorption identities for
+UI and EG, and the Identity Identity for Ref and LL"*), which is exactly the
+repo's `H_proves`. Goodman's §2 gloss is abbreviated, not divergent. Also
+matching: the book requires logics to be closed under the Rule of Substitution
+for non-logical constants, which the repo has as `CEV_proves_subst_const`.
 
 ### Bacon's appendix model
 
