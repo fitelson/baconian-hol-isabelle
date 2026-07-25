@@ -32,7 +32,10 @@
 > Its report is `reports/CLAUDE_AUDIT_GOODMAN_T2D_2026-07-25.md`.
 > The literal-modal T2e formula `□r ∨ □¬r` and the main T1 universal
 > `∀p(Pure(p) → (p=⊤ ∨ p=⊥))` are now machine-proved but await adversarial
-> audit.  T2f infrastructure is under construction.
+> audit.  The first advertised T1 consequence is also machine-proved:
+> every pure-indexed biconditional operator is `id` or `¬`, with the endpoint
+> equalities proved by unary Equivalence.  The exact WI-to-Inv packaging
+> remains open.  T2f infrastructure is under construction.
 > These remain conditional derivability results: consistency and non-vacuity
 > of CEV plus the core are open, and the equation of repository CEV with
 > Goodman's presentation of `T₀` remains a prose audit.

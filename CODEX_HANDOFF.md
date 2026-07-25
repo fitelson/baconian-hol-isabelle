@@ -70,7 +70,9 @@ Codex has resumed as driver.
   T2e using the literal modal rendering `□r ∨ □¬r`; it awaits adversarial
   audit.  `frontier/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`
   machine-proves T1's main universal claim from zeroary Exhaustion and awaits
-  audit.  T2f infrastructure is in
+  audit.  `frontier/Bacon_PP_Goodman_Biconditional_Classification.thy`
+  machine-proves that every pure-indexed biconditional operator is `id` or
+  `¬`; exact WI-to-Inv packaging remains open.  T2f infrastructure is in
   `frontier/Bacon_PP_Goodman_Fun_Prime_Six_Distinct.thy`.
 - Standing qualification: T2a--T2d are conditional derivability results in
   repository CEV.
