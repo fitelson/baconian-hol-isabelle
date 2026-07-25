@@ -1308,51 +1308,64 @@ image of `truth_den`. `Neg` likewise. So `¬□A`, when true, denotes
 `truth_den True`, and `eq_den_refl` makes `□(¬□A)` true. The modal fragment of
 this semantics is not S4-with-extras; **`□` is two-valued**.
 
-### Consequence 1 (for the refutation): the only concrete objection is gone
+### Does CEV *prove* `modal_5`? The completeness results do NOT settle it
 
-Codex's objection to `◇Pure (K R) ⟹ □Pure (K R)` was that a reflexive
-transitive branching frame can have it false at the root and persistently true
-on a branch. **No such frame is a model of this semantics.** This is not yet a
-proof of 5 in CEV — validity in all models needs a completeness theorem, and
-whether the repository's completeness results cover this schema is not settled.
-But the refutation can no longer be blocked by exhibiting an S4 countermodel.
+Checked against the sources. **No**, and for three separable reasons:
 
-### Consequence 2 (against this project's own route): `base_sound` FAILS
+1. `CEV_completeness_from_countermodels` has exactly the right shape
+   (`valid_in_context Γ A ⟹ Γ ⊢CEV A`) but is conditional on
+   `CEV_countermodel_property`, which is **defined and never proved** anywhere
+   in the repo. It is a hypothesis, not a theorem.
+2. The two *unconditional* biconditionals — `CEV_clean_canonical_valid_iff_proves`
+   and `CEV_clean_Henkin_valid_iff_proves` — are **syntactic**. "Valid" there
+   means membership in every clean canonical world / Henkin theory, i.e. every
+   maximal consistent set of formulas. They relate provability to
+   maximal-consistent-set membership and cannot import a model-theoretic fact.
+3. Nothing in `Bacon_Intended_Quotient` or `Bacon_Supported_Canonical` builds an
+   `applicative_structure` from a Henkin theory.
 
-This is the sharper consequence and it is negative for the main semantic route.
-`pp_sem_box {w. w ≠ []} = {i. i ≠ []}`, which is neither `{}` nor `UNIV`
-(`pp_sem_box_not_two_valued`). So the word-action `□` is genuinely
-three-or-more-valued, and **no structure in which `pp_sem_box` interprets
-`ObjBox` can be an `applicative_structure`.**
+So the link *valid in every applicative structure ⟹ CEV-provable* is exactly
+what is missing. Nor does the `modal_4` route extend: `CEV_eq_truth_of_eq`
+substitutes identicals into `F = λx. (M = x) = ⊤`, and substitution of
+identicals needs a **positive** identity premise, whereas 5 supplies a negative
+one. That is weak evidence 5 is *not* CEV-provable and that this semantics is
+**incomplete** — validating more than CEV proves.
 
-Obligation item 2 of the checklist is therefore **not** a routine verification
-for the word action. It fails, for a reason visible in one line of the
-evaluation function rather than in any detail of the construction. The
-consensus review rated this "a real risk" but treated it as a verification task;
-that rating was too generous.
+### Correction to the first version of this section
 
-### What survives, and what does not
+The first write-up of this result claimed `base_sound` **fails** for the word
+action. That was wrong, and the error mattered, so it is recorded rather than
+quietly fixed. `base_sound` is a hypothesis of the `henkin_action_model` locale
+in `Bacon_PP_Axiom_Soundness`, and that locale has clauses for `Neg`, `Imp`,
+`Forall`, `Exists` and `shift` but **no `Eq` clause**. It does not force
+two-valued identity. What is actually shown is only that the word action is not
+an `applicative_structure` with `pp_sem_box` interpreting `ObjBox`.
 
-The word-action results stand as mathematics about a concrete M-set: the
-invariance analysis, generic-witness theorems, decision-basis and attainment
-results are untouched. What they lose is the claim to bear on Goodman's question
-by way of `base_sound`. They bear on it only for a background in which `□` is
-*not* `Eq Prop A ObjTrue` — i.e. a weaker background than the one at issue.
+**The correct statement is conditional.** `pp_sem_box_refutes_five_pattern`
+(checked) shows the word action refutes the 5 pattern outright — `pp_sem_box`
+images are up-closed under left extension, complements are down-closed, and
+boxing a down-closed proper subset gives `{}`. Hence:
 
-**Credence.** This does not move the consistency credence much either way
-(~0.6 stands; the step-2 bump to ~0.62 is withdrawn as it rested on the S4
-countermodel picture). What it moves is the *plan*: the word-action route to a
-model is closed, and the remaining ranked steps that presuppose it should be
-re-scoped before more work goes into them.
+> **If CEV proves 5, `base_sound` fails for the word action. If it does not,
+> the word action survives this test.**
 
-### Immediate follow-ups this creates
+Likewise the refutation consequence is narrower than first stated: Codex's
+S4-branching objection is refuted as an objection about *applicative-structure
+modelhood*, but survives as an objection about *derivability*, since CEV is not
+known to be complete for that class.
 
-1. Does CEV *prove* `modal_5`? Check whether `Bacon_Completeness` /
-   `Bacon_Clean_Completeness` covers the schema. If yes, the step-2 refutation
-   branch may close outright.
-2. Re-scope the model programme. Any candidate model must have two-valued `□`.
-   That is a severe constraint and rules out the whole M-set family as
-   interpretations of `ObjBox`, not just the word action.
+**Credence.** ~0.6 stands. The step-2 bump to ~0.62 is withdrawn (it rested on
+the S4-countermodel picture). The plan is **not** re-scoped: the word-action
+route is not closed, it is contingent on the 5 question.
+
+### The one question that decides both
+
+Does CEV prove `modal_5`? It must be settled by **finding a derivation, or a
+clean Henkin theory `T` with `Neg (□A) ∈ T` and `□(Neg (□A)) ∉ T`** — not by the
+completeness theorems. `CEV_supported_modal_successor` and
+`CEV_identity_modal_successor` are the natural machinery for the countermodel
+direction; note their `box_absent` hypothesis is the very thing at issue, so the
+construction needs a handle on which boxes sit in a supported world.
 
 ## Agreed next steps (consensus review, 2026-07-25)
 

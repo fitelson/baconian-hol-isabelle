@@ -130,41 +130,101 @@ proof -
     unfolding box_eq by blast
 qed
 
+subsection \<open>The 5 pattern itself fails in the word action\<close>
+
+text \<open>
+  Sharper than two-valuedness: the word-action \<open>\<box>\<close> refutes the 5 \emph{pattern}
+  directly.  \<open>pp_sem_box X\<close> is up-closed under left extension, so its complement is
+  down-closed, and boxing a down-closed proper subset gives \<open>{}\<close>.
+\<close>
+
+theorem pp_sem_box_refutes_five_pattern:
+  "\<not> (- pp_sem_box {w. w \<noteq> []}
+        \<subseteq> pp_sem_box (- pp_sem_box {w. w \<noteq> []}))"
+proof -
+  have box_eq: "pp_sem_box {w. w \<noteq> []} = {i. i \<noteq> []}"
+  proof (rule set_eqI)
+    fix i :: pp_word
+    show "(i \<in> pp_sem_box {w. w \<noteq> []}) = (i \<in> {i. i \<noteq> []})"
+    proof
+      assume "i \<in> pp_sem_box {w. w \<noteq> []}"
+      then have "pp_view i {w. w \<noteq> []} = UNIV"
+        by (simp add: pp_sem_box_def)
+      then have "[] \<in> pp_view i {w. w \<noteq> []}" by simp
+      then show "i \<in> {i. i \<noteq> []}" by (simp add: pp_view_def)
+    next
+      assume "i \<in> {i. i \<noteq> []}"
+      then have "pp_view i {w. w \<noteq> []} = UNIV"
+        by (auto simp: pp_view_def)
+      then show "i \<in> pp_sem_box {w. w \<noteq> []}"
+        by (simp add: pp_sem_box_def)
+    qed
+  qed
+  have compl: "- pp_sem_box {w. w \<noteq> []} = {[]}"
+    unfolding box_eq by auto
+  have "pp_sem_box {[] :: pp_word} = {}"
+  proof (rule set_eqI, simp)
+    fix i :: pp_word
+    have "[0] @ i \<noteq> []" by simp
+    then have "\<not> pp_view i {[] :: pp_word} = UNIV"
+      by (auto simp: pp_view_def)
+    then show "i \<notin> pp_sem_box {[] :: pp_word}"
+      by (simp add: pp_sem_box_def)
+  qed
+  then show ?thesis
+    unfolding compl by simp
+qed
+
 text \<open>
   \<^bold>\<open>Consequences, stated carefully.\<close>
 
+  \<^item> \<^emph>\<open>Does CEV \emph{prove} 5?  The completeness results do not settle it.\<close>  Three
+    facts, checked by reading the sources.  (i) \<open>CEV_completeness_from_countermodels\<close>
+    has exactly the right shape, \<open>valid_in_context \<Gamma> A \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>CEV A\<close>, but it is
+    conditional on \<open>CEV_countermodel_property\<close>, which is \emph{defined and never
+    proved} anywhere in the development --- it is a hypothesis, not a theorem.
+    (ii) The two unconditional biconditionals, \<open>CEV_clean_canonical_valid_iff_proves\<close>
+    and \<open>CEV_clean_Henkin_valid_iff_proves\<close>, are \emph{syntactic}: ``valid'' there
+    means membership in every clean canonical world or Henkin theory, i.e. in every
+    maximal consistent set of formulas.  They relate provability to
+    maximal-consistent-set membership and cannot import a model-theoretic validity
+    fact.  (iii) Nothing in \<open>Bacon_Intended_Quotient\<close> or \<open>Bacon_Supported_Canonical\<close>
+    builds an \<open>applicative_structure\<close> out of a Henkin theory.  So the link
+    ``valid in every applicative structure \<Longrightarrow> CEV-provable'' is precisely what is
+    missing, and the question stays open.
+
+  \<^item> \<^emph>\<open>Nor does the \<open>modal_4\<close> proof extend.\<close>  \<open>CEV_modal_4\<close> comes from
+    \<open>CEV_eq_truth_of_eq\<close>, which substitutes identicals into \<open>F = \<lambda>x. (M = x) = \<top>\<close>
+    starting from the reflexive instance.  Substitution of identicals needs a
+    \emph{positive} identity premise; 5 supplies a negative one.  The route does not
+    generalise, which is weak evidence that 5 is \emph{not} CEV-provable and that this
+    semantics is incomplete --- validating more than CEV proves.
+
   \<^item> \<^emph>\<open>For the refutation.\<close>  Codex's objection to the step from \<open>\<diamond> Pure (K R)\<close> to
     \<open>\<box> Pure (K R)\<close> was that a reflexive transitive branching frame can have the
-    proposition false at the root and persistently true on one branch.  The theorem
-    above shows no such frame is a model of this semantics.  That does \emph{not} by
-    itself give a proof of 5 in CEV --- validity in all models yields provability only
-    through a completeness theorem, and whether the repository's completeness results
-    apply to this schema is not settled here.  It does mean the refutation cannot be
-    blocked by exhibiting an S4 countermodel, which was the only concrete objection on
-    the table.
+    proposition false at the root and persistently true on one branch.  No such frame
+    is an \<open>applicative_structure\<close>.  But since CEV is not known to be complete for that
+    class, this does \emph{not} license the step inside CEV\textsuperscript{+}.  The
+    correct summary is narrower than it first appears: the objection survives as an
+    objection about \emph{derivability}, and is refuted only as an objection about
+    \emph{applicative-structure modelhood}.
 
-  \<^item> \<^emph>\<open>Against the word-action programme.\<close>  This is the sharper consequence, and it is
-    negative for the project's main semantic route.  In the word action
-    \<open>pp_sem_box X = {i. pp_view i X = UNIV}\<close> is in general neither \<open>{}\<close> nor \<open>UNIV\<close>, so
-    \<open>\<box>\<close> there is genuinely three-or-more-valued.  Any structure in which \<open>pp_sem_box\<close>
-    interprets \<open>ObjBox\<close> therefore cannot be an \<open>applicative_structure\<close>, because the
-    \<open>Eq\<close> clause forces \<open>ObjBox\<close>-values into the image of \<open>truth_den\<close>.  So obligation
-    item 2 of the checklist (\<open>base_sound\<close>) is not a routine verification for the word
-    action --- \<^bold>\<open>it fails\<close>, for a reason visible in the locale rather than in any
-    detail of the construction.
+  \<^item> \<^emph>\<open>What this does \emph{not} show about the word action.\<close>  A correction to the
+    first version of this theory.  \<open>base_sound\<close> is a hypothesis of the
+    \<open>henkin_action_model\<close> locale of \<open>Bacon_PP_Axiom_Soundness\<close>, and that locale has
+    clauses for \<open>Neg\<close>, \<open>Imp\<close>, \<open>Forall\<close>, \<open>Exists\<close> and \<open>shift\<close> but \<^bold>\<open>no \<open>Eq\<close> clause\<close>.
+    It therefore does not force two-valued identity, and the argument above does
+    \emph{not} show \<open>base_sound\<close> fails.  What is shown is only that the word action is
+    not an \<open>applicative_structure\<close> with \<open>pp_sem_box\<close> interpreting \<open>ObjBox\<close>.
 
-  \<^item> \<^emph>\<open>What survives.\<close>  The word-action results retain their status as results about a
-    concrete M-set: the invariance analysis, the generic witness theorems, the
-    decision-basis and attainment results are all untouched as mathematics.  What they
-    lose is the claim to bear directly on Goodman's question by way of \<open>base_sound\<close>.
-    They bear on it only if the intended reading of \<open>\<box>\<close> is \emph{not} \<open>Eq Prop A ObjTrue\<close>
-    --- that is, only for a background weaker than the one at issue.
-
-  \<^item> \<^emph>\<open>Why this was not visible earlier.\<close>  The consensus review flagged the modelhood
-    obligation as ``a real risk'' but rated it a verification task.  It is not: the
-    obstruction is one line of the evaluation function.  This is the correct kind of
-    thing for a refutation-directed step to turn up, even though what it refutes is
-    the project's own route rather than the target claim.
+  \<^item> \<^emph>\<open>The correct conditional.\<close>  \<open>pp_sem_box_refutes_five_pattern\<close> shows the word
+    action refutes the 5 pattern outright: \<open>pp_sem_box\<close>-images are up-closed under left
+    extension, so complements are down-closed, and boxing a down-closed proper subset
+    gives \<open>{}\<close>.  Hence \<^bold>\<open>if CEV proves 5, then \<open>base_sound\<close> fails for the word action\<close>
+    --- and if CEV does not, the word action survives this test.  One question decides
+    both the refutation branch and the model programme, and it is still the right next
+    thing to settle; but it must be settled by finding a derivation or a Henkin-theory
+    countermodel, not by the completeness theorems.
 \<close>
 
 end
