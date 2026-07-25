@@ -153,4 +153,76 @@ proof -
     unfolding intens_pred_def by simp
 qed
 
+subsection \<open>Two more substitution facts\<close>
+
+lemma subst0_var0_shift_by_2:
+  "subst0 (Var 0) (shift_by 2 M) = shift M"
+proof -
+  have "\<And>n. case_nat (Var 0) Var (shift_ren 2 0 n) = Var (Suc n)"
+    by (simp add: shift_ren_def)
+  then have "subst (case_nat (Var 0) Var) (rename (shift_ren 2 0) M)
+      = rename Suc M"
+    by (rule subst_rename_to_rename)
+  then show ?thesis
+    by (simp add: subst0_def shift_by_def shift_def)
+qed
+
+lemma subst0_var0_lift_ren_Suc:
+  "subst0 (Var 0) (rename (lift_ren Suc) M) = M"
+  unfolding subst0_def
+proof (rule subst_rename_inverse)
+  fix n show "case_nat (Var 0) Var (lift_ren Suc n) = Var n"
+    by (cases n) simp_all
+qed
+
+lemma shift_ObjTrue[simp]: "shift ObjTrue = ObjTrue"
+  by (simp add: ObjTrue_def shift_def)
+
+subsection \<open>Typing helpers\<close>
+
+lemma typed_shift_ctx:
+  assumes "\<Gamma> \<turnstile> M : \<tau>"
+  shows "\<sigma> # \<Gamma> \<turnstile> shift M : \<tau>"
+proof -
+  have "[\<sigma>] @ \<Gamma> \<turnstile> shift_by (length [\<sigma>]) M : \<tau>"
+    using assms by (rule shift_by_preserves_typing)
+  then show ?thesis by (simp add: shift_by_1)
+qed
+
+lemma typed_var0: "\<sigma> # \<Gamma> \<turnstile> Var 0 : \<sigma>"
+  by (rule has_type.Var) (simp add: lookup_def)
+
+lemma typed_shift_app:
+  assumes "\<Gamma> \<turnstile> F : \<sigma> \<rightarrow>\<^sub>o Prop"
+  shows "\<sigma> # \<Gamma> \<turnstile> App (shift F) (Var 0) : Prop"
+  using typed_shift_ctx[OF assms] typed_var0 by (rule has_type.App)
+
+lemma typed_intens_conj_body:
+  assumes X: "\<Gamma> \<turnstile> X : \<sigma> \<rightarrow>\<^sub>o Prop" and c: "\<Gamma> \<turnstile> c : Prop"
+  shows "\<sigma> # \<Gamma> \<turnstile> Conj (App (shift X) (Var 0)) (shift c) : Prop"
+  using typed_shift_app[OF X] typed_shift_ctx[OF c]
+  by (rule has_type.Conj)
+
+lemma typed_shift_intens_conj_app:
+  assumes X: "\<Gamma> \<turnstile> X : \<sigma> \<rightarrow>\<^sub>o Prop" and c: "\<Gamma> \<turnstile> c : Prop"
+  shows "\<sigma> # \<Gamma> \<turnstile> App (shift (intens_conj \<sigma> X c)) (Var 0) : Prop"
+  using typed_intens_conj[OF X c] by (rule typed_shift_app)
+
+text \<open>
+  \<^bold>\<open>Where this stops.\<close>  The remaining steps of the \<open>\<section>1.5\<close> route are: \<open>\<zeta>\<close> at the guarded
+  pair to get \<open>\<lambda>z.(X z \<and> C) = \<lambda>z.(Y z \<and> C)\<close>; Leibniz with \<open>intens_pred\<close> and \<open>\<box>C\<close>, i.e.
+  \<open>C = \<top>\<close>, to replace \<open>C\<close> by \<open>\<top>\<close>; the discharge \<open>\<lambda>z.(X z \<and> \<top>) = X\<close>; and assembly by
+  \<open>CEV_eq_trans_from\<close>.
+
+  All four need one shared helper --- transitivity of the object biconditional --- and
+  the obvious route to it, a \<open>prop_tautology\<close> instance for
+  \<open>(A \<longleftrightarrow> B) \<longrightarrow> ((B \<longleftrightarrow> C) \<longrightarrow> (A \<longleftrightarrow> C))\<close>, is unexpectedly expensive: it pushes this
+  session past its 15-second budget, whereas the two-variable tautologies already in
+  \<open>Bacon_S4\<close> are cheap.  The fix is to derive it from the identity machinery instead ---
+  \<open>CEV_zeroary_equivalence\<close> to turn each biconditional into an \<open>Eq Prop\<close>,
+  \<open>CEV_eq_trans_from\<close> to compose, and Leibniz at \<open>prop_id\<close> to come back --- so that no
+  large propositional tautology is ever checked.  That is the next step, and it is
+  mechanical.
+\<close>
+
 end
