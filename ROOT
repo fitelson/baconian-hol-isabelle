@@ -65,3 +65,4 @@ theories
   Bacon_PP_Intensionality
   Bacon_PP_Modalized_Functionality_Derived
   Bacon_PP_T6_Encoding
+  Bacon_PP_Goodman_Composition

@@ -17,13 +17,19 @@ Codex has resumed as driver.
 - The same theory machine-proves `Pure(D)` using an explicit constant-free
   abstraction over `Pure_{t→t}`. The final T6-Inv derivation of `⊥` remains
   open.
+- `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
+  composition beta law, left and right identity, associativity, and purity of
+  composition from the exact T6 core. It also provides versions of application
+  closure and equality reasoning that are sound under temporary local
+  assumptions.
 - Claude's full audit is
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal lemmas: purity of composition, composition associativity and
-  unit laws, then closure of `fun′` under `G`. These are the reusable
-  prerequisites for both Goodman T2 and the T6-Inv case split.
+- Next formal lemma: closure of `fun′` under a pure reversible operator
+  (Goodman T2a), first with an explicit inverse and then by eliminating the
+  inverse existential in `G`. This is the next reusable prerequisite for the
+  T6-Inv case split.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the

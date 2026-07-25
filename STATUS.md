@@ -8,7 +8,12 @@
 > Goodman T6-Inv vocabulary and QLN-free axiom package are encoded in
 > `frontier/Bacon_PP_T6_Encoding.thy`; the same theory now machine-proves
 > `Pure(D)` by an explicit constant-free abstraction, PP, application closure,
-> beta conversion, and equality transport. The final T6 contradiction is open.
+> beta conversion, and equality transport.
+> `frontier/Bacon_PP_Goodman_Composition.thy` now supplies the next verified
+> layer: the composition beta law, both unit laws, associativity, purity of
+> composition over the exact T6 core (and arbitrary extensions of it), and
+> local-assumption versions of application closure and equality reasoning.
+> The final T6 contradiction and the `fun′`-under-`G` closure theorem are open.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
