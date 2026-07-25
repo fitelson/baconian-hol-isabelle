@@ -1367,6 +1367,60 @@ completeness theorems. `CEV_supported_modal_successor` and
 direction; note their `box_absent` hypothesis is the very thing at issue, so the
 construction needs a handle on which boxes sit in a supported world.
 
+## The Henkin countermodel to 5: built down to one lossless residue
+
+`frontier/Bacon_PP_Five_Countermodel.thy`.
+
+```isabelle
+CEV_not_proves_modal_5_of_consistent_diagram
+```
+
+> Let `S` be a clean Henkin theory, `□A ∉ S`, and suppose
+> `insert (□A) (CEV_identity_diagram Γ S)` is consistent (with a fresh-constant
+> reserve). Then `¬ Γ ⊢CEV modal_5 A`.
+
+Every modal step is discharged. The mechanism: `□X` *is* the identity
+`Eq Prop X ObjTrue`, so `□X ∈ S` puts it in `CEV_identity_diagram Γ S`, which is
+inherited by any Henkin theory extending the diagram. So 5 fails at `S` exactly
+when some such extension makes `□A` true while `S` does not — **failure of
+euclideanness**, "not necessary here, necessary at a successor."
+
+**The residue is provably tight, not a convenient hypothesis.** By
+`CEV_identity_diagram_derivable_implies_box_derivable`, inconsistency of
+`insert (□A) (diagram Γ S)` means `diagram Γ S ⊢ ¬□A`, which yields
+`□(¬□A) ∈ S` — i.e. *5 holding at S for A*. So the hypothesis is necessary as
+well as sufficient: **the 5 question just is this consistency question.** The
+reduction loses nothing.
+
+### The one missing lemma, named exactly
+
+The natural discharge is genericity: take `A` to be a constant `c` not occurring
+in the diagram. The diagram then says nothing about `c`, and substituting
+`ObjTrue` for `c` would turn a derivation of `¬□c` into one of `¬□ObjTrue`,
+which is refutable. This needs:
+
+```isabelle
+Γ ⊢CEV A  ⟹  Γ ⊢ N : σ  ⟹  Γ ⊢CEV (A[N/c])
+```
+
+— **CEV-derivability is preserved under substituting a well-typed closed term
+for a constant.** The repository does not have it. `Bacon_Substitution` is about
+*variables*; the constant apparatus (`consts_of`, `fresh_const_for`) provides
+freshness bookkeeping and Henkin witnesses but no substitution principle for
+constants.
+
+Cost estimate: an induction over the H rules (Taut, UI, EG, Ref, LL, Beta, Eta,
+MP, Gen, Inst, …) plus the C/CE/CEV additions, and a companion induction for
+preservation of typing. Roughly 300–600 lines, unglamorous but self-contained.
+It is now the **only** thing between the development and a decision on 5.
+
+### Status, stated honestly
+
+The countermodel is **not built**. What is built is a lossless reduction plus an
+exact identification of the blocker. The conditional from the previous section
+is unchanged: if CEV proves 5 then `base_sound` fails for the word action; if
+not, the word action survives. Neither disjunct is established.
+
 ## Agreed next steps (consensus review, 2026-07-25)
 
 Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.

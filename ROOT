@@ -58,3 +58,4 @@ theories
   Bacon_PP_Higher_Bridge
   Bacon_PP_Positive_Diagonal
   Bacon_PP_Modal_Five
+  Bacon_PP_Five_Countermodel
