@@ -1,5 +1,30 @@
 # Handoff: Goodman's PP consistency problem
 
+## 0. Live checkpoint: MF and T6 encoding
+
+Codex has resumed as driver.
+
+- `frontier/Bacon_PP_Modalized_Functionality_Derived.thy` proves, in bare CEV,
+  `[] ⊢CEV pp_modalized_functionality σ Prop`. Claude Opus 5 adversarially
+  audited every rule and the de Bruijn closing step: correct and non-circular.
+  This is the proposition-valued unary member only, not the full `σ,τ` schema.
+- `frontier/Bacon_PP_T6_Encoding.thy` faithfully encodes `fun′`, composition,
+  reversible operators, `G`, `≈`, weak L2, Inv, and Goodman's liar `D`.
+- The T6-Inv axiom set is now exact and QLN-free: purity schema, application
+  closure, PP at `t→t`, `∃fun′`, weak L2, and Inv. It contains no
+  Recombination, Exhaustion, fundamentality assumptions, Persistence, or
+  Purity of Fun.
+- The same theory machine-proves `Pure(D)` using an explicit constant-free
+  abstraction over `Pure_{t→t}`. The final T6-Inv derivation of `⊥` remains
+  open.
+- Claude's full audit is
+  `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
+  `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
+  gitignored by project policy).
+- Next formal lemmas: purity of composition, composition associativity and
+  unit laws, then closure of `fun′` under `G`. These are the reusable
+  prerequisites for both Goodman T2 and the T6-Inv case split.
+
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
 orientation document. Read this, then `STATUS.md`, then the sources in §6.

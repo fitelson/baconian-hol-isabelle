@@ -1,5 +1,18 @@
 # PP Consistency Status
 
+> **Current theorem-verification tranche, 2026-07-25.** Unary,
+> proposition-valued Modalized Functionality is now proved in bare CEV in
+> `frontier/Bacon_PP_Modalized_Functionality_Derived.thy`. Claude's adversarial
+> audit found the proof correct and non-circular, but emphasized that this is
+> `pp_modalized_functionality σ Prop`, not the full two-type schema. The exact
+> Goodman T6-Inv vocabulary and QLN-free axiom package are encoded in
+> `frontier/Bacon_PP_T6_Encoding.thy`; the same theory now machine-proves
+> `Pure(D)` by an explicit constant-free abstraction, PP, application closure,
+> beta conversion, and equality transport. The final T6 contradiction is open.
+> A controlling T1--T9 matrix is in
+> `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
+> gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
+
 > **Driving handoff, 2026-07-25.** Start with **[CODEX_HANDOFF.md](CODEX_HANDOFF.md)**,
 > not this file. It states the problem precisely (X and A), records the audit of
 > this repo against Goodman's own notes, lists the ground rules (15s timeout,
@@ -8,12 +21,9 @@
 > contains superseded material — every withdrawn claim is listed in §8 of the
 > handoff.
 
-> **Codex checkpoint.** `frontier/Bacon_PP_Intensionality.thy` now proves
-> `CEV_unary_intensionality`, following Bacon--Dorr's guarded ζ route without
-> contextual Equivalence. The shared biconditional step is derived through
-> proposition identity rather than by the previously timing-out expanded
-> tautology. The next target is unary Modalized Functionality, then QSS and
-> `fun′`.
+> **Earlier Codex checkpoint (superseded by the tranche above).**
+> `frontier/Bacon_PP_Intensionality.thy` proved
+> `CEV_unary_intensionality`.
 
 Status date: 2026-07-25.
 

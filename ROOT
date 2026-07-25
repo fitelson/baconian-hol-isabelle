@@ -63,3 +63,5 @@ theories
   Bacon_PP_Modalized_Functionality
   Bacon_PP_Definable_Purity
   Bacon_PP_Intensionality
+  Bacon_PP_Modalized_Functionality_Derived
+  Bacon_PP_T6_Encoding
