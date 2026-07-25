@@ -49,3 +49,4 @@ theories
   Bacon_PP_Domain_Persistence
   Bacon_PP_Attainment
   Bacon_PP_Attainment_Failure
+  Bacon_PP_Decided_Realization
