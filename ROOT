@@ -60,3 +60,4 @@ theories
   Bacon_PP_Modal_Five
   Bacon_PP_Five_Countermodel
   Bacon_PP_Minimal_Axioms
+  Bacon_PP_Modalized_Functionality
