@@ -56,3 +56,4 @@ theories
   Bacon_PP_Cone_Determined
   Bacon_PP_Oterm_Bridge
   Bacon_PP_Higher_Bridge
+  Bacon_PP_Positive_Diagonal

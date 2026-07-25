@@ -1224,6 +1224,64 @@ Four separable jobs with a machine-checked statement of how they combine. It
 also makes the discipline explicit: a word-action theorem bears on Goodman's
 question only by way of item 4, and only if stated at every world.
 
+## Step 2 done (negative result): the refutation attack in CEV+
+
+`frontier/Bacon_PP_Positive_Diagonal.thy`. The consensus plan required at least
+one line that tries to *refute* consistency. It was run and **found no
+contradiction**. The honest report is a mapped seam, not a result.
+
+The attack was aimed at the argument-under-`Pure` seam. First finding: that seam
+is not new. `pp_diagonal_operator` is already `pp_diagonal_builder` applied to
+`Pure`, i.e. it is `λq. ¬ Pure (K q)`. So the base camp's derivations were
+already running through it, and what was missing was only the un-negated form.
+
+New checked material:
+
+```isabelle
+pp_positive_builder / pp_positive_diagonal        (* λq. Pure (K q) *)
+typed_pp_positive_builder / typed_pp_positive_diagonal
+pp_positive_builder_purity_axiom                  (* closed, constant-free *)
+pp_positive_diagonal_pure_recombination           (* it is in the pure stock *)
+pp_positive_diagonal_pure_full_QLN
+pp_positive_diagonal_recombination_instance       (* its QLN instance at R *)
+```
+
+So the calculus proves: the positive diagonal is pure, and Recombination applies
+to it, giving `□(Pure (K R)) → ∀q. Pure (K q)` under `Fun R`. The attack then
+splits, and **neither branch closes**:
+
+- **Consequent holds.** Every constant operator pure. In the full-QLN set,
+  Exhaustion on each `K q` at `R` yields `q → □q` for all `q` — modal collapse.
+  Striking, but not a contradiction: nothing in the axiom set asserts that any
+  proposition is contingent, and under collapse the base camp's
+  `pp_fundamental_forces_diagonal_nonnecessity` reduces to `Pure (K R)`, which
+  *agrees* with this branch rather than refuting it.
+- **Antecedent fails.** Then `◇¬Pure (K R)`, and the base camp independently
+  gives `◇Pure (K R)`. Together: `Pure (K R)` is contingent. Consistent. Adding
+  persistence turns this into `¬Pure (K R)`, still consistent with a possibility
+  claim.
+
+**The missing principle, named.** Both branches would close given a 5 or B
+principle: `◇Pure (K R)` plus persistence would deliver `□Pure (K R)` and fire
+Recombination. `Bacon_Modal` states K, T and 4 only; no 5 or B is stated or
+derived anywhere in the development. **Whether CEV proves one is now the single
+highest-value open question**, because it cuts both ways:
+
+- if CEV proves 5, this refutation branch may close;
+- and simultaneously the word-action model *fails* obligation item 2
+  (`base_sound`), since `pp_sem_box` is S4 but not S5 — its `□`-images are
+  up-closed under the accessibility order, and the complement of an up-closed
+  set is not up-closed unless trivial.
+
+One question, both programmes. It should be decided before more model-building.
+
+**Scope of the negative result, stated so it is not oversold.** The search was
+confined to type `Prop → Prop` operators built from `Pure` and the constant
+builder. It did not try higher types, iterated `Pure`, or the
+no-other-fundamentals schema, and used the unique-fundamentality axiom only as
+the base camp already does. This is therefore **weak** evidence for consistency
+and should not move the ~0.6 credence much — call it ~0.62.
+
 ## Agreed next steps (consensus review, 2026-07-25)
 
 Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
