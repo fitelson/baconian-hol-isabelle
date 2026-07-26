@@ -51,6 +51,17 @@
 > a full countermodel to all of `pp_T3_axioms` has not yet been constructed.
 > Claude independently audited the encodings and derivations and confirmed
 > this verdict.
+> T4 is now machine-proved in a stronger exact object-language form:
+> `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  The proof constructs
+> `D_C(q)=¬C(q)(q)` and the two pure predicates `λX.(D_C=X)` and `λX.⊥`;
+> they agree at `C(r)` but are distinct at `D_C`.  The headline theorem is
+> stated over the exact closed PP-free stock
+> `pp_T4_axioms = pp_purity_schema ∪ pp_application_closure_schema`, so PP
+> and `fun′(r)` are formally absent rather than merely unused in the proof
+> script. Claude Opus 5 independently clean-built, fully unfolded, and
+> theorem-object audited the result, returning PASS WITH QUALIFICATIONS.
+> The remaining qualification is semantic: repository Isabelle does not yet
+> formalize a model witnessing non-vacuity of this weak stock.
 > A separate theorem now records that promoting
 > `fun′(r)` from an antecedent to an axiom makes the theory inconsistent;
 > the conditional formulation is therefore essential.
@@ -72,7 +83,7 @@
 > composition over the exact T6 core (and arbitrary extensions of it), and
 > local-assumption versions of application closure and equality reasoning.
 > The final T6 contradiction remains open.  The next object-language target is
-> T4, the higher-type diagonal refutation.
+> T5, the proliferation theorem.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.

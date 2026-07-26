@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T1--T2 verified; T3 sharply resolved
+## 0. Live checkpoint: Goodman T1--T4 verified or sharply resolved
 
 Codex has resumed as driver.
 
@@ -93,6 +93,18 @@ Codex has resumed as driver.
   confirms that Goodman's advertised premise list omits this rigidity
   commitment.  Exact non-derivability from the full `pp_T3_axioms` remains
   open pending a full model rather than only the modal skeleton.
+- `frontier/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
+  the stronger object-language form
+  `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  Its exact closed stock is
+  `pp_T4_axioms = pp_purity_schema ∪ pp_application_closure_schema`;
+  PP, `fun′(r)`, QSS, Persistence, and Exhaustion are unused.  The proof
+  explicitly constructs Goodman's two distinct pure predicates that agree at
+  `C(r)`. Claude Opus 5 independently clean-built and fully unfolded the
+  theorem, checked the proof graph for oracles and residual hypotheses, and
+  returned PASS WITH QUALIFICATIONS.  The qualifications concern semantic
+  non-vacuity of the weak stock and the generic open-axiom interface, not the
+  T4 derivation. Full report:
+  `reports/CLAUDE_AUDIT_GOODMAN_T4_2026-07-25.md`.
 - `frontier/Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse.thy` records a crucial
   consistency qualification found by Claude: if `fun′(r)` is inserted into
   the theorem-level axiom stock rather than retained as an antecedent, Rule
@@ -108,8 +120,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: Goodman T4, the higher-type diagonal refutation.
-  T5--T9 remain after T4.
+- Next formal target: Goodman T5, the proliferation theorem.
+  T5--T9 remain.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
