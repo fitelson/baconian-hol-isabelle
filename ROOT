@@ -95,3 +95,4 @@ theories
   Bacon_PP_Goodman_T8_Encoding
   Bacon_PP_Goodman_T8_Kind_Uniqueness
   Bacon_PP_Goodman_T8_Base_Kinds
+  Bacon_PP_Goodman_T8_Growth

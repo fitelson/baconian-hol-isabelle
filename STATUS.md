@@ -1796,3 +1796,78 @@ These are encoding certificates, not yet the T8c derivation.
 representations `p = X(q)` and `p = Y(s)`, where `X,Y` are pure and `q,s`
 are `fun′`, then `X ≈ Y`. The proof uses only equality transport and the
 literal weak-L2 axiom instance.
+
+## Goodman object-language verification update (2026-07-26, T8c and scope closure)
+
+`frontier/Bacon_PP_Goodman_T8_Growth.thy` now machine-proves T8c.
+`CEV_Goodman_T8c` proves that any `fun′` witness yields the literal
+pairwise-distinctness formulas for the 31 generated pure unary operators and
+their 31 values. `CEV_Goodman_T8c_closed` object-linguistically eliminates
+the witness and proves the closed existential `pp_T8_growth_result` from
+
+```
+pp_T8_full_axioms =
+  {pp_exists_fun_prime, pp_L2} ∪ pp_T6_core_PP_axioms.
+```
+
+The crucial purity step does not silently classify the generated formulas as
+constant-free: each contains `Pure` through `fun′`. The proof abstracts that
+constant, applies the purity schema to the resulting closed builder, uses PP
+to make the purity predicate pure, applies application closure, beta-converts,
+and transports purity across equality. For subset separation, a base kind in
+the symmetric difference supplies a realizing proposition. T8b plus the ten
+T8a base-kind separations refute every representation by an omitted base
+kind. This yields all operator inequalities, and `fun′` functionality lifts
+them to the 31 value inequalities.
+
+T7b is not a determinate formal target in the supplied source. Page 4 of
+Goodman's PDF contains only the prose sentence that the
+“diagonal-on-kinds likewise has no fixed point but a shifted one.” It supplies
+no diagonal term, definitions of fixed and shifted point, binders, or exact
+stock beyond PP at `(t→t)→t`. Any current encoding would therefore be a new
+conjectural reconstruction, not verification of Goodman's theorem. T9 is
+explicitly advertised as meta-level cardinal counting. Thus the precise
+object-language suite is closed: every determinate target is now
+machine-checked or, for T3, has its exact advertised gap and repaired
+theorems recorded. The next step is the single consolidated Claude
+adversarial audit requested after completion.
+
+## Consolidated Goodman audit and repair (2026-07-26)
+
+The single consolidated adversarial audit of T1--T8 returned **PASS WITH
+QUALIFICATIONS**. It checked the exact stocks, binders, theorem/local
+boundaries, witness eliminations, and exported theorem objects. Every
+principal theorem except the two T8c exports was initially oracle-free with
+no hypotheses or flex-flex constraints. The two T8c exports inherited one
+`Code_Generator.holds_by_evaluation` oracle from each of two finite-list
+distinctness lemmas proved by `eval`.
+
+Both `eval` proofs have now been removed. Nonempty subsequences are proved
+distinct from `distinct_set_subseqs`; generated kind properties are proved
+injective by decoding the right-associated disjunction syntax and using
+injectivity of the kind atoms. A focused post-repair session checks
+`CEV_Goodman_T8c` and `CEV_Goodman_T8c_closed` and fails unless each has zero
+oracles, zero undischarged hypotheses, and zero flex-flex constraints. The
+post-repair check passes.
+
+The audit's purported second finding was an audit error, not a repository
+defect. `CEV_Goodman_T3_heredity_with_exhaustion` exists in
+`Bacon_PP_Goodman_Heredity_Exhaustion.thy` as the corollary over
+`insert pp_zeroary_exhaustion pp_T3_axioms`.
+`CEV_Goodman_T3_heredity_min` is the sharper underlying theorem over the
+smaller stock `pp_T3_min_axioms`; it does not make the corollary's name stale.
+
+The substantive qualifications remain. T3's advertised premise list has a
+modal gap; T7b is not uniquely formalizable from Goodman's one prose
+sentence; T9 is a meta-level cardinal argument. Most importantly, T6 proves
+only conditional contradictions: PP plus L2 and Inv/WI/TU, or PP plus
+strong-L2 and RS. It does not prove PP alone inconsistent. Semantic
+consistency and non-vacuity of the complete PP stock remain open, as does a
+fully internal equivalence theorem between repository CEV and Goodman's
+presentation of `T0`.
+
+The natural next verification phase is model-theoretic. Goodman's M-claims
+can be given a matrix parallel to T1--T9, using the existing substitution
+word-action infrastructure and the definability reading of purity. The
+highest-value targets for the eventual consistency problem are the semantic
+status of L2 and the structure of the pure reversible group `G`.

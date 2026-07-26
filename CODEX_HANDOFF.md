@@ -179,12 +179,49 @@ Codex has resumed as driver.
   The nonconstant cases use `fun′` closure under arbitrary group members;
   the constant cases use the checked left-absorption equations for `K⊤` and
   `K⊥`.
-- Next formal targets: prove T8c growth, then settle the underspecified T7b
-  sentence and record T9 as the advertised meta-level cardinal argument.
-  The advertised WI master equation remains worth formalizing as a
-  route-specific intermediate claim, although the exact WI contradiction is
-  already checked via WI⇒TU. Run one consolidated Claude audit only after all
-  object-language targets are machine-proved.
+- T8c is machine-proved in
+  `frontier/Bacon_PP_Goodman_T8_Growth.thy`.
+  `CEV_Goodman_T8c` proves the witness-parametric 31-operator/31-value claim;
+  `CEV_Goodman_T8c_closed` proves the exact closed existential from
+  `pp_T8_full_axioms = {∃fun′, L2} ∪ pp_T6_core_PP_axioms`. The proof
+  explicitly abstracts the `Pure` constant in every generated kind property,
+  derives its purity via PP plus application closure, separates different
+  subsets using a selected base-kind witness, excludes omitted kinds via T8b
+  plus the ten T8a separations, and then lifts operator inequalities to
+  values at a `fun′` witness.
+  The consolidated audit initially found that two finite-list distinctness
+  lemmas used `by eval`, giving both exported T8c theorems one
+  `Code_Generator.holds_by_evaluation` oracle. They have been replaced by
+  structural proofs from `distinct_set_subseqs`, injectivity of the
+  generated kind atoms, and a syntactic disjunction decoder. A focused
+  post-repair theorem-object audit confirms zero oracles, hypotheses, and
+  flex-flex constraints for `CEV_Goodman_T8c` and
+  `CEV_Goodman_T8c_closed`.
+- T7b is source-underspecified rather than an outstanding determinate
+  Isabelle theorem. Goodman's PDF gives only the sentence that a
+  “diagonal-on-kinds likewise has no fixed point but a shifted one,” without
+  defining the diagonal, fixed/shifted point, binder structure, or exact
+  stock beyond PP at `(t→t)→t`. Do not invent a formula and attribute it to
+  Goodman; request an exact statement if this companion result is to be
+  formalized.
+- T9 remains, as advertised by Goodman, a meta-level cardinal-counting
+  argument rather than a single object-language derivation. The advertised
+  WI master equation remains a route-specific intermediate target, although
+  the exact WI contradiction is already checked via WI⇒TU.
+- The single consolidated adversarial audit is complete as a preserved
+  report. It returned PASS WITH QUALIFICATIONS. Its T8c evaluation-oracle
+  finding was correct and has been repaired. Its purported second finding
+  was not: `CEV_Goodman_T3_heredity_with_exhaustion` exists as the corollary
+  over the full stock, while `CEV_Goodman_T3_heredity_min` is the sharper
+  theorem over a smaller stock. All other principal theorem objects were
+  clean. T7b remains
+  source-underspecified, T9 remains meta-level, and the original PP
+  consistency question remains open because every T6 contradiction is
+  conditional on L2 plus a classification principle (or strong-L2 plus RS).
+- The next major verification phase should cover Goodman's model-theoretic
+  M-claims in a parallel matrix. This is likely to be the most useful source
+  of constraints for the later consistency attack, especially through a
+  semantic calibration of L2 and the pure reversible group `G`.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
