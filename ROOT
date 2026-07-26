@@ -75,6 +75,12 @@ theories
   Bacon_PP_Goodman_T2f_Verified
   Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse
   Bacon_PP_Goodman_Heredity
+  Bacon_PP_Goodman_Heredity_Obstruction
   Bacon_PP_Goodman_Pure_Proposition_Triviality
   Bacon_PP_Goodman_Biconditional_Classification
   Bacon_PP_Goodman_WI_Collapse
+  Bacon_PP_Goodman_Heredity_Modal
+  Bacon_PP_Goodman_Heredity_Rigidity
+  Bacon_PP_Goodman_Heredity_Core
+  Bacon_PP_Goodman_Heredity_Exhaustion
+  Bacon_PP_Goodman_Heredity_Sharp

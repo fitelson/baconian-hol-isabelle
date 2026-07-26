@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T1 and T2a--T2f machine-verified
+## 0. Live checkpoint: Goodman T1--T2 verified; T3 sharply resolved
 
 Codex has resumed as driver.
 
@@ -80,6 +80,19 @@ Codex has resumed as driver.
   `frontier/Bacon_PP_Goodman_WI_Collapse.thy` machine-prove all three stages
   of T1: every pure proposition is `⊤` or `⊥`, each pure-indexed
   biconditional operator is `id` or `¬`, and WI collapses to Inv.
+  Claude Opus 5 independently audited both consequence derivations and
+  returned PASS.
+- The T3 theories now machine-prove the exact modal core and both calibrated
+  repairs.  Necessitated QSS plus Persistence yields only
+  `◇(Y=Z)`, not the actual `Y=Z` required by `fun′`.  Exact T3 follows from
+  zeroary Exhaustion (`CEV_Goodman_T3_heredity_with_exhaustion`) or, more
+  sharply, from pure-identity rigidity
+  (`CEV_Goodman_T3_heredity_rigid`).  The unrestricted rigidity repair is
+  refuted by `CEV_unrestricted_rigidity_refuted`; a two-world S4 skeleton
+  countermodel isolates the missing inference.  Claude's independent audit
+  confirms that Goodman's advertised premise list omits this rigidity
+  commitment.  Exact non-derivability from the full `pp_T3_axioms` remains
+  open pending a full model rather than only the modal skeleton.
 - `frontier/Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse.thy` records a crucial
   consistency qualification found by Claude: if `fun′(r)` is inserted into
   the theorem-level axiom stock rather than retained as an antecedent, Rule
@@ -95,8 +108,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: Goodman T3 (Heredity), while adversarially auditing the
-  completed WI-to-Inv packaging.  T4--T9 remain after T3.
+- Next formal target: Goodman T4, the higher-type diagonal refutation.
+  T5--T9 remain after T4.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the

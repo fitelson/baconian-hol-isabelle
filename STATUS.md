@@ -38,7 +38,20 @@
 > are unused; application closure is needed.  T1 is also complete through
 > its advertised consequences: the pure-proposition classification, the
 > biconditional-operator classification, and the exact WI-to-Inv collapse
-> are all machine-proved.  A separate theorem now records that promoting
+> are all machine-proved and independently audited by Claude Opus 5, PASS.
+> T3 is now sharply diagnosed.  Necessitated QSS plus Persistence
+> machine-proves only possible identity of the relevant pure operators
+> (`CEV_T3_modal_core`), not the actual identity required by `fun′`.
+> Exact T3 is machine-proved after adding either zeroary Exhaustion
+> (`CEV_Goodman_T3_heredity_with_exhaustion`) or the strictly weaker
+> pure-identity rigidity principle (`CEV_Goodman_T3_heredity_rigid`).
+> Unrestricted identity rigidity is machine-refuted in the `fun′` setting,
+> and a two-world S4 skeleton countermodel isolates the modal failure.  Thus
+> Goodman's advertised T3 premise list omits a genuine rigidity assumption;
+> a full countermodel to all of `pp_T3_axioms` has not yet been constructed.
+> Claude independently audited the encodings and derivations and confirmed
+> this verdict.
+> A separate theorem now records that promoting
 > `fun′(r)` from an antecedent to an axiom makes the theory inconsistent;
 > the conditional formulation is therefore essential.
 > These remain conditional derivability results: consistency and non-vacuity
@@ -58,7 +71,8 @@
 > layer: the composition beta law, both unit laws, associativity, purity of
 > composition over the exact T6 core (and arbitrary extensions of it), and
 > local-assumption versions of application closure and equality reasoning.
-> The final T6 contradiction remains open.
+> The final T6 contradiction remains open.  The next object-language target is
+> T4, the higher-type diagonal refutation.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
