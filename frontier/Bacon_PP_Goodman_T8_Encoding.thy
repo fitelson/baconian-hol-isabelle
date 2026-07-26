@@ -28,6 +28,26 @@ proof (intro CollectI exI conjI)
     by simp
 qed
 
+lemma pp_T8_diamond_operator_beta:
+  "compatible_step beta_contract
+    (App pp_T8_diamond_operator A)
+    (Neg (Eq Prop A ObjFalse))"
+proof (rule compatible_step.root)
+  have step:
+    "beta_contract
+      (App
+        (Lam Prop (Neg (Eq Prop (Var 0) ObjFalse)))
+        A)
+      (subst0 A (Neg (Eq Prop (Var 0) ObjFalse)))"
+    by (rule beta_contract.beta)
+  show "beta_contract
+      (App pp_T8_diamond_operator A)
+      (Neg (Eq Prop A ObjFalse))"
+    unfolding pp_T8_diamond_operator_def
+    using step
+    by (simp add: subst0_def ObjFalse_def ObjTrue_def)
+qed
+
 definition pp_T8_base_operators :: "oterm list" where
   "pp_T8_base_operators =
     [pp_identity_operator,
