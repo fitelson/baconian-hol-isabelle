@@ -22,6 +22,11 @@ Codex has resumed as driver.
   same-kind witness and the `fun′` witness are eliminated in the
   object-language calculus.  No QLN, Recombination, Exhaustion,
   fundamentality, Persistence, Purity of Fun, WI, TU, RS, or strong-L2 enters.
+- `frontier/Bacon_PP_Goodman_T6_TU.thy` proves
+  `[] ; pp_T6_TU_axioms ⊢CEV+ ⊥` from the exact core plus `∃fun′`, weak L2,
+  and TU.  The truth-flipping case eliminates the inverse existential and
+  uses the conjugate `Z∘D∘Z⁻¹`; it imports no Inv, WI, strong-L2, RS, QLN,
+  fundamentality, Persistence, or Purity of Fun.
 - `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
@@ -139,8 +144,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: the remaining Goodman T6 routes: WI/master equation, TU,
-  and strong-L2 + RS.  T7--T9 then remain.  Run one consolidated Claude audit
+- Next formal target: the remaining Goodman T6 routes: WI/master equation and
+  strong-L2 + RS.  T7--T9 then remain.  Run one consolidated Claude audit
   only after all object-language targets are machine-proved.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next

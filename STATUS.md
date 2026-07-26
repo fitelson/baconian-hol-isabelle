@@ -101,8 +101,14 @@
 > schema, application-closure schema, PP at `t→t`, `∃fun′`, weak L2, and Inv.
 > The proof eliminates both existential witnesses inside the object-language
 > calculus and contains no QLN, Recombination, Exhaustion, fundamentality,
-> Persistence, Purity of Fun, WI, TU, RS, or strong-L2.  The remaining T6
-> routes are WI, TU, and strong-L2 + RS.  Per the current verification policy,
+> Persistence, Purity of Fun, WI, TU, RS, or strong-L2.
+> `frontier/Bacon_PP_Goodman_T6_TU.thy` proves the truth-uniformity route
+> from the exact analogous stock with TU in place of Inv.  The preserving
+> branch diagonalizes with `Z∘D`; the flipping branch eliminates an explicit
+> inverse and diagonalizes with the conjugate `Z∘D∘Z⁻¹`.  This establishes
+> `CEV_Goodman_T6_TU` without Inv, WI, strong-L2, RS, QLN, or any
+> fundamentality assumptions.  The remaining T6 routes are WI and
+> strong-L2 + RS.  Per the current verification policy,
 > a single consolidated Claude audit will be run only after all Goodman
 > object-language targets are proved.
 > A controlling T1--T9 matrix is in
