@@ -92,3 +92,5 @@ theories
   Bacon_PP_Goodman_T6_RS_Encoding
   Bacon_PP_Goodman_T6_RS
   Bacon_PP_Goodman_T7_Absorption
+  Bacon_PP_Goodman_T8_Encoding
+  Bacon_PP_Goodman_T8_Kind_Uniqueness

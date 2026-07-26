@@ -1780,3 +1780,19 @@ fundamentality, Persistence, or Purity of Fun. It:
 The complete Isabelle session clean-builds, and the new theory contains no
 proof escape. The consolidated Claude audit remains deferred until T7b and
 T8 are complete.
+
+## Goodman object-language verification update (2026-07-25, T8 encoding/T8b)
+
+`frontier/Bacon_PP_Goodman_T8_Encoding.thy` fixes a literal finite target for
+T8. It defines the advertised five base operators (`id`, necessity,
+possibility, constant true, constant false), enumerates their 31 nonempty
+subsets, builds the corresponding kind properties, and renders both
+pairwise-distinctness claims as object-language formulas. Isabelle proves
+that each list has length 31 and that the complete growth claim is typed.
+These are encoding certificates, not yet the T8c derivation.
+
+`frontier/Bacon_PP_Goodman_T8_Kind_Uniqueness.thy` machine-proves T8b.
+`CEV_Goodman_T8_kind_uniqueness` says that if one proposition has
+representations `p = X(q)` and `p = Y(s)`, where `X,Y` are pure and `q,s`
+are `fun′`, then `X ≈ Y`. The proof uses only equality transport and the
+literal weak-L2 axiom instance.

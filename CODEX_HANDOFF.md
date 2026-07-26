@@ -166,7 +166,15 @@ Codex has resumed as driver.
   The object-language proof extracts the liar counterexample witnesses,
   obtains same-kind via weak L2, transports truth to `D(Zd)`, and eliminates
   all witnesses.
-- Next formal target: T7b, then T8 and the meta-level T9 separation.
+- T8 now has an exact 31-object encoding in
+  `frontier/Bacon_PP_Goodman_T8_Encoding.thy`: the five advertised base
+  operators, their 31 nonempty subsets, the corresponding kind properties,
+  and literal pairwise-distinctness formulas for both operators and values.
+  The file proves both lists have length 31 and type-checks the full target.
+- T8b is machine-proved by `CEV_Goodman_T8_kind_uniqueness` in
+  `frontier/Bacon_PP_Goodman_T8_Kind_Uniqueness.thy`.
+- Next formal targets: settle the underspecified T7b sentence, prove T8a base
+  kind separation, then T8c growth and the meta-level T9 separation.
   The advertised WI master equation remains worth formalizing as a
   route-specific intermediate claim, although the exact WI contradiction is
   already checked via WI⇒TU. Run one consolidated Claude audit only after all
