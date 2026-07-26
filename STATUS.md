@@ -120,6 +120,13 @@
 > checked TU contradiction through an explicit axiom-translation theorem.
 > This imports no Exhaustion, Inv, Recombination, Persistence, fundamentality,
 > or Purity of Fun.
+> `frontier/Bacon_PP_Goodman_T6_WI_Master.thy` separately formalizes the
+> displayed master family from Goodman's WI route and proves that family
+> inconsistent in CEV+. Once
+> `a_A ↔ ∀C(Pure(C) → (a_C ↔ ¬A))` is assumed, only `Pure(⊤)` is needed for
+> the contradiction. The remaining master-route obligation is the substantive
+> derivation of the family from WI, weak L2, the liar matrix, and `fun′(r)`;
+> the verified WI⇒TU proof does not establish that intermediate equation.
 > `frontier/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
 > `frontier/Bacon_PP_Goodman_T6_RS.thy` prove the final T6 route from the
 > exact core plus strong-L2 and RS. RS supplies its own nonempty `fun′`-only

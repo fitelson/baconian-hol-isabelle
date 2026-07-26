@@ -1,0 +1,27 @@
+% Goodman T6-WI: propositional inconsistency of the advertised master family.
+%
+% a(A) abstracts a_A = D(d <-> A).  The axiom master is the displayed
+% equation from Goodman's notes:
+%
+%   a_A <-> forall C (Pure(C) -> (a_C <-> not A)).
+%
+% Only the purity and truth of truth are added.  The resulting core is
+% already inconsistent; falsity is not needed.
+
+tff(prop_type, type, prop: $tType).
+tff(pure_type, type, pure: prop > $o).
+tff(holds_type, type, holds: prop > $o).
+tff(a_type, type, a: prop > $o).
+tff(top_type, type, top: prop).
+
+tff(pure_top, axiom, pure(top)).
+tff(top_true, axiom, holds(top)).
+
+tff(master, axiom,
+  ! [A: prop] :
+    (pure(A) =>
+      (a(A) <=>
+        ! [C: prop] :
+          (pure(C) => (a(C) <=> ~ holds(A)))))).
+
+tff(contradiction, conjecture, $false).

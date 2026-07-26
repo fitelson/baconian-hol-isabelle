@@ -35,6 +35,15 @@ Codex has resumed as driver.
   Exhaustion.  An explicit axiom translation then reuses the verified TU
   contradiction.  No Inv, strong-L2, RS, QLN, Recombination, fundamentality,
   Persistence, or Purity of Fun enters.
+- `frontier/Bacon_PP_Goodman_T6_WI_Master.thy` formalizes Goodman's advertised
+  family `a_A ↔ ∀C(Pure(C) → (a_C ↔ ¬A))`, with
+  `a_A = D((Dr) ↔ A)`, and proves the family propositionally inconsistent.
+  `CEV_T6_WI_master_family_inconsistent` needs only `Pure(⊤)` once the family
+  is available; `CEV_T6_WI_advertised_master_inconsistent` specializes this
+  to Goodman's concrete `a_A`. Vampire finds the same minimal refutation in
+  `vampire/goodman_t6_wi_master_inconsistent.in`. The remaining
+  route-specific target is to derive the family from WI, weak L2, the liar
+  matrix, and `fun′(r)`.
 - `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
@@ -213,8 +222,10 @@ Codex has resumed as driver.
   formalized.
 - T9 remains, as advertised by Goodman, a meta-level cardinal-counting
   argument rather than a single object-language derivation. The advertised
-  WI master equation remains a route-specific intermediate target, although
-  the exact WI contradiction is already checked via WI⇒TU.
+  WI master family is now encoded and its inconsistency is checked; deriving
+  that family from Goodman's WI/L2 stock remains the route-specific
+  intermediate target. The exact WI contradiction is independently checked
+  via WI⇒TU.
 - The single consolidated adversarial audit is complete as a preserved
   report. It returned PASS WITH QUALIFICATIONS. Its T8c evaluation-oracle
   finding was correct and has been repaired. Its purported second finding

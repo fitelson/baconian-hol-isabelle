@@ -37,6 +37,13 @@ matrix of Goodman's liar `D`, the two T5 diagonal refutations, weak L2, the Inv
 classification of the kind of `D`, and the relevant beta/composition
 identities.  Vampire must reconstruct the final liar contradiction.
 
+`goodman_t6_wi_master_inconsistent.in` isolates the propositional
+inconsistency of Goodman's advertised WI master family.  Vampire refutes it
+using only the master equation, `Pure(top)`, and `holds(top)`; the matching
+deep-embedding result is `CEV_T6_WI_master_family_inconsistent` in
+`frontier/Bacon_PP_Goodman_T6_WI_Master.thy`.  This benchmark and theorem do
+not yet derive the master family from WI and L2.
+
 `goodman_pp_recombination_depth1.in` removes `fun'` existence, L2, and Inv.  It
 keeps the exact philosophically central assumptions at the represented types:
 the target PP consequence `Pure(D)`, unique fundamentality, unary
@@ -70,6 +77,7 @@ Run, for example:
 
 ```sh
 vampire --mode casc --time_limit 30 vampire/goodman_t6_inv_calibration.in
+vampire --mode casc --time_limit 30 vampire/goodman_t6_wi_master_inconsistent.in
 vampire --mode casc --time_limit 30 vampire/goodman_pp_recombination_depth1.in
 vampire --mode casc --time_limit 30 vampire/goodman_t6_inv_calibration_reified_thf.in
 vampire --mode casc --intent sat --time_limit 30 \
