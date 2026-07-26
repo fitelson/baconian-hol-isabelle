@@ -84,6 +84,7 @@ theories
   Bacon_PP_Goodman_Heredity_Core
   Bacon_PP_Goodman_Heredity_Exhaustion
   Bacon_PP_Goodman_Heredity_Sharp
+  Bacon_PP_Goodman_Heredity_Advertised
   Bacon_PP_Goodman_Higher_Type_Diagonal
   Bacon_PP_Goodman_Proliferation
   Bacon_PP_Goodman_T6_Inv

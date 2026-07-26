@@ -42,13 +42,19 @@
 > T3 is now sharply diagnosed.  Necessitated QSS plus Persistence
 > machine-proves only possible identity of the relevant pure operators
 > (`CEV_T3_modal_core`), not the actual identity required by `fun′`.
+> The literal Section 4 stock, including the globally assumed `∃fun′`, is now
+> named `pp_T3_advertised_axioms`.
 > Exact T3 is machine-proved after adding either zeroary Exhaustion
-> (`CEV_Goodman_T3_heredity_with_exhaustion`) or the strictly weaker
+> (`CEV_Goodman_T3_advertised_with_exhaustion`) or the strictly weaker
 > pure-identity rigidity principle (`CEV_Goodman_T3_heredity_rigid`).
 > Unrestricted identity rigidity is machine-refuted in the `fun′` setting,
-> and a two-world S4 skeleton countermodel isolates the modal failure.  Thus
-> Goodman's advertised T3 premise list omits a genuine rigidity assumption;
-> a full countermodel to all of `pp_T3_axioms` has not yet been constructed.
+> and `Goodman_T3_advertised_modal_abstraction_countermodel` strengthens the
+> two-world obstruction with a global actual `fun′` witness, unique
+> fundamentality at every world, global QSS, Persistence, Necessity of
+> Identity, and Modalized Functionality.  T3 still fails.  Thus Goodman's
+> advertised premise list omits a genuine rigidity assumption; a full
+> countermodel to every unbounded member of `pp_T3_advertised_axioms` has not
+> yet been constructed.
 > Claude independently audited the encodings and derivations and confirmed
 > this verdict.
 > T4 is now machine-proved in a stronger exact object-language form:

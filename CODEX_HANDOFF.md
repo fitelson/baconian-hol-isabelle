@@ -106,11 +106,18 @@ Codex has resumed as driver.
   zeroary Exhaustion (`CEV_Goodman_T3_heredity_with_exhaustion`) or, more
   sharply, from pure-identity rigidity
   (`CEV_Goodman_T3_heredity_rigid`).  The unrestricted rigidity repair is
-  refuted by `CEV_unrestricted_rigidity_refuted`; a two-world S4 skeleton
-  countermodel isolates the missing inference.  Claude's independent audit
-  confirms that Goodman's advertised premise list omits this rigidity
-  commitment.  Exact non-derivability from the full `pp_T3_axioms` remains
-  open pending a full model rather than only the modal skeleton.
+  refuted by `CEV_unrestricted_rigidity_refuted`.  The literal Section 4
+  stock, with the globally assumed `∃fun′`, is now
+  `pp_T3_advertised_axioms`, and
+  `CEV_Goodman_T3_advertised_with_exhaustion` proves the repaired theorem
+  over that exact stock.  The strengthened two-world theorem
+  `Goodman_T3_advertised_modal_abstraction_countermodel` includes an actual
+  `fun′` witness, unique fundamentality, global QSS, Persistence, Necessity
+  of Identity, and Modalized Functionality while still refuting T3.  Claude's
+  independent audit confirms that Goodman's advertised premise list omits
+  this rigidity commitment.  Exact non-derivability from every unbounded
+  member of `pp_T3_advertised_axioms` remains open pending a full model rather
+  than only the strengthened modal abstraction.
 - `frontier/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
   the stronger object-language form
   `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  Its exact closed stock is
