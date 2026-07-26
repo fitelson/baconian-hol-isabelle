@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T1--T5 verified or sharply resolved
+## 0. Live checkpoint: Goodman T1--T5 and T6-Inv verified or sharply resolved
 
 Codex has resumed as driver.
 
@@ -15,8 +15,13 @@ Codex has resumed as driver.
   Recombination, Exhaustion, fundamentality assumptions, Persistence, or
   Purity of Fun.
 - The same theory machine-proves `Pure(D)` using an explicit constant-free
-  abstraction over `Pure_{t→t}`. The final T6-Inv derivation of `⊥` remains
-  open.
+  abstraction over `Pure_{t→t}`.
+- `frontier/Bacon_PP_Goodman_T6_Inv.thy` proves
+  `[] ; pp_T6_Inv_axioms ⊢CEV+ ⊥`.  The axiom stock is exact: purity schema,
+  application closure, PP at `t→t`, `∃fun′`, weak L2, and Inv.  Both the
+  same-kind witness and the `fun′` witness are eliminated in the
+  object-language calculus.  No QLN, Recombination, Exhaustion,
+  fundamentality, Persistence, Purity of Fun, WI, TU, RS, or strong-L2 enters.
 - `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
@@ -134,8 +139,9 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: Goodman T6, including all four advertised routes
-  (Inv, WI/master equation, TU, and strong-L2 + RS).  T6--T9 remain.
+- Next formal target: the remaining Goodman T6 routes: WI/master equation, TU,
+  and strong-L2 + RS.  T7--T9 then remain.  Run one consolidated Claude audit
+  only after all object-language targets are machine-proved.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the

@@ -96,8 +96,15 @@
 > layer: the composition beta law, both unit laws, associativity, purity of
 > composition over the exact T6 core (and arbitrary extensions of it), and
 > local-assumption versions of application closure and equality reasoning.
-> The next object-language target is T6: all four advertised contradiction
-> routes (Inv, WI, TU, and strong-L2 + RS).
+> `frontier/Bacon_PP_Goodman_T6_Inv.thy` now proves the first T6 contradiction:
+> `[] ; pp_T6_Inv_axioms ⊢CEV+ ⊥`, where the stock is exactly the purity
+> schema, application-closure schema, PP at `t→t`, `∃fun′`, weak L2, and Inv.
+> The proof eliminates both existential witnesses inside the object-language
+> calculus and contains no QLN, Recombination, Exhaustion, fundamentality,
+> Persistence, Purity of Fun, WI, TU, RS, or strong-L2.  The remaining T6
+> routes are WI, TU, and strong-L2 + RS.  Per the current verification policy,
+> a single consolidated Claude audit will be run only after all Goodman
+> object-language targets are proved.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
