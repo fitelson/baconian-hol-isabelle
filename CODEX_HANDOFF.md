@@ -152,11 +152,18 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: the remaining Goodman T6 route, strong-L2 + RS.  The
-  advertised WI master equation remains worth formalizing as a route-specific
-  intermediate claim, although the exact WI contradiction is already checked
-  via WI⇒TU.  T7--T9 then remain.  Run one consolidated Claude audit
-  only after all object-language targets are machine-proved.
+- `frontier/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
+  `frontier/Bacon_PP_Goodman_T6_RS.thy` machine-prove the remaining T6 route.
+  `CEV_Goodman_T6_RS` establishes `T₀ + PP + strong-L2 + RS ⊢ ⊥` from the
+  exact stock. RS itself supplies a nonempty `fun′`-only specification, so no
+  separate `∃fun′` axiom is present. The proof derives collision injectivity,
+  proves the existential diagonal pure, verifies both directions of its liar
+  law, and eliminates both existential witnesses object-linguistically.
+- Next formal target: T7, followed by T8 and the meta-level T9 separation.
+  The advertised WI master equation remains worth formalizing as a
+  route-specific intermediate claim, although the exact WI contradiction is
+  already checked via WI⇒TU. Run one consolidated Claude audit only after all
+  object-language targets are machine-proved.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
@@ -280,11 +287,10 @@ independently gives `pp_purity_operator (λP. b ∩ P) = pp_decided b` with
 ## 4. Ground rules — please keep these
 
 1. **`isabelle build -D .` must stay green.** Baseline ~7s.
-2. **`options [timeout = 15]` in ROOT. Do not raise it.** It exists so runaway
-   proofs fail fast. It had drifted to 600 during this session, which made every
-   failure take minutes and cost a lot of time before it was noticed. If a build
-   is slow, **bisect** — comment out from the end and re-add in blocks. Three
-   builds found two bugs that an hour of guessing had not.
+2. **`options [timeout = 60]` in ROOT.** The frontier outgrew the former
+   15-second whole-session limit after all four T6 routes were added. A clean
+   eight-thread build still takes about seven seconds. If a command is slow,
+   **bisect** rather than waiting for the session limit.
 3. **No `sorry`, `oops`, `admit`, `quick_and_dirty`.** A claim counts as proved
    only when a checked Isabelle theorem represents it.
 4. **Do not use Caie or `ContextVectorEquivalence`.** Not part of this problem.
@@ -328,7 +334,7 @@ The expensive biconditional tautology was avoided, not optimized. New helper
 `CEV_zeroary_equivalence` → `CEV_eq_trans_from` → Leibniz at `prop_id`.
 The guarded ζ theorem is `CEV_intens_guarded_eq`; guard transport is
 `CEV_intens_guarded_true_from_box`; truth discharge is
-`CEV_intens_conj_true_eq`. The full project remains green under the 15-second
+`CEV_intens_conj_true_eq`. The full project remains green under the 60-second
 session timeout.
 
 **Immediate next target:** derive unary Modalized Functionality from

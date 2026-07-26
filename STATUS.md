@@ -113,8 +113,13 @@
 > using excluded middle on each biconditional witness, and then translates the
 > checked TU contradiction through an explicit axiom-translation theorem.
 > This imports no Exhaustion, Inv, Recombination, Persistence, fundamentality,
-> or Purity of Fun.  The remaining T6 route is strong-L2 + RS.  Per the current verification policy,
-> a single consolidated Claude audit will be run only after all Goodman
+> or Purity of Fun.
+> `frontier/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
+> `frontier/Bacon_PP_Goodman_T6_RS.thy` prove the final T6 route from the
+> exact core plus strong-L2 and RS. RS supplies its own nonempty `fun′`-only
+> specification, so there is no separate `∃fun′` axiom. The headline theorem
+> is `CEV_Goodman_T6_RS`. Per the current verification policy, a single
+> consolidated Claude audit will be run only after all Goodman
 > object-language targets are proved.
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
@@ -122,7 +127,7 @@
 
 > **Driving handoff, 2026-07-25.** Start with **[CODEX_HANDOFF.md](CODEX_HANDOFF.md)**,
 > not this file. It states the problem precisely (X and A), records the audit of
-> this repo against Goodman's own notes, lists the ground rules (15s timeout,
+> this repo against Goodman's own notes, lists the ground rules (60s timeout,
 > no `sorry`, bisect don't guess), records the completed unary Intensionality
 > theorem, and ranks what to do next. This file is the long-form record and
 > contains superseded material — every withdrawn claim is listed in §8 of the

@@ -40,7 +40,7 @@ session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
     instead of hanging a build.  Move theories down into the PP session once
     they are settled.
   "
-  options [timeout = 15]
+  options [timeout = 60]
 theories
   Bacon_PP_Axiom_Soundness
   Bacon_PP_Stock_Requirements
@@ -89,3 +89,5 @@ theories
   Bacon_PP_Goodman_T6_Inv
   Bacon_PP_Goodman_T6_TU
   Bacon_PP_Goodman_T6_WI
+  Bacon_PP_Goodman_T6_RS_Encoding
+  Bacon_PP_Goodman_T6_RS
