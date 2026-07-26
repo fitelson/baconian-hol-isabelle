@@ -91,3 +91,4 @@ theories
   Bacon_PP_Goodman_T6_WI
   Bacon_PP_Goodman_T6_RS_Encoding
   Bacon_PP_Goodman_T6_RS
+  Bacon_PP_Goodman_T7_Absorption

@@ -1751,3 +1751,32 @@ Ranked. Full reasoning in `reports/PP_consensus_stocktaking_2026-07-25.md`.
    finite supports, where purity is empty support --- asking only whether the same
    self-classification knot reappears. Strictly diagnostic. Low to medium.
    Settles whether the tree action deserves the remaining months.
+
+## Goodman object-language verification update (2026-07-25, T7a)
+
+`frontier/Bacon_PP_Goodman_T7_Absorption.thy` now machine-proves the
+absorption theorem. With `D` Goodman's liar, `d = D(r)`, and
+`a_Z = D(Zd)`, the exact stock
+
+```
+pp_T7_full_axioms =
+  {pp_exists_fun_prime, pp_L2} ∪ pp_T6_core_PP_axioms
+```
+
+derives the closed result saying that some `fun′` witness `r` satisfies both
+`¬a_id` and `∃Z(G Z ∧ a_Z)`. The decisive exported theorems are
+`CEV_Goodman_T7a_parameter` and `CEV_Goodman_T7a`.
+
+The proof does not assume Inv, WI, TU, RS, QLN, Recombination, Exhaustion,
+fundamentality, Persistence, or Purity of Fun. It:
+
+1. obtains `¬D(D r)` from the checked T5 diagonal refutation;
+2. uses classical quantifier duality to extract pure `X` and `fun′ q` with
+   `D r = X q` and `X(D r)`;
+3. applies weak L2 to obtain `X = D ∘ Z` for some `Z ∈ G`;
+4. transports `X(D r)` to `D(Z(D r))`; and
+5. eliminates `X`, `q`, `Z`, and the original `r` witness inside CEV+.
+
+The complete Isabelle session clean-builds, and the new theory contains no
+proof escape. The consolidated Claude audit remains deferred until T7b and
+T8 are complete.

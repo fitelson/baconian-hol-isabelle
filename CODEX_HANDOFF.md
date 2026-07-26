@@ -159,7 +159,14 @@ Codex has resumed as driver.
   separate `∃fun′` axiom is present. The proof derives collision injectivity,
   proves the existential diagonal pure, verifies both directions of its liar
   law, and eliminates both existential witnesses object-linguistically.
-- Next formal target: T7, followed by T8 and the meta-level T9 separation.
+- T7a is now machine-proved in
+  `frontier/Bacon_PP_Goodman_T7_Absorption.thy`.
+  `CEV_Goodman_T7a` establishes the exact closed absorption result from
+  `T₀ + PP + ∃fun′ + L2`, with no Inv/WI/TU/RS classification axiom.
+  The object-language proof extracts the liar counterexample witnesses,
+  obtains same-kind via weak L2, transports truth to `D(Zd)`, and eliminates
+  all witnesses.
+- Next formal target: T7b, then T8 and the meta-level T9 separation.
   The advertised WI master equation remains worth formalizing as a
   route-specific intermediate claim, although the exact WI contradiction is
   already checked via WI⇒TU. Run one consolidated Claude audit only after all
