@@ -1,5 +1,36 @@
 # PP Consistency Status
 
+> **Direct central-stock model program opened, 2026-07-26.**
+> `frontier/Bacon_PP_Central_Model_Obligations.thy` now fixes the exact
+> positive certificate as the locale `pp_central_stock_model`.  An
+> interpretation must discharge the denotable Henkin clauses, global soundness
+> of base CEV and vector Equivalence, and
+> `gvalid_set pp_recombination_PP_axioms`.  The theorem
+> `central_stock_answers_Goodman` then yields the positive answer to the
+> consistency question.  QSS failure and the fate of `fun′` are kept separate
+> as post-settlement diagnostics.
+>
+> The same theory proves a generic semantic exclusion theorem for every
+> CEV+-inconsistent extension and specializes it to all four audited T6 stocks.
+> It also proves the orbit-classifier negative control:
+> `pp_orbit_classifier_falsifies_recombination` and
+> `pp_all_invariant_operator_indices_fail_recombination`.  Thus a unary purity stock
+> broad enough to contain the classifier of the fundamental proposition's
+> orbit cannot model Recombination.
+>
+> The unbounded representation is now fixed to one recursive universal carrier,
+> `pp_uval`, containing propositions as word-sets and higher values as typed
+> closure codes.  `pp_uval_per` defines the type-indexed PER by structural
+> recursion on every object type for an arbitrary application operation;
+> symmetry, transitivity, tag soundness, and application compatibility are
+> machine-proved.  `DefaultClosurePER` gives a concrete nonempty
+> interpretation, showing that the all-type PER interface itself is
+> consistent.  It is deliberately not the term model.  The next construction
+> obligation is a genuine closure evaluator/application operation whose
+> generated PER is nonempty, followed by `den_type`, the logical clauses,
+> `den_shift`, and the interpretations of `Pure` and `Fun`.
+> `isabelle build -D . Higher_Order_Metaphysics_PP_Frontier` is clean.
+
 > **Recombination--QSS repair, 2026-07-26.**
 > `frontier/Bacon_PP_QSS_Recombination_Bridge.thy` now isolates and proves
 > the strongest result obtained by Bacon's unary Recombination step alone.

@@ -1,8 +1,41 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: the Recombination--QSS--T6 bridge is machine-proved
+## 0. Live checkpoint: the direct central-stock model program is active
 
 Codex has resumed as driver.
+
+- `frontier/Bacon_PP_Central_Model_Obligations.thy` is the live model theory.
+  Its locale `pp_central_stock_model` is the exact positive certificate:
+  denotable Henkin semantics, base CEV soundness, vector-Equivalence soundness,
+  and global validity of every member of `pp_recombination_PP_axioms`.
+  `central_stock_answers_Goodman` converts any interpretation into the desired
+  consistency theorem.
+- The theory proves that no such central model can validate any complete T6
+  stock, using the four existing object-language contradictions.  These are
+  diagnostics only; the central stock itself contains none of the T6
+  classification principles.
+- The orbit-classifier control is now checked in its strongest useful stock
+  form.  `pp_orbit_classifier_falsifies_recombination` and
+  `pp_all_invariant_operator_indices_fail_recombination` rule out every unary purity
+  stock containing the orbit classifier's index.  This formally excludes the
+  all-invariant-operators shortcut.
+- The universal representation is no longer finite-level:
+  `pp_uval` contains word-set propositions and recursively captured typed
+  closures at arbitrary object types.  For any proposed application operation,
+  `pp_uval_per` defines the type-indexed PER by recursion on `otype`.
+  Symmetry, transitivity, tag soundness, and application compatibility are
+  proved.  `DefaultClosurePER` supplies a concrete nonempty interpretation of
+  the representation contract; it is a non-vacuity control, not the model.
+- The next implementation tranche is to replace default application with a
+  terminating closure evaluator, prove that its PER domains are nonempty, and
+  instantiate `henkin_action_model`.  Only then should `Pure` and `Fun` be
+  interpreted and the central stock checked.  A finite full-function shortcut
+  is not viable: at finite proposition domains the higher-order logical
+  vocabulary can define the orbit/cardinality class of a candidate fundamental,
+  recreating the orbit-classifier failure.
+- The frontier session builds cleanly after these additions.
+
+## Bridge checkpoint: the Recombination--QSS--T6 result is machine-proved
 
 - `frontier/Bacon_PP_QSS_Recombination_Bridge.thy` proves the precise
   Recombination-only core of Goodman's QSS argument:
