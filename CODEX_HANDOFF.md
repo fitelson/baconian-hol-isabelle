@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T2a--T2d verified
+## 0. Live checkpoint: Goodman T1 and T2a--T2f machine-verified
 
 Codex has resumed as driver.
 
@@ -66,14 +66,25 @@ Codex has resumed as driver.
   PP-free strengthening, and also machine-checked Goodman's original
   arbitrary-pure-`p` derivation using Persistence.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2D_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Noncontingency.thy` now machine-proves
-  T2e using the literal modal rendering `□r ∨ □¬r`; it awaits adversarial
-  audit.  `frontier/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`
-  machine-proves T1's main universal claim from zeroary Exhaustion and awaits
-  audit.  `frontier/Bacon_PP_Goodman_Biconditional_Classification.thy`
-  machine-proves that every pure-indexed biconditional operator is `id` or
-  `¬`; exact WI-to-Inv packaging remains open.  T2f infrastructure is in
-  `frontier/Bacon_PP_Goodman_Fun_Prime_Six_Distinct.thy`.
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Noncontingency.thy` machine-proves
+  T2e using the literal modal rendering `□r ∨ □¬r`.
+  `frontier/Bacon_PP_Goodman_T2f_Verified.thy` machine-proves T2f as one
+  conditional object-language theorem containing all fifteen pairwise
+  inequalities among `⊤`, `⊥`, `r`, `¬r`, `(r=⊤)`, and `(r=⊥)`.
+  Claude Opus 5 independently rebuilt these results and replayed the entire
+  T2a--T2f chain over the PP-free core consisting only of the purity schema
+  and application closure.  PP and Persistence are unused; application
+  closure is genuinely needed.
+- `frontier/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`,
+  `frontier/Bacon_PP_Goodman_Biconditional_Classification.thy`, and
+  `frontier/Bacon_PP_Goodman_WI_Collapse.thy` machine-prove all three stages
+  of T1: every pure proposition is `⊤` or `⊥`, each pure-indexed
+  biconditional operator is `id` or `¬`, and WI collapses to Inv.
+- `frontier/Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse.thy` records a crucial
+  consistency qualification found by Claude: if `fun′(r)` is inserted into
+  the theorem-level axiom stock rather than retained as an antecedent, Rule
+  of Equivalence collapses `(r=⊤)` and `(r=⊥)` to `⊥`; T2f fails and the
+  resulting theory proves `⊥`.
 - Standing qualification: T2a--T2d are conditional derivability results in
   repository CEV.
   Non-vacuity of CEV plus the core is not yet proved.  Moreover,
@@ -84,8 +95,8 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal targets: adversarially audit T2e and the main T1 theorem, then
-  settle the exact T2f pairwise-distinctness claim.
+- Next formal target: Goodman T3 (Heredity), while adversarially auditing the
+  completed WI-to-Inv packaging.  T4--T9 remain after T3.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next
 (immediately: Codex). `STATUS.md` is the long-form record; this is the
