@@ -65,6 +65,20 @@
 > A separate theorem now records that promoting
 > `fun′(r)` from an antecedent to an axiom makes the theory inconsistent;
 > the conditional formulation is therefore essential.
+> T5 is now machine-proved in its exact object-language form:
+> `fun′(r) → ∃q(fun′(q) ∧ q ≠ r ∧ q ≠ ¬r)`.  The headline theorem
+> `CEV_Goodman_T5` uses the literal closed stock
+> `pp_T5_axioms = pp_purity_schema ∪ pp_application_closure_schema ∪
+> {pp_target_PP}`; it contains no existence axiom for `fun′`, L2, Inv, WI,
+> TU, RS, Exhaustion, Persistence, Recombination, fundamentality, or Purity
+> of Fun.  The proof runs the T6 liar against the two-element hypothesis,
+> with the `q=r` branch using injectivity at `r` and the `q=¬r` branch using
+> `X∘¬`; the separate refutation of `D(¬d)` correctly uses `¬∘D∘¬`.
+> Claude Opus 5 independently reconstructed the proof, clean-built it,
+> audited all ten theorem objects, and ran decisive negation-order and
+> premise-deletion controls, returning PASS WITH QUALIFICATIONS.  The
+> qualifications are semantic: T5 proves no inconsistency by itself, and
+> non-vacuity of its `fun′(r)` antecedent remains open.
 > These remain conditional derivability results: consistency and non-vacuity
 > of CEV plus the core are open, and the equation of repository CEV with
 > Goodman's presentation of `T₀` remains a prose audit.
@@ -82,8 +96,8 @@
 > layer: the composition beta law, both unit laws, associativity, purity of
 > composition over the exact T6 core (and arbitrary extensions of it), and
 > local-assumption versions of application closure and equality reasoning.
-> The final T6 contradiction remains open.  The next object-language target is
-> T5, the proliferation theorem.
+> The next object-language target is T6: all four advertised contradiction
+> routes (Inv, WI, TU, and strong-L2 + RS).
 > A controlling T1--T9 matrix is in
 > `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (local,
 > gitignored), with T9 correctly separated as meta-level cardinal arithmetic.
