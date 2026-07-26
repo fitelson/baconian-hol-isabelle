@@ -135,6 +135,13 @@ Codex has resumed as driver.
   members fixed by every substitution.  This identifies the implicit
   semantic premise precisely: invariance of the operators themselves, which
   is stronger than object-language Persistence of the predicate `Pure`.
+  The sharpened theorem
+  `pp_failed_heredity_requires_noninvariant_pure_pair` extracts distinct pure
+  operators `F,G` from any failed semantic heredity instance and proves that
+  at least one must be substitution-noninvariant.  Consequently an exact T3
+  countermodel must use a nonstandard purity extension containing an exotic
+  noninvariant operator; Bacon's intended closed-denotation interpretation
+  cannot supply it.
 - `frontier/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
   the stronger object-language form
   `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  Its exact closed stock is

@@ -1942,3 +1942,13 @@ the claim is valid in the intended substitution semantics while the stated
 object-language assumptions prove only possible operator identity:
 Persistence preserves the applicability of `Pure`; the semantic proof needs
 the stronger fact that the pure operators themselves are substitution-fixed.
+
+The theory now also proves the sharp converse model obligation
+`pp_failed_heredity_requires_noninvariant_pure_pair`.  Any failed heredity
+instance supplies distinct certified operators `F,G` agreeing at the proposed
+counterexample, and at least one of `F,G` must be substitution-noninvariant.
+Thus a full countermodel to the advertised T3 stock cannot use Bacon's
+intended interpretation of purity by closed pure denotations: it must certify
+an exotic noninvariant operator as pure.  This isolates the remaining
+countermodel burden without claiming that the unbounded PP and purity schemas
+have already been modeled.
