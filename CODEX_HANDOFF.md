@@ -1,6 +1,6 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T1--T5 and T6-Inv verified or sharply resolved
+## 0. Live checkpoint: Goodman T1--T5 and three T6 routes verified or sharply resolved
 
 Codex has resumed as driver.
 
@@ -27,6 +27,14 @@ Codex has resumed as driver.
   and TU.  The truth-flipping case eliminates the inverse existential and
   uses the conjugate `Z∘D∘Z⁻¹`; it imports no Inv, WI, strong-L2, RS, QLN,
   fundamentality, Persistence, or Purity of Fun.
+- `frontier/Bacon_PP_Goodman_T6_WI.thy` proves
+  `[] ; pp_T6_WI_axioms ⊢CEV+ ⊥` from the exact core plus `∃fun′`, weak L2,
+  and WI.  The key theorem `CEV_axiom_WI_implies_TU` derives TU directly:
+  every WI witness has the form `λp.(p↔A)`, hence is truth-preserving if `A`
+  and truth-flipping if `¬A`.  This uses neither the stronger T1 stock nor
+  Exhaustion.  An explicit axiom translation then reuses the verified TU
+  contradiction.  No Inv, strong-L2, RS, QLN, Recombination, fundamentality,
+  Persistence, or Purity of Fun enters.
 - `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
@@ -144,8 +152,10 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- Next formal target: the remaining Goodman T6 routes: WI/master equation and
-  strong-L2 + RS.  T7--T9 then remain.  Run one consolidated Claude audit
+- Next formal target: the remaining Goodman T6 route, strong-L2 + RS.  The
+  advertised WI master equation remains worth formalizing as a route-specific
+  intermediate claim, although the exact WI contradiction is already checked
+  via WI⇒TU.  T7--T9 then remain.  Run one consolidated Claude audit
   only after all object-language targets are machine-proved.
 
 Written 2026-07-25 at the end of a Claude session, for whoever drives next

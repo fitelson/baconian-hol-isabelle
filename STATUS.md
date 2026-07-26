@@ -107,8 +107,13 @@
 > branch diagonalizes with `Z∘D`; the flipping branch eliminates an explicit
 > inverse and diagonalizes with the conjugate `Z∘D∘Z⁻¹`.  This establishes
 > `CEV_Goodman_T6_TU` without Inv, WI, strong-L2, RS, QLN, or any
-> fundamentality assumptions.  The remaining T6 routes are WI and
-> strong-L2 + RS.  Per the current verification policy,
+> fundamentality assumptions.
+> `frontier/Bacon_PP_Goodman_T6_WI.thy` proves the WI route over the exact
+> core plus `∃fun′`, weak L2, and WI.  It first machine-proves WI⇒TU directly,
+> using excluded middle on each biconditional witness, and then translates the
+> checked TU contradiction through an explicit axiom-translation theorem.
+> This imports no Exhaustion, Inv, Recombination, Persistence, fundamentality,
+> or Purity of Fun.  The remaining T6 route is strong-L2 + RS.  Per the current verification policy,
 > a single consolidated Claude audit will be run only after all Goodman
 > object-language targets are proved.
 > A controlling T1--T9 matrix is in
