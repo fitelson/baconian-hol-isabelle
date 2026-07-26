@@ -1,0 +1,69 @@
+%------------------------------------------------------------------------------
+% Reified THF cross-check for the depth-1 PP/Recombination probe.
+%
+% This has the same finite consequence stock as the TFF benchmark.  prop and
+% op are opaque base types; app is explicit, so THF extensionality does not
+% identify object-language operators.
+%------------------------------------------------------------------------------
+
+thf(prop_type, type, prop: $tType).
+thf(op_type, type, op: $tType).
+
+thf(app_type, type, app: op > prop > prop).
+thf(neg_type, type, neg: prop > prop).
+thf(holds_type, type, holds: prop > $o).
+thf(pure_type, type, pure: op > $o).
+thf(fun_type, type, fundamental: prop > $o).
+thf(fun_prime_type, type, fun_prime: prop > $o).
+
+thf(top_type, type, top: prop).
+thf(bottom_type, type, bottom: prop).
+thf(liar_type, type, d: op).
+thf(identity_type, type, identity: op).
+thf(negation_type, type, negation: op).
+
+thf(top_true, axiom, holds @ top).
+thf(bottom_false, axiom, ~ (holds @ bottom)).
+thf(neg_truth, axiom,
+    ! [P: prop] :
+      ((holds @ (neg @ P)) <=> ~ (holds @ P))).
+thf(identity_beta, axiom,
+    ! [P: prop] : ((app @ identity @ P) = P)).
+thf(negation_beta, axiom,
+    ! [P: prop] : ((app @ negation @ P) = (neg @ P))).
+
+thf(identity_pure, axiom, pure @ identity).
+thf(negation_pure, axiom, pure @ negation).
+thf(pp_depth1_liar_pure, axiom, pure @ d).
+
+thf(fun_prime_definition, axiom,
+    ! [P: prop] :
+      ( (fun_prime @ P)
+    <=> ! [X: op, Y: op] :
+          ( ((pure @ X)
+             & (pure @ Y)
+             & ((app @ X @ P) = (app @ Y @ P)))
+         => (X = Y) ) )).
+
+thf(liar_matrix, axiom,
+    ! [P: prop] :
+      ( (holds @ (app @ d @ P))
+    <=> ! [X: op, Q: prop] :
+          ( ((pure @ X)
+             & (fun_prime @ Q)
+             & (P = (app @ X @ Q)))
+         => ~ (holds @ (app @ X @ P)) ) )).
+
+thf(unique_fundamental, axiom,
+    ? [R: prop] :
+      ( (fundamental @ R)
+      & ! [Q: prop] : ((fundamental @ Q) => (Q = R)) )).
+
+thf(unary_recombination, axiom,
+    ! [X: op, R: prop] :
+      ( ((pure @ X)
+          & (fundamental @ R)
+          & ((app @ X @ R) = top))
+     => ! [Q: prop] : (holds @ (app @ X @ Q)) )).
+
+thf(pp_depth1_target, conjecture, $false).

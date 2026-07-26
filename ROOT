@@ -96,3 +96,15 @@ theories
   Bacon_PP_Goodman_T8_Kind_Uniqueness
   Bacon_PP_Goodman_T8_Base_Kinds
   Bacon_PP_Goodman_T8_Growth
+
+session Higher_Order_Metaphysics_PP_Models in "models" =
+    Higher_Order_Metaphysics_PP +
+  description "
+    Explicit Isabelle certificates for finite candidate models produced by
+    external model finders.  Each theory proves every axiom in its documented
+    bounded benchmark; no such certificate is a model of the full PP schemas
+    unless a separate translation theorem says so.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_Vampire_Depth1_Model

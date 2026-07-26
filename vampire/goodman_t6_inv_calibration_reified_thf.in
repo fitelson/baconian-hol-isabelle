@@ -1,0 +1,72 @@
+%------------------------------------------------------------------------------
+% Reified THF cross-check for Goodman's T6-Inv contradiction.
+%
+% The object-language types prop and op are opaque THF base types.  In
+% particular op is not identified with prop > prop; object application remains
+% the explicit symbol app.
+%------------------------------------------------------------------------------
+
+thf(prop_type, type, prop: $tType).
+thf(op_type, type, op: $tType).
+
+thf(app_type, type, app: op > prop > prop).
+thf(neg_type, type, neg: prop > prop).
+thf(compose_type, type, compose: op > op > op).
+thf(holds_type, type, holds: prop > $o).
+thf(pure_type, type, pure: op > $o).
+thf(fun_prime_type, type, fun_prime: prop > $o).
+thf(same_kind_type, type, same_kind: op > op > $o).
+
+thf(liar_type, type, d: op).
+thf(identity_type, type, identity: op).
+thf(negation_type, type, negation: op).
+
+thf(exists_fun_prime, axiom,
+    ? [R: prop] : (fun_prime @ R)).
+
+thf(liar_is_pure, axiom,
+    pure @ d).
+
+thf(liar_matrix, axiom,
+    ! [P: prop] :
+      ( (holds @ (app @ d @ P))
+    <=> ! [X: op, Q: prop] :
+          ( ((pure @ X)
+             & (fun_prime @ Q)
+             & (P = (app @ X @ Q)))
+         => ~ (holds @ (app @ X @ P)) ) )).
+
+thf(not_d_d, axiom,
+    ! [R: prop] :
+      ((fun_prime @ R)
+       => ~ (holds @ (app @ d @ (app @ d @ R))))).
+
+thf(not_d_neg_d, axiom,
+    ! [R: prop] :
+      ((fun_prime @ R)
+       => ~ (holds @ (app @ d @ (neg @ (app @ d @ R)))))).
+
+thf(weak_l2, axiom,
+    ! [X: op, Y: op, P: prop, Q: prop] :
+      ( ( (pure @ X)
+          & (pure @ Y)
+          & (fun_prime @ P)
+          & (fun_prime @ Q)
+          & ((app @ X @ P) = (app @ Y @ Q)) )
+     => (same_kind @ X @ Y) )).
+
+thf(inv_kind_cases_at_d, axiom,
+    ! [X: op] :
+      ((same_kind @ X @ d)
+       => ( (X = (compose @ d @ identity))
+            | (X = (compose @ d @ negation)) ))).
+
+thf(compose_d_identity, axiom,
+    (compose @ d @ identity) = d).
+
+thf(compose_d_negation_apply, axiom,
+    ! [P: prop] :
+      ((app @ (compose @ d @ negation) @ P)
+       = (app @ d @ (neg @ P)))).
+
+thf(calibration_target, conjecture, $false).

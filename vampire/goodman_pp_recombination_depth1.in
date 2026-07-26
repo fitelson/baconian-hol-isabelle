@@ -1,0 +1,72 @@
+%------------------------------------------------------------------------------
+% Depth-1 bounded refutation probe for Goodman's central PP question.
+%
+% This is a sound finite consequence fragment, not a complete or
+% equiconsistent encoding of the infinite purity/application schemas.
+%------------------------------------------------------------------------------
+
+tff(prop_type, type, prop: $tType).
+tff(op_type, type, op: $tType).
+
+tff(app_type, type, app: (op * prop) > prop).
+tff(neg_type, type, neg: prop > prop).
+tff(holds_type, type, holds: prop > $o).
+tff(pure_type, type, pure: op > $o).
+tff(fun_type, type, fundamental: prop > $o).
+tff(fun_prime_type, type, fun_prime: prop > $o).
+
+tff(top_type, type, top: prop).
+tff(bottom_type, type, bottom: prop).
+tff(liar_type, type, d: op).
+tff(identity_type, type, identity: op).
+tff(negation_type, type, negation: op).
+
+% Local classical truth facts for the represented logical constants.
+tff(top_true, axiom, holds(top)).
+tff(bottom_false, axiom, ~ holds(bottom)).
+tff(neg_truth, axiom,
+    ! [P: prop] : (holds(neg(P)) <=> ~ holds(P))).
+tff(identity_beta, axiom,
+    ! [P: prop] : app(identity,P) = P).
+tff(negation_beta, axiom,
+    ! [P: prop] : app(negation,P) = neg(P)).
+
+% Selected constant-free purity-schema consequences.
+tff(identity_pure, axiom, pure(identity)).
+tff(negation_pure, axiom, pure(negation)).
+
+% This is the depth-1 consequence of PP plus purity of the constant-free liar
+% builder and application closure: pp_T6_liar_pure.
+tff(pp_depth1_liar_pure, axiom, pure(d)).
+
+% Goodman's definition of fun'.
+tff(fun_prime_definition, axiom,
+    ! [P: prop] :
+      ( fun_prime(P)
+    <=> ! [X: op, Y: op] :
+          ( (pure(X) & pure(Y) & app(X,P) = app(Y,P))
+         => X = Y ) )).
+
+% Goodman's liar is available as a constant-free term once Pure is abstracted;
+% PP and application closure certify its purity above.
+tff(liar_matrix, axiom,
+    ! [P: prop] :
+      ( holds(app(d,P))
+    <=> ! [X: op, Q: prop] :
+          ( (pure(X) & fun_prime(Q) & P = app(X,Q))
+         => ~ holds(app(X,P)) ) )).
+
+% Exactly one fundamental proposition.
+tff(unique_fundamental, axiom,
+    ? [R: prop] :
+      ( fundamental(R)
+      & ! [Q: prop] : (fundamental(Q) => Q = R) )).
+
+% Unary Recombination.  Box(X(r)) is local identity with top.
+tff(unary_recombination, axiom,
+    ! [X: op, R: prop] :
+      ( (pure(X) & fundamental(R) & app(X,R) = top)
+     => ! [Q: prop] : holds(app(X,Q)) )).
+
+% Ask whether this finite fragment already refutes.
+tff(pp_depth1_target, conjecture, $false).

@@ -1,0 +1,76 @@
+%------------------------------------------------------------------------------
+% Calibration for Goodman's T6-Inv contradiction.
+%
+% The clauses abstract independently Isabelle-verified CEV+ theorems.  Vampire
+% is not given either holds(D(D(r))) or a contradiction; it must reconstruct
+% the liar truth from D's matrix, weak L2, Inv, and the two T5 refutations.
+%------------------------------------------------------------------------------
+
+tff(prop_type, type, prop: $tType).
+tff(op_type, type, op: $tType).
+
+tff(app_type, type, app: (op * prop) > prop).
+tff(neg_type, type, neg: prop > prop).
+tff(compose_type, type, compose: (op * op) > op).
+tff(holds_type, type, holds: prop > $o).
+tff(pure_type, type, pure: op > $o).
+tff(fun_prime_type, type, fun_prime: prop > $o).
+tff(same_kind_type, type, same_kind: (op * op) > $o).
+
+tff(liar_type, type, d: op).
+tff(identity_type, type, identity: op).
+tff(negation_type, type, negation: op).
+
+% pp_exists_fun_prime
+tff(exists_fun_prime, axiom,
+    ? [R: prop] : fun_prime(R)).
+
+% pp_T6_liar_pure
+tff(liar_is_pure, axiom,
+    pure(d)).
+
+% The truth condition of pp_T6_liar:
+% D(p) iff every pure/fun'-decomposition p = X(q) fails at p.
+tff(liar_matrix, axiom,
+    ! [P: prop] :
+      ( holds(app(d,P))
+    <=> ! [X: op, Q: prop] :
+          ( (pure(X) & fun_prime(Q) & P = app(X,Q))
+         => ~ holds(app(X,P)) ) )).
+
+% CEV_T5_not_Dd
+tff(not_d_d, axiom,
+    ! [R: prop] :
+      (fun_prime(R) => ~ holds(app(d,app(d,R))))).
+
+% CEV_T5_not_D_neg_d
+tff(not_d_neg_d, axiom,
+    ! [R: prop] :
+      (fun_prime(R) => ~ holds(app(d,neg(app(d,R)))))).
+
+% Weak L2, specialized only by the solver when needed.
+tff(weak_l2, axiom,
+    ! [X: op, Y: op, P: prop, Q: prop] :
+      ( ( pure(X)
+        & pure(Y)
+        & fun_prime(P)
+        & fun_prime(Q)
+        & app(X,P) = app(Y,Q) )
+     => same_kind(X,Y) )).
+
+% Inv eliminates the witness in X = D o Z.
+tff(inv_kind_cases_at_d, axiom,
+    ! [X: op] :
+      (same_kind(X,d)
+       => (X = compose(d,identity) | X = compose(d,negation)))).
+
+% The two beta/composition identities used in the case split.
+tff(compose_d_identity, axiom,
+    compose(d,identity) = d).
+
+tff(compose_d_negation_apply, axiom,
+    ! [P: prop] :
+      app(compose(d,negation),P) = app(d,neg(P))).
+
+% A refutation is the calibration target.
+tff(calibration_target, conjecture, $false).
