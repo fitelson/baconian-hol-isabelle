@@ -1,5 +1,39 @@
 # PP Consistency Status
 
+> **Recombination--QSS repair, 2026-07-26.**
+> `frontier/Bacon_PP_QSS_Recombination_Bridge.thy` now isolates and proves
+> the strongest result obtained by Bacon's unary Recombination step alone.
+> From pure unary operators `X,Y`, a fundamental `r`, and `Xr=Yr`,
+> `CEV_QSS_modal_core_from_recombination` derives both
+> `∀q(Xq=Yq)` and `∀q□(Xq=Yq)`.  It deliberately does **not** derive
+> `□∀q(Xq=Yq)`: moving the box across the universal closure is the missing
+> zeroary step in the printed QSS argument.
+>
+> The repaired central stock is
+> `pp_recombination_zeroary_exhaustion_axioms`, namely the original
+> Recombination/PP background plus zeroary Exhaustion.
+> `CEV_QSS_from_recombination_with_zeroary_exhaustion` proves QSS over this
+> stock in every ambient context.  Purity closure first makes the
+> pointwise-identity sentence pure; zeroary Exhaustion then yields its
+> necessity; derived unary Modalized Functionality yields `X=Y`.
+> `CEV_fun_prime_from_contextual_QSS` proves `Fun(p) → fun′(p)`, and
+> `CEV_exists_fun_prime_from_QSS_and_unique_fundamentality` eliminates the
+> unique-fundamental existential to prove `∃p fun′(p)`.  Thus
+> `CEV_exists_fun_prime_from_recombination_with_zeroary_exhaustion` derives,
+> rather than assumes, the central T6 existence premise.
+>
+> The four T6 routes have been translated to this repaired central stock:
+> `CEV_Goodman_T6_Inv_repaired_central_stock`,
+> `CEV_Goodman_T6_TU_repaired_central_stock`,
+> `CEV_Goodman_T6_WI_repaired_central_stock`, and
+> `CEV_Goodman_T6_RS_repaired_central_stock` all derive `ObjFalse`.
+> The Inv/TU/WI translations replace their explicit `∃fun′` axiom with the
+> proved bridge; RS already supplies its own route and is monotone over the
+> repaired stock.  A clean whole-project Isabelle build passes.  A separate
+> theorem-object audit of all nine exported bridge/T6 theorems reports no
+> oracles, hypotheses, flex-flex pairs, or sort hypotheses; the new theory
+> contains no proof escape.
+
 > **Current theorem-verification tranche, 2026-07-25.** Goodman T2a--T2d are
 > machine-proved.  `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves
 > that `fun′(p)` is preserved by every pure reversible operator, that negation

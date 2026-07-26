@@ -99,6 +99,7 @@ theories
   Bacon_PP_Goodman_T8_Kind_Uniqueness
   Bacon_PP_Goodman_T8_Base_Kinds
   Bacon_PP_Goodman_T8_Growth
+  Bacon_PP_QSS_Recombination_Bridge
 
 session Higher_Order_Metaphysics_PP_Models in "models" =
     Higher_Order_Metaphysics_PP +

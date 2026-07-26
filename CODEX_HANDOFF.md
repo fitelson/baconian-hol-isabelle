@@ -1,9 +1,35 @@
 # Handoff: Goodman's PP consistency problem
 
-## 0. Live checkpoint: Goodman T1--T5 and three T6 routes verified or sharply resolved
+## 0. Live checkpoint: the Recombination--QSS--T6 bridge is machine-proved
 
 Codex has resumed as driver.
 
+- `frontier/Bacon_PP_QSS_Recombination_Bridge.thy` proves the precise
+  Recombination-only core of Goodman's QSS argument:
+  `CEV_QSS_modal_core_from_recombination` obtains both pointwise identity
+  `∀q(Xq=Yq)` and pointwise necessary identity `∀q□(Xq=Yq)`, but not the
+  stronger `□∀q(Xq=Yq)`.
+- Adding exactly zeroary Exhaustion gives the repaired central stock
+  `pp_recombination_zeroary_exhaustion_axioms`.
+  `CEV_QSS_from_recombination_with_zeroary_exhaustion` proves QSS in every
+  ambient context.  The proof explicitly establishes purity of the universal
+  identity sentence before applying Exhaustion.
+- `CEV_fun_prime_from_contextual_QSS` proves `Fun(p) → fun′(p)`.
+  `CEV_exists_fun_prime_from_QSS_and_unique_fundamentality` combines that
+  implication with unique fundamentality to prove `∃fun′`; the central-stock
+  corollary is
+  `CEV_exists_fun_prime_from_recombination_with_zeroary_exhaustion`.
+- All four T6 routes are replayed over the repaired central stock:
+  `CEV_Goodman_T6_Inv_repaired_central_stock`,
+  `CEV_Goodman_T6_TU_repaired_central_stock`,
+  `CEV_Goodman_T6_WI_repaired_central_stock`, and
+  `CEV_Goodman_T6_RS_repaired_central_stock`.  Inv/TU/WI no longer assume
+  `∃fun′`; it is derived.  RS is inherited monotonically because its original
+  exact stock did not contain that existential.
+- Clean verification completed with `isabelle build -c -D .`.  The dedicated
+  audit session in `reports/audit_qss_bridge/` inspected the nine principal
+  theorem objects and found zero oracles, hypotheses, flex-flex pairs, and
+  sort hypotheses.
 - `frontier/Bacon_PP_Modalized_Functionality_Derived.thy` proves, in bare CEV,
   `[] ⊢CEV pp_modalized_functionality σ Prop`. Claude Opus 5 adversarially
   audited every rule and the de Bruijn closing step: correct and non-circular.
@@ -432,8 +458,11 @@ The guarded ζ theorem is `CEV_intens_guarded_eq`; guard transport is
 `CEV_intens_conj_true_eq`. The full project remains green under the 60-second
 session timeout.
 
-**Immediate next target:** derive unary Modalized Functionality from
-`CEV_unary_intensionality`, then build QSS and `fun′`.
+**Completed central target:** unary Modalized Functionality, the repaired QSS
+bridge, `QSS +` unique fundamentality `→ ∃fun′`, and all four repaired-stock
+T6 translations are now formalized.  The next mathematical target should be
+chosen from the remaining consistency/model-theoretic frontier rather than
+repeating this derivation.
 
 ---
 
@@ -455,20 +484,18 @@ session timeout.
 Ranked, with the notes taken into account. The internal consensus plan in
 `STATUS.md` predates the notes and its top items are stale.
 
-1. **Derive unary MF, then QSS and `fun′`.** Unary Intensionality is now done.
-   The next proof turns pointwise proposition identity into pointwise
-   biconditional, applies `CEV_unary_intensionality`, and packages the resulting
-   MF instance. This unblocks QSS → `fun′` → `Pure(fun′)` → T6. Without `fun′`
-   the T6 liar `D := λp.∀X∀q(Pure(X) ∧ fun′(q) ∧ p = Xq → ¬Xp)` cannot be stated
-   here; the earlier CEV⁺ search considered only `Pure` and `K`.
-2. **Mechanize Goodman's open problem #1** — calibrate L2 in Bacon's appendix
+1. **Mechanize Goodman's open problem #1** — calibrate L2 in Bacon's appendix
    model. He flags it as suited to mechanization; the model is this repo's word
    action; the machinery largely exists. Either refutes L2 (killing the main
    refutation route) or supports seeking an object-language derivation of it.
-3. **Machine-referee T6's four routes.** They are hand-checked only.
-4. **Replace the purity interpretation throughout** with the definability
+2. **Attack the consistency question with the repaired dependency graph.**
+   The central Recombination stock alone stops at the modal core; zeroary
+   Exhaustion supplies QSS and `∃fun′`; each T6 contradiction still requires
+   L2 plus Inv/TU/WI, or strong-L2 plus RS.  Determine which of those added
+   principles can hold in a verified Isabelle model of the repaired stock.
+3. **Replace the purity interpretation throughout** with the definability
    reading and sweep every result that leaned on invariance (§3).
-5. **A model of A + ¬X.** Lower value for Goodman — M1 already settles that PP
+4. **A model of A + ¬X.** Lower value for Goodman — M1 already settles that PP
    fails at t→t in Bacon's model, so A is consistent and X is independent, and
    the question is non-degenerate. Worth it only as infrastructure validation.
 
