@@ -54,7 +54,12 @@
 > Identity, and Modalized Functionality.  T3 still fails.  Thus Goodman's
 > advertised premise list omits a genuine rigidity assumption; a full
 > countermodel to every unbounded member of `pp_T3_advertised_axioms` has not
-> yet been constructed.
+> yet been constructed.  `pp_stock_fun_prime_hereditary` independently
+> verifies the semantic heredity claim in Bacon's substitution action:
+> necessitated QSS plus the fact that each certified pure operator is itself
+> fixed by every substitution entails heredity.  The latter is the semantic
+> premise missing from the advertised object-language proof and is stronger
+> than Persistence of the predicate `Pure`.
 > Claude independently audited the encodings and derivations and confirmed
 > this verdict.
 > T4 is now machine-proved in a stronger exact object-language form:
@@ -1914,3 +1919,26 @@ The older theorem
 explicit name as a logically valid but methodologically weaker comparison.
 Both the Frontier and Models sessions build, `git diff --check` passes, and
 the theory contains no proof escape.
+
+## T3 semantic calibration (2026-07-26)
+
+`pp/Bacon_PP_Heredity_Semantics.thy` now proves the model-side heredity result
+that was previously only asserted in Goodman's M4 discussion.  For an
+arbitrary certified stock of proposition operators, define `fun′` as
+injectivity of evaluation on that stock.  If:
+
+1. every substitution-view of the fundamental witness satisfies that
+   injectivity condition (the semantic form of necessitated QSS);
+2. each certified operator belongs to Bacon's unary function space and is
+   fixed by every substitution; and
+3. some substitution makes `p` play the same role as the fundamental witness,
+
+then `p` is `fun′` at the root.  The exported theorems are
+`pp_stock_fun_prime_hereditary` and its equivariant corollary
+`pp_stock_fun_prime_hereditary_equivariant`.
+
+This result does not repair the advertised CEV+ derivation.  It explains why
+the claim is valid in the intended substitution semantics while the stated
+object-language assumptions prove only possible operator identity:
+Persistence preserves the applicability of `Pure`; the semantic proof needs
+the stronger fact that the pure operators themselves are substitution-fixed.

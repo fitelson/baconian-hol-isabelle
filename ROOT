@@ -19,6 +19,7 @@ theories
   Bacon_PP_Diagonal
   Bacon_PP_Generic_Witness
   Bacon_PP_MSet
+  Bacon_PP_Heredity_Semantics
   Bacon_PP_Parity
   Bacon_PP_LevelClasses
   Bacon_PP_Uniform_Index

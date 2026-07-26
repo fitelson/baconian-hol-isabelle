@@ -129,7 +129,12 @@ Codex has resumed as driver.
   independent audit confirms that Goodman's advertised premise list omits
   this rigidity commitment.  Exact non-derivability from every unbounded
   member of `pp_T3_advertised_axioms` remains open pending a full model rather
-  than only the strengthened modal abstraction.
+  than only the strengthened modal abstraction.  The separate semantic
+  theorem `pp_stock_fun_prime_hereditary` proves that T3 does hold in Bacon's
+  substitution action when the certified pure operators are function-space
+  members fixed by every substitution.  This identifies the implicit
+  semantic premise precisely: invariance of the operators themselves, which
+  is stronger than object-language Persistence of the predicate `Pure`.
 - `frontier/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
   the stronger object-language form
   `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  Its exact closed stock is
