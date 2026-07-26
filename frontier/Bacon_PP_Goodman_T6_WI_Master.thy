@@ -48,6 +48,13 @@ definition pp_T6_WI_advertised_master :: "oterm \<Rightarrow> oterm" where
   "pp_T6_WI_advertised_master r =
     pp_T6_WI_master_family (pp_T6_WI_a_operator r)"
 
+definition pp_T6_WI_advertised_master_claim :: oterm where
+  "pp_T6_WI_advertised_master_claim =
+    Forall Prop
+      (Imp
+        (pp_fun_prime (Var 0))
+        (pp_T6_WI_advertised_master (Var 0)))"
+
 lemma typed_pp_T6_WI_master_at:
   assumes a_type: "\<Gamma> \<turnstile> a : Prop \<rightarrow>\<^sub>o Prop"
     and A_type: "\<Gamma> \<turnstile> A : Prop"
@@ -149,6 +156,13 @@ lemma typed_pp_T6_WI_advertised_master:
   unfolding pp_T6_WI_advertised_master_def
   using typed_pp_T6_WI_a_operator[OF r_type]
   by (rule typed_pp_T6_WI_master_family)
+
+lemma typed_pp_T6_WI_advertised_master_claim:
+  "\<Gamma> \<turnstile> pp_T6_WI_advertised_master_claim : Prop"
+  unfolding pp_T6_WI_advertised_master_claim_def
+  using typed_pp_fun_prime[OF typed_var0]
+    typed_pp_T6_WI_advertised_master[OF typed_var0]
+  by (intro has_type.Forall has_type.Imp)
 
 lemma subst_pp_T6_WI_master_at[simp]:
   "subst s (pp_T6_WI_master_at a A) =
@@ -658,5 +672,43 @@ proof -
     using a_type pure_top_in family
     by (rule CEV_T6_WI_master_family_inconsistent)
 qed
+
+lemma CEV_axiom_explosion:
+  assumes A_type: "\<Gamma> \<turnstile> A : Prop"
+    and false: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+  shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ A"
+proof -
+  have taut_raw:
+    "\<Gamma> \<turnstile>\<^sub>CEV Imp (Neg ObjTrue) (Imp ObjTrue A)"
+    using typed_ObjTrue A_type
+    by (intro CEV_proves.CE CE_proves.C C_proves.H H_proves.PC
+        prop_tautology_imp_of_neg_left)
+  have explosion_step:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      Imp ObjFalse (Imp ObjTrue A)"
+    using taut_raw
+    by (intro CEV_axiom_proves.Base)
+      (simp add: ObjFalse_def)
+  have true_to_A:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Imp ObjTrue A"
+    using false explosion_step by (rule CEV_axiom_proves.MP)
+  have d_true: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ ObjTrue"
+    by (rule CEV_axiom_proves_ObjTrue)
+  show ?thesis
+    using d_true true_to_A by (rule CEV_axiom_proves.MP)
+qed
+
+text \<open>
+  The following theorem records literal derivability from the exact T6-WI
+  stock.  It is intentionally named to expose that it uses the already
+  established inconsistency of that stock.  It does not certify Goodman's
+  intended non-explosive derivation of the master equation from WI and L2.
+\<close>
+
+theorem CEV_Goodman_T6_WI_advertised_master_claim_ex_falso:
+  "[] ; pp_T6_WI_axioms \<turnstile>\<^sub>CEV\<^sup>+
+    pp_T6_WI_advertised_master_claim"
+  using typed_pp_T6_WI_advertised_master_claim CEV_Goodman_T6_WI
+  by (rule CEV_axiom_explosion)
 
 end

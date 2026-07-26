@@ -127,6 +127,9 @@
 > the contradiction. The remaining master-route obligation is the substantive
 > derivation of the family from WI, weak L2, the liar matrix, and `fun′(r)`;
 > the verified WI⇒TU proof does not establish that intermediate equation.
+> Literal theoremhood over the already inconsistent exact WI stock is recorded
+> transparently by `CEV_Goodman_T6_WI_advertised_master_claim_ex_falso` and
+> is not counted as the intended master-equation derivation.
 > `frontier/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
 > `frontier/Bacon_PP_Goodman_T6_RS.thy` prove the final T6 route from the
 > exact core plus strong-L2 and RS. RS supplies its own nonempty `fun′`-only

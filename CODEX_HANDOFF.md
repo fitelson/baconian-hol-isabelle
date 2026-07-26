@@ -43,7 +43,10 @@ Codex has resumed as driver.
   to Goodman's concrete `a_A`. Vampire finds the same minimal refutation in
   `vampire/goodman_t6_wi_master_inconsistent.in`. The remaining
   route-specific target is to derive the family from WI, weak L2, the liar
-  matrix, and `fun′(r)`.
+  matrix, and `fun′(r)`. Literal derivability from the exact, already
+  inconsistent WI stock is separately recorded as
+  `CEV_Goodman_T6_WI_advertised_master_claim_ex_falso`; its name prevents
+  confusing explosion with Goodman's intended derivation.
 - `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
