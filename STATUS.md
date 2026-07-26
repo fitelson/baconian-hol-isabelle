@@ -1887,3 +1887,30 @@ can be given a matrix parallel to T1--T9, using the existing substitution
 word-action infrastructure and the definability reading of purity. The
 highest-value targets for the eventual consistency problem are the semantic
 status of L2 and the structure of the pure reversible group `G`.
+
+## Goodman T6-WI master derivation (2026-07-26)
+
+`frontier/Bacon_PP_Goodman_T6_WI_Master.thy` now derives Goodman's exact
+advertised WI master claim directly from the stated T6-WI stock.  This closes
+the route-specific gap previously hidden by the independently verified
+inconsistency of that stock.
+
+The proof is explicitly non-explosive:
+
+1. `CEV_T6_WI_master_forward` derives the left-to-right implication from the
+   liar matrix and the core PP principles.
+2. `CEV_T6_WI_master_reverse` derives the right-to-left implication using WI,
+   L2, and the pure reversible-group reindexing argument.
+3. `CEV_T6_WI_master_at_direct` and
+   `CEV_T6_WI_master_family_direct` combine and quantify those directions.
+4. `CEV_T6_WI_rhs_operator_equiv` transports the direct formula through the
+   beta-equivalent lambda encoding of Goodman's proposition-indexed operator.
+5. `CEV_T6_WI_advertised_master_direct` proves the guarded advertised family,
+   and `CEV_Goodman_T6_WI_advertised_master_claim_direct` proves the exact
+   closed quantified claim from `pp_T6_WI_axioms`.
+
+The older theorem
+`CEV_Goodman_T6_WI_advertised_master_claim_ex_falso` is retained under its
+explicit name as a logically valid but methodologically weaker comparison.
+Both the Frontier and Models sessions build, `git diff --check` passes, and
+the theory contains no proof escape.

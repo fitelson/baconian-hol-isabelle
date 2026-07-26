@@ -225,10 +225,14 @@ Codex has resumed as driver.
   formalized.
 - T9 remains, as advertised by Goodman, a meta-level cardinal-counting
   argument rather than a single object-language derivation. The advertised
-  WI master family is now encoded and its inconsistency is checked; deriving
-  that family from Goodman's WI/L2 stock remains the route-specific
-  intermediate target. The exact WI contradiction is independently checked
-  via WI⇒TU.
+  WI master family is now encoded and derived directly from Goodman's WI/L2
+  stock.  The derivation in `Bacon_PP_Goodman_T6_WI_Master.thy` proves the
+  forward direction from the liar matrix and core PP principles, proves the
+  reverse direction using WI and L2, transports both sides through the
+  lambda-encoded operator, and closes the exact quantified advertised claim.
+  It does not pass through `ObjFalse`.  The older ex-falso derivation remains
+  separately named for comparison. The exact WI contradiction is also
+  independently checked via WI⇒TU.
 - The single consolidated adversarial audit is complete as a preserved
   report. It returned PASS WITH QUALIFICATIONS. Its T8c evaluation-oracle
   finding was correct and has been repaired. Its purported second finding
