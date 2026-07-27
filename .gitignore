@@ -11,6 +11,7 @@
 .isabelle/
 .isabelle-codex-home/
 graphify-out/
+isabelle-kg/
 tmp/
 
 # Older generated reports retained locally but not part of the release.

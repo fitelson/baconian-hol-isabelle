@@ -1,0 +1,10 @@
+session Goodman_Fresh_Attack = Higher_Order_Metaphysics +
+  description "
+    A fresh attack on Goodman's consistency question.
+
+    This session imports only the foundational CEV axiom-extension theory.
+    It deliberately does not import the existing PP frontier or model programs.
+  "
+  options [timeout = 120]
+theories
+  Bacon_PP_Fresh_Finite_Fragment

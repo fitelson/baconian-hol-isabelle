@@ -1,0 +1,9 @@
+session Goodman_Complete_Audit_2026_07_27 =
+  Higher_Order_Metaphysics_PP_ZF_Model +
+  description "
+    Complete theorem-object audit of the determinate claims in Goodman's
+    July 2026 PP project notes.
+  "
+  options [timeout = 1800]
+  theories
+    Audit_Goodman_Complete

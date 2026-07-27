@@ -41,7 +41,7 @@ session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
     instead of hanging a build.  Move theories down into the PP session once
     they are settled.
   "
-  options [timeout = 60]
+  options [timeout = 600]
 theories
   Bacon_PP_Axiom_Soundness
   Bacon_PP_Stock_Requirements
@@ -63,6 +63,18 @@ theories
   Bacon_PP_Minimal_Axioms
   Bacon_PP_Modalized_Functionality
   Bacon_PP_Definable_Purity
+  Bacon_PP_Goodman_M2
+  Bacon_PP_Goodman_M1
+  Bacon_PP_Goodman_M3
+  Bacon_PP_Goodman_M4
+  Bacon_PP_Goodman_M5
+  Bacon_PP_Goodman_M5_Collision
+  Bacon_PP_Goodman_M5_Orbit_Avoidance
+  Bacon_PP_Goodman_M6
+  Bacon_PP_Goodman_M7_Invariant_Reachability
+  Bacon_PP_Goodman_M3_Complete
+  Bacon_PP_Goodman_M1_Complete
+  Bacon_PP_Goodman_M1_Fn60
   Bacon_PP_Intensionality
   Bacon_PP_Modalized_Functionality_Derived
   Bacon_PP_T6_Encoding
@@ -99,6 +111,7 @@ theories
   Bacon_PP_Goodman_T8_Kind_Uniqueness
   Bacon_PP_Goodman_T8_Base_Kinds
   Bacon_PP_Goodman_T8_Growth
+  Bacon_PP_Goodman_T9
   Bacon_PP_QSS_Recombination_Bridge
   Bacon_PP_Central_Model_Obligations
 
@@ -132,8 +145,19 @@ theories
   Bacon_PP_ZF_Tree_Frame
   Bacon_PP_ZF_Tree_Logical_Stock
   Bacon_PP_ZF_Tree_Generic_Seed
+  Bacon_PP_ZF_Goodman_M1_Fn60
+  Bacon_PP_ZF_Bacon_10_1
+  Bacon_PP_ZF_Goodman_M5_Rebuild
+  Bacon_PP_ZF_Goodman_M7
   Bacon_PP_ZF_Tree_Basis_Stock
   Bacon_PP_ZF_Tree_Seeded_Stock
   Bacon_PP_ZF_Tree_Range_Classifier
   Bacon_PP_ZF_Tree_Range_Diagonal
   Bacon_PP_ZF_Tree_Range_Term_Basis
+  Bacon_PP_ZF_Repaired_Central_Stock
+  Bacon_PP_ZF_Tree_CEV_Soundness
+  Bacon_PP_ZF_Tree_Ambient_Inverse
+  Bacon_PP_ZF_Tree_Quotient_Diagonal
+  Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder
+  Bacon_PP_ZF_Tree_Stabilizer_Orbit
+  Bacon_PP_ZF_Goodman_L2_Model

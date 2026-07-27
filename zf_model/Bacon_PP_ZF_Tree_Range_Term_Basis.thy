@@ -285,6 +285,211 @@ proof -
   qed
 qed
 
+lemma pp_t_enumerator_range_subset_basis:
+  "(\<lambda>n. E \<acute> n) `
+      {n. Elem n (pp_t_domain Ind)}
+    \<subseteq> pp_t_enumerator_basis E pp_t_unary_type"
+proof
+  fix X
+  assume X:
+      "X \<in> (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+  then obtain n where
+      n: "Elem n (pp_t_domain Ind)"
+    and X_def: "X = E \<acute> n"
+    by blast
+  have E_basis:
+      "E \<in> pp_t_enumerator_basis E
+        (Ind \<rightarrow>\<^sub>o pp_t_unary_type)"
+    by (rule pp_t_enumerator_basis_contains_enumerator)
+  have n_basis:
+      "n \<in> pp_t_enumerator_basis E Ind"
+    using n by (rule pp_t_enumerator_basis_contains_ind)
+  show "X \<in> pp_t_enumerator_basis E pp_t_unary_type"
+    unfolding X_def
+    using pp_t_enumerator_basis_application[
+      OF E_basis n_basis] .
+qed
+
+lemma pp_t_term_basis_fixed_point_iff_absorbs_generated:
+  "pp_t_enumerator_basis E pp_t_unary_type =
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}
+    \<longleftrightarrow>
+    pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+proof
+  assume fixed_point:
+      "pp_t_enumerator_basis E pp_t_unary_type =
+        (\<lambda>n. E \<acute> n) `
+          {n. Elem n (pp_t_domain Ind)}"
+  show "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+    using fixed_point by simp
+next
+  assume absorbs:
+      "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+  show "pp_t_enumerator_basis E pp_t_unary_type =
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+    using absorbs pp_t_enumerator_range_subset_basis[of E]
+    by (rule equalityI)
+qed
+
+lemma pp_t_term_basis_absorption_iff_expression_surjective:
+  "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}
+    \<longleftrightarrow>
+    (\<forall>T.
+      pp_t_basis_expr_type T = Some pp_t_unary_type
+      \<longrightarrow>
+      (\<exists>n.
+        Elem n (pp_t_domain Ind)
+        \<and> pp_t_basis_expr_den E T = E \<acute> n))"
+proof
+  assume absorbs:
+      "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+  show "\<forall>T.
+      pp_t_basis_expr_type T = Some pp_t_unary_type
+      \<longrightarrow>
+      (\<exists>n.
+        Elem n (pp_t_domain Ind)
+        \<and> pp_t_basis_expr_den E T = E \<acute> n)"
+  proof (intro allI impI)
+    fix T
+    assume T:
+        "pp_t_basis_expr_type T = Some pp_t_unary_type"
+    have den_basis:
+        "pp_t_basis_expr_den E T
+          \<in> pp_t_enumerator_basis E pp_t_unary_type"
+      unfolding pp_t_enumerator_basis_def
+    proof (rule imageI)
+      show "T \<in>
+          {U. pp_t_basis_expr_type U = Some pp_t_unary_type}"
+        using T by simp
+    qed
+    have den_range:
+        "pp_t_basis_expr_den E T
+          \<in> (\<lambda>n. E \<acute> n) `
+            {n. Elem n (pp_t_domain Ind)}"
+      using absorbs den_basis by (rule subsetD)
+    then obtain n where
+        n: "Elem n (pp_t_domain Ind)"
+      and den: "pp_t_basis_expr_den E T = E \<acute> n"
+      by (rule imageE) auto
+    show "\<exists>n.
+        Elem n (pp_t_domain Ind)
+        \<and> pp_t_basis_expr_den E T = E \<acute> n"
+    proof (rule exI[where x=n], rule conjI)
+      show "Elem n (pp_t_domain Ind)" by (rule n)
+      show "pp_t_basis_expr_den E T = E \<acute> n"
+        by (rule den)
+    qed
+  qed
+next
+  assume surjective:
+      "\<forall>T.
+        pp_t_basis_expr_type T = Some pp_t_unary_type
+        \<longrightarrow>
+        (\<exists>n.
+          Elem n (pp_t_domain Ind)
+          \<and> pp_t_basis_expr_den E T = E \<acute> n)"
+  show "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+  proof
+    fix X
+    assume X:
+        "X \<in> pp_t_enumerator_basis E pp_t_unary_type"
+    then obtain T where
+        T: "pp_t_basis_expr_type T = Some pp_t_unary_type"
+      and X_def: "X = pp_t_basis_expr_den E T"
+      unfolding pp_t_enumerator_basis_def
+      by (rule imageE) auto
+    obtain n where
+        n: "Elem n (pp_t_domain Ind)"
+      and den: "pp_t_basis_expr_den E T = E \<acute> n"
+      using surjective T by blast
+    show "X \<in> (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+      unfolding X_def den
+    proof (rule imageI)
+      show "n \<in> {m. Elem m (pp_t_domain Ind)}"
+        using n by simp
+    qed
+  qed
+qed
+
+theorem pp_t_term_basis_fixed_point_iff_expression_surjective:
+  "pp_t_enumerator_basis E pp_t_unary_type =
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}
+    \<longleftrightarrow>
+    (\<forall>T.
+      pp_t_basis_expr_type T = Some pp_t_unary_type
+      \<longrightarrow>
+      (\<exists>n.
+        Elem n (pp_t_domain Ind)
+        \<and> pp_t_basis_expr_den E T = E \<acute> n))"
+proof
+  assume fixed_point:
+      "pp_t_enumerator_basis E pp_t_unary_type =
+        (\<lambda>n. E \<acute> n) `
+          {n. Elem n (pp_t_domain Ind)}"
+  have absorbs:
+      "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+    using
+      pp_t_term_basis_fixed_point_iff_absorbs_generated[of E]
+      fixed_point by blast
+  show "\<forall>T.
+      pp_t_basis_expr_type T = Some pp_t_unary_type
+      \<longrightarrow>
+      (\<exists>n.
+        Elem n (pp_t_domain Ind)
+        \<and> pp_t_basis_expr_den E T = E \<acute> n)"
+    using
+      pp_t_term_basis_absorption_iff_expression_surjective[of E]
+      absorbs by blast
+next
+  assume surjective:
+      "\<forall>T.
+        pp_t_basis_expr_type T = Some pp_t_unary_type
+        \<longrightarrow>
+        (\<exists>n.
+          Elem n (pp_t_domain Ind)
+          \<and> pp_t_basis_expr_den E T = E \<acute> n)"
+  have absorbs:
+      "pp_t_enumerator_basis E pp_t_unary_type
+      \<subseteq>
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+    using
+      pp_t_term_basis_absorption_iff_expression_surjective[of E]
+      surjective by blast
+  show "pp_t_enumerator_basis E pp_t_unary_type =
+      (\<lambda>n. E \<acute> n) `
+        {n. Elem n (pp_t_domain Ind)}"
+    using
+      pp_t_term_basis_fixed_point_iff_absorbs_generated[of E]
+      absorbs by blast
+qed
+
 locale pp_t_cone_natural_enumerator =
   fixes E :: ZF
   assumes E_typed:
@@ -363,6 +568,75 @@ theorem pp_t_term_basis_range_complete_iff_fixed_point:
         {n. Elem n (pp_t_domain Ind)}"
   using TermBasis.pp_t_range_complete_all_worlds_iff_exact_range[
     OF E_typed] .
+
+theorem pp_t_term_basis_fixed_point_has_no_reflecting_expression:
+  assumes fixed_point:
+      "pp_t_enumerator_basis E pp_t_unary_type =
+        (\<lambda>n. E \<acute> n) `
+          {n. Elem n (pp_t_domain Ind)}"
+    and P_type:
+      "pp_t_basis_expr_type P =
+        Some (Ind \<rightarrow>\<^sub>o Prop)"
+  shows "\<not> pp_t_index_reflecting E
+    (pp_t_basis_expr_den E P) []"
+proof
+  assume reflecting:
+      "pp_t_index_reflecting E
+        (pp_t_basis_expr_den E P) []"
+  have P_basis:
+      "pp_t_basis_expr_den E P
+        \<in> pp_t_enumerator_basis E
+          (Ind \<rightarrow>\<^sub>o Prop)"
+    unfolding pp_t_enumerator_basis_def
+  proof (rule imageI)
+    show "P \<in>
+        {Q. pp_t_basis_expr_type Q =
+          Some (Ind \<rightarrow>\<^sub>o Prop)}"
+      using P_type by simp
+  qed
+  have P_stock:
+      "pp_t_basis_stock (pp_t_enumerator_basis E)
+        (Ind \<rightarrow>\<^sub>o Prop) []
+        (pp_t_basis_expr_den E P)"
+    using TermBasis.pp_t_basis_member_in_stock[OF P_basis] .
+  have range_complete:
+      "\<And>X. pp_t_basis_stock (pp_t_enumerator_basis E)
+        pp_t_unary_type [] X
+        \<longleftrightarrow>
+        pp_t_range_stock E [] X"
+    using pp_t_term_basis_range_complete_iff_fixed_point
+      fixed_point by blast
+  show False
+    using
+      TermBasis.pp_t_range_complete_basis_has_no_reflecting_map[
+        OF pp_t_enumerator_in_term_basis_stock P_stock
+          reflecting range_complete] .
+qed
+
+corollary pp_t_term_basis_fixed_point_has_no_separating_expression:
+  assumes fixed_point:
+      "pp_t_enumerator_basis E pp_t_unary_type =
+        (\<lambda>n. E \<acute> n) `
+          {n. Elem n (pp_t_domain Ind)}"
+    and P_type:
+      "pp_t_basis_expr_type P =
+        Some (Ind \<rightarrow>\<^sub>o Prop)"
+  shows "\<not> pp_t_index_separating
+    (pp_t_basis_expr_den E P) []"
+proof
+  assume separating:
+      "pp_t_index_separating
+        (pp_t_basis_expr_den E P) []"
+  have reflecting:
+      "pp_t_index_reflecting E
+        (pp_t_basis_expr_den E P) []"
+    using pp_t_separating_imp_reflecting[
+      OF E_typed separating] .
+  show False
+    using
+      pp_t_term_basis_fixed_point_has_no_reflecting_expression[
+        OF fixed_point P_type] reflecting by blast
+qed
 
 theorem pp_t_term_basis_self_classifies_from_fixed_point:
   assumes fixed_point:

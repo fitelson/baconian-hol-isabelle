@@ -1,5 +1,291 @@
 # PP Consistency Status
 
+> **Complete Goodman-claims audit updated, 2026-07-27.**
+> The controlling ledger is
+> `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.
+> The reader-facing report is
+> `reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`, with
+> self-contained Forbes/Lucida source in the adjacent `.tex` file.
+> The dedicated Isabelle session audits 96 principal theorem objects and
+> passes with zero oracles, zero undischarged logical hypotheses, and zero
+> flex-flex pairs.  T9's polymorphic cardinal results carry one ordinary
+> type-sort hypothesis, reported separately.
+>
+> New checked results derive T9's PC injection and kind-fibre injection from
+> their advertised specifications, formalize the exact fn.-60 denotational
+> diagnosis in M1, and prove the displayed M5 collision calculation.  For
+> M1 footnote 60, the exact-model theorem identifies the infinitary join with
+> the interpretation of `Pure` and proves that PP is equivalent to its
+> membership in the next pure stock.  Nonmembership is proved only under the
+> additional PP-diagonal/QSS assumptions, not directly in Bacon's exact
+> generic model.  The M7
+> invariant-reachability equivalence is also checked.  The M5 countability argument in the
+> notes is false: the world-indexed pair family is countable, just like the
+> orbit.  It has been replaced by a uniform diagonal construction which, for
+> every candidate `R`, produces a two-element pair outside every view of `R`,
+> with only extreme proper views.  The associated invariant transposition
+> fixes `R` and is nonidentity.
+>
+> Every determinate claim in the notes is now proved, refuted and repaired, or
+> stated with the qualification on which it is true.  This is not a blanket
+> verification of every sentence: T3 requires the recorded modal repair; T7b
+> and the wide-Fun discussion in M4 are underspecified; the proposed general
+> M5 collision argument and the fully instantiated M5 rebuilt model remain
+> open.  The main PP consistency question and global semantic L2 also remain
+> open.
+>
+> The earlier bounded-microreport Claude--Codex audit converged after four
+> turns and its three precision repairs are incorporated.  A final
+> adversarial re-audit of the newly completed M1, M5, and T9 results and of the
+> Goodman-facing report is pending.
+
+> **Eight-round recurrence-module debate complete; absorption remains open,
+> 2026-07-27.**
+> Claude and Codex ran eight full adversarial rounds, swapping the positive
+> and negative roles after every turn.  No typed cone-natural absorbing
+> enumerator was constructed, and no generated reflecting map, signature
+> escape, or unconditional contradiction was found.
+>
+> The strongest surviving positive proposal is a countable
+> recurrence-module stock.  An anti-recurrent self-fresh proposition `p`
+> supplies a recurrence separator `Rec_p`; symmetric-difference partners
+> collapse the ordinary uniqueness operator; modal composites of `Rec_p`
+> largely collapse; and failures of a no-preimage condition are retained in
+> the countable family `{Rec_p o F | F in S}` rather than forbidden.
+> Equivariant bijections transport recurrence signatures, so the construction
+> need not classify every generated reversible as identity or complement.
+>
+> The first load-bearing construction target is
+> `pp_b_countable_recurrence_module_closed_extension`, preceded by:
+>
+> ```text
+> pp_b_preimage_recurrence_compose
+> pp_b_recurrence_transport_bijection
+> pp_b_separator_transport_surjection
+> ```
+>
+> The fastest negative test is a generated signature escape: find one closed
+> logical unary operator `F` for which `Rec_p o F` is globally nonconstant
+> but agrees with `Kbot` at `p`.  Adding that generated operator would
+> immediately destroy separation at `p`.  No such operator was found in the
+> debate.
+>
+> The debate also produced several paper-level lemmas that are not yet
+> machine-checked: anti-recurrent self-fresh generic separators; recurrence
+> modal-collapse identities; `M_E = not o Rec_p` under the separator recipe;
+> constancy of the material-truth quotient diagonal on recurrence support;
+> recurrence transport by equivariant bijections; and separator transport by
+> surjective stock members.  These must not be reported as Isabelle theorems
+> until formalized.
+>
+> The full transcript is
+> `reports/CONSENSUS_ABSORPTION_ROLESWAP_2026-07-27.md`; the durable Claude
+> checkpoint ledger is the adjacent `..._PROGRESS_...` file.  The final
+> credence that an absorbing enumerator exists was approximately
+> `0.40--0.43`: modestly improved, but still below even odds.
+>
+> **Base and vector-Equivalence soundness discharged; the fixed point is now
+> the sole model-existence obligation, 2026-07-27.**
+> `zf_model/Bacon_PP_ZF_Tree_CEV_Soundness.thy` gives a direct semantic proof
+> of every CEV base axiom and every vector-Equivalence instance in the
+> restricted tree Henkin model.  The development proves evaluator
+> extensionality, shift and substitution, beta and eta compatibility, all
+> Boolean and quantifier identities, Leibniz identity, modal C and CE, and
+> the full typed vector-Equivalence schema.  Consequently
+> `pp_t_base_sound` and `pp_t_zeta_sound` are theorems, not remaining model
+> assumptions.
+>
+> For any typed cone-natural `E` satisfying the absorption equation,
+> `pp_t_term_basis_fixed_point_answers_Goodman` now proves Goodman's
+> consistency question directly.  The same hypothesis also yields the
+> closed-form T6 alternative
+>
+> ```text
+> not gvalid [] pp_L2 or not gvalid [] pp_TU.
+> ```
+>
+> `pp_t_term_basis_fixed_point_has_L2_or_TU_counterworld` strengthens this
+> to an actual Boolean-tree world at which one of those two closed
+> denotations is false.
+>
+> Current analysis does not license selecting one disjunct: that would
+> require either global semantic L2 for the generated stock or a
+> classification of its pure reversible cone-natural operators.
+>
+> `zf_model/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` now isolates the remaining
+> construction problem exactly.  The inclusion
+>
+> ```text
+> {E n | n in Nat} subset pp_t_enumerator_basis E U
+> ```
+>
+> is automatic, since every `E n` is denoted by an application expression.
+> Thus absorption is equivalent to expression surjectivity: every generated
+> unary basis expression must equal `E n` for some natural index.  Moreover,
+> any such fixed point has no generated `Ind -> Prop` expression that is
+> `E`-reflecting at the root, and hence no generated index-separating
+> expression.  This is the strongest presently checked diagonal restriction,
+> not a construction or an unconditional impossibility theorem.
+>
+> **Repaired central stock reduced to the same self-reference fixed point,
+> 2026-07-27.**
+> `zf_model/Bacon_PP_ZF_Repaired_Central_Stock.thy` proves that zeroary
+> Exhaustion is globally valid in every cone-natural basis model.  The key
+> semantic lemma is that a pure proposition true at a world is locally
+> equivalent to truth: its basis representative is cone-natural and hence a
+> globally constant proposition.
+>
+> The theory names the exact self-reference forced by PP as
+> `pp_t_self_applicative_pure`: the unary-stock classifier belongs, at the
+> root, to the next-type pure stock.  The theorem
+> `pp_t_basis_repaired_central_gvalid_iff` proves that this one membership
+> fact is equivalent to global validity of the entire repaired stock
+> `pp_recombination_zeroary_exhaustion_axioms`.
+>
+> For the explicit `Ind`-indexed term basis,
+> `pp_t_term_basis_repaired_central_gvalid_from_fixed_point` proves that the
+> existing absorption equation
+>
+> ```text
+> pp_t_enumerator_basis E U = {E n | n in Nat}
+> ```
+>
+> suffices for global validity of the repaired stock.  Thus zeroary
+> Exhaustion adds no new model-construction burden.
+>
+> Finally, `repaired_central_stock_forces_L2_or_TU_failure` and
+> `repaired_central_stock_has_explicit_L2_or_TU_failure` formalize T6's exact
+> semantic contrapositive: any repaired central model satisfying base CEV
+> soundness and vector-Equivalence soundness must fail global L2 or global
+> TU.  The term-basis specialization combines this directly with the
+> absorption equation.
+>
+> This checkpoint has been superseded in one respect by the entry above:
+> `base_sound` and `zeta_sound` are now proved.  The absorption fixed point
+> remains open.
+>
+> **The stabilizer-orbit relation is lifted to the actual tree action,
+> 2026-07-27.**
+> `zf_model/Bacon_PP_ZF_Tree_Stabilizer_Orbit.thy` defines actual
+> precomposition `G \<circ> \<psi>` on the HOL-ZF proposition domain and proves
+> that its raw Boolean-tree operator is exactly
+> `pp_b_operator_of G \<circ> pp_b_operator_of \<psi>`.
+> The closed logical term `pp_qd_stabilizer_relation` expresses
+> `R_stab(q,F,G) := \<exists>\<psi>. (Bij \<psi> \<and> F = G \<circ> \<psi> \<and> \<psi> q = q)`.
+> It is typed, generated, and its denotation is proved equal to the
+> world-relative PER formulation.
+>
+> At the root, `pp_t_qd_world_bijective_root_iff` identifies the internal
+> `Bij` clause exactly with literal bijectivity of `pp_b_operator_of \<psi>`.
+> Hence each root witness is an ambient view-respecting bijection, induces a
+> bijection on every cone profile, and has a view-respecting raw inverse.
+> `pp_t_qd_stabilizer_orbit_root_iff_ambient` identifies the complete root
+> relation with the intended ambient stabilizer action.
+>
+> `pp_t_qd_stabilizer_orbit_truth_congruent` proves truth congruence at every
+> world.  `pp_t_qd_stabilizing_precomposition_relation_holds` proves that
+> every stabilizing-precomposition collider is automatically related, so
+> this entire collider species cannot violate the `D_R` guard.
+> Finally, `pp_t_qd_stabilizer_relation_in_generated_stock` and
+> `pp_t_qd_stabilizer_diagonal_in_generated_stock` put both `R_stab` and its
+> quotient diagonal in the repaired central stock.
+>
+> The result does not establish tag homogeneity.  Stabilizer orbits are not
+> known to exhaust all representations of a diagonal tag.  The exact next
+> negative target is therefore a representation-completeness theorem modulo
+> `R_stab`, or an explicit non-orbit representation refuting it.  The
+> positive absorption fixed-point program remains open in parallel.
+>
+> **Closed object-language quotient diagonal and generated-stock closure
+> checked, 2026-07-27.**
+> `zf_model/Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder.thy` defines the
+> constant-free closed term `pp_qd_builder` of type
+> `(Ind -> U) -> (Prop -> Prop -> Prop) ->
+> (Prop -> U -> U -> Prop) -> U`, where `U = Prop -> Prop`.
+> `pp_qd_builder_typed` and `pp_qd_builder_logical` check its formation and
+> logical vocabulary.  `pp_t_qd_builder_apply_holds` proves pointwise that
+> its denotation is exactly the PER-sensitive object-language `D_R` schema:
+> equality is world-relative object identity and `R q F G` is truth of the
+> relation proposition at the evaluation world.
+>
+> The closure result is available at both relevant levels.
+> `pp_t_qd_den_in_enumerator_basis` puts `D_R(E,H,R)` in the raw applicative
+> term basis when `H` and `R` are raw generated expressions.
+> `pp_t_qd_den_in_generated_stock`, inside
+> `pp_t_cone_natural_enumerator`, puts it in the repaired equivalence-saturated
+> central stock whenever `H` and `R` are in that stock.  Thus no additional
+> closure principle is needed to generate this diagonal.  What remains open
+> is the mathematical premise needed for contradiction: a generated
+> root-truth-congruent `R` and tag constructor `H` forcing homogeneity at an
+> absorbed index.  The next direct test is the actual tree-model
+> stabilizer-orbit action, not another encoding of `D_R`.
+>
+> **Ambient inverse and root-semantic quotient diagonal formalized;
+> first tag tests are negative, 2026-07-27.**
+> `zf_model/Bacon_PP_ZF_Tree_Ambient_Inverse.thy` now machine-checks the
+> Boolean cone profile
+> `X_w \<cong> 2 \<times> X_{w@[False]} \<times> X_{w@[True]}`, proves that every
+> view-respecting ambient bijection induces a bijection on every cone, and
+> proves that its inverse is again view-respecting.  The closed
+> object-language inverse builder
+> `\<lambda>\<psi> q. \<exists>p. (\<psi>p = q \<and> p)` is typed, logical, in the
+> unary domain, and is proved pointwise correct against the raw inverse.
+>
+> `zf_model/Bacon_PP_ZF_Tree_Quotient_Diagonal.thy` formalizes the
+> root-semantic `D_R` schema, separator representations, root-truth
+> congruence, and tag homogeneity.  Its central theorem,
+> `pp_qd_absorption_forces_tag_heterogeneity`, proves that if `D_R` is
+> absorbed by `E`, then no separator tag at its absorbed index is
+> `R`-homogeneous.  Isabelle exposed an essential premise: the argument
+> needs root-truth congruence of `R`; homogeneity alone is insufficient.
+>
+> Two concrete Boolean tests are checked.  Singleton finite-observational
+> agreement (with the tag itself observed) and stabilizer-orbit equivalence
+> are both root-truth-congruent.  Nevertheless, the same separator tag has
+> two representations separated by each relation, so neither relation is
+> tag-homogeneous even in the two-point model.  Thus these natural relations
+> do not close the contradiction route by themselves.
+>
+> The next step is to internalize the root-semantic `D_R` schema as a closed
+> object-language builder over `E`, `H`, and `R`, then connect its generated
+> denotation to the repaired central stock.  In parallel, the
+> stabilizer-orbit test should be lifted from the two-point diagnostic to the
+> actual tree-model operator action.  The direct consistency question remains
+> open.
+
+> **Absorption fixed-point consensus complete; mathematical question remains
+> open, 2026-07-26.**
+> An eight-round, sixteen-turn Claude--Codex debate attacked the exact
+> absorption equation on both the homogeneous/generic and invariant/diagonal
+> sides.  The participants reached consensus on the frontier, not on a
+> construction or refutation.  No absorbing enumerator, uniform invariant, or
+> unconditional generated escape term is known.
+>
+> The jointly verified metatheoretic advances are: a germ normal form for
+> cone-natural unary operators; infinite-fiber reindexing canonicity and an
+> inflationary set-level closure operator; cardinal-slack trivialization of
+> unrestricted non-range meets and joins; a quotient-guarded diagonal schema
+> `D_R` forcing heterogeneous separator-tag representations under absorption;
+> two-sided separator transport and a group action on tag representations; and
+> an ambient inverse theorem for every respecting raw bijection.  None of these
+> results was machine-checked at the time of the debate; the ambient inverse
+> and root-semantic `D_R` portions are now checked as recorded above.
+>
+> The next formal tranche is agreed and ordered:
+>
+> 1. formalize the ambient inverse theorem and the `D_R` schema;
+> 2. test concrete `(H, R, p*)` instances, beginning with finite observational
+>    relations and the stabilizer-orbit relation, for tag homogeneity or a
+>    forced heterogeneous representation; and
+> 3. develop the competing promise-bearing stable-fusion construction, with
+>    quotient- and uniqueness-guarded terms as its primary falsification
+>    class.
+>
+> The complete transcript is
+> `reports/CONSENSUS_ABSORPTION_FIXED_POINT_2026-07-26.md`; its durable
+> checkpoint ledger is the adjacent `..._PROGRESS_...` file.  The last pushed
+> checked source snapshot is commit `cf0976e`.
+
 > **`Ind`-enumerator construction reduced to one exact absorption fixed
 > point, 2026-07-26.**
 > `zf_model/Bacon_PP_ZF_Tree_Range_Diagonal.thy` proves that root PER
@@ -2381,3 +2667,70 @@ intended interpretation of purity by closed pure denotations: it must certify
 an exotic noninvariant operator as pure.  This isolates the remaining
 countermodel burden without claiming that the unbounded PP and purity schemas
 have already been modeled.
+
+## Goodman M1--M7 completion (2026-07-27)
+
+The determinate M-claims are now machine-checked.
+
+- **M1:** `Bacon_PP_Goodman_M1_Complete.thy` defines Goodman's exact
+  footnote-59 operator
+  `D p ↔ ∀X q. Pure(X) ∧ Fun(q) ∧ p = X q → ¬X p`, proves its typing,
+  constructs a closed constant-free builder by abstracting `Pure` and `Fun`,
+  checks the two beta contractions, derives the liar's purity from PP, Purity
+  of Fun, and application closure, and proves the contradiction from QSS plus
+  unique proposition-level fundamentality.
+- **M3:** `Bacon_PP_Goodman_M3_Complete.thy` proves that every countable
+  invariant Boolean stock has a free, hence `fun′`, generator by branch
+  gluing. It also states the exact finite-cylinder product topology, proves
+  each necessary-cone class nowhere dense, and proves the complete `fun′`
+  class meager.
+- **M5:** `Bacon_PP_ZF_Bacon_10_1.thy` formalizes the rebuilt-model gluing
+  theorem. `Bacon_PP_ZF_Goodman_M5_Rebuild.thy` applies it while holding the
+  exotic cone-natural unary operator fixed, discharging the rebuilding step
+  rather than leaving it conditional on Theorem 10.1.
+- **M6:** `Bacon_PP_Goodman_M6.thy` proves separation of every pair of
+  distinct substitutions by a `fun′` proposition, failure of one-coordinate
+  orbit-diagonal independence, and a strict pair of `fun′` propositions whose
+  inclusion blocks a joint assignment at every view.
+- **M7:** `Bacon_PP_ZF_Goodman_M7.thy` constructs the branch diagonal against
+  any countable exact closed unary stock and proves that no such stock can
+  exhaust the reachable unary proposition domain.
+
+Together with the earlier M2 and M4 theories, this closes the precise M1--M7
+verification suite. `isabelle build -D . -o timeout=60` passes for both the
+Frontier and HOL-ZF sessions. A single consolidated adversarial audit of this
+completed suite is the next checkpoint; it should scrutinize theorem scope,
+especially the distinction between exact closed-term stocks and broader
+semantic domains.
+
+## Semantic L2 in Bacon's exact tree model (2026-07-27)
+
+`zf_model/Bacon_PP_ZF_Goodman_L2_Model.thy` now gives a direct semantic
+formalization of Goodman's L2 over the exact Boolean stock induced by closed,
+constant-free object-language unary terms.
+
+The theory checks:
+
+- the exact semantic predicates `fun′`, reversible operator, `G`, same kind,
+  pairwise L2, and global L2;
+- existence of an exact-stock `fun′` proposition from the generic-separator
+  theorem;
+- closure of the exact stock under object-language composition;
+- closure of `G` under identity, inverse, and composition, and equivalence of
+  the induced same-kind relation;
+- exact denotations of identity, truth, falsity, necessity, possibility, and
+  complement;
+- the modal fixed-point restrictions on `fun′`, plus the stronger extreme-view
+  facts `□p \neq \bot` and `◇p \neq \top` for every exact-stock `fun′` input;
+- collision classification for all twenty-five ordered pairs among identity,
+  truth, falsity, necessity, and possibility; hence semantic L2 on this entire
+  five-operator base stock; and
+- the exact counterexample criterion
+  `¬L2 ↔ ∃X Y p q. pp_b_exact_L2_counterexample X Y p q`.
+
+This is a strict partial result, not a global proof of L2. Any remaining
+counterexample must involve at least one exact closed logical operator outside
+the five-operator base. The next semantic attack should therefore enlarge the
+classified stock by closure under complement and composition, beginning with
+the modal Boolean fragment, and seek either a general normal-form separation
+argument or the first cross-input collision between inequivalent normal forms.

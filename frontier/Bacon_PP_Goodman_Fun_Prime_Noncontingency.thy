@@ -165,7 +165,7 @@ proof -
 qed
 
 lemma CEV_Goodman_T2e_false:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and r_type: "\<Gamma> \<turnstile> r : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp
@@ -263,7 +263,7 @@ proof -
 qed
 
 lemma CEV_Goodman_T2e_possible:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and r_type: "\<Gamma> \<turnstile> r : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp
@@ -296,8 +296,26 @@ proof -
     using d_F t2c by (rule CEV_axiom_from.MP)
   have d_PT:
     "\<Gamma> ; T ; {?F} \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s ?PT"
-    using pp_ObjTrue_pure_in_core_extension[OF core]
-    by (rule CEV_axiom_from.Theorem)
+  proof (rule CEV_axiom_from.Theorem, rule CEV_axiom_proves.Axiom)
+    show "pp_pure Prop ObjTrue \<in> T"
+    proof -
+      have in_schema:
+          "pp_pure Prop ObjTrue \<in> pp_purity_schema"
+        unfolding pp_purity_schema_def pp_logical_vocabulary_def
+      proof (intro CollectI exI conjI)
+        show "[] \<turnstile> ObjTrue : Prop"
+          by (rule typed_ObjTrue)
+        show "consts_of ObjTrue = {}"
+          by (simp add: ObjTrue_def)
+        show "pp_pure Prop ObjTrue = pp_pure Prop ObjTrue"
+          by simp
+      qed
+      show ?thesis
+        using core in_schema unfolding pp_T2_min_axioms_def by blast
+    qed
+    show "\<Gamma> \<turnstile> pp_pure Prop ObjTrue : Prop"
+      using typed_ObjTrue by (rule typed_pp_pure)
+  qed
   have d_diamond_E:
     "\<Gamma> ; T ; {?F} \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s
       \<diamond>\<^sub>o ?E"
@@ -320,7 +338,7 @@ proof -
 qed
 
 theorem CEV_Goodman_T2e:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and r_type: "\<Gamma> \<turnstile> r : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp

@@ -246,18 +246,33 @@ proof -
     by (rule CEV_zeroary_equivalence)
 qed
 
+subsection \<open>The PP-free stock needed by T2\<close>
+
+definition pp_T2_min_axioms :: "oterm set" where
+  "pp_T2_min_axioms =
+    pp_purity_schema \<union> pp_application_closure_schema"
+
+lemma pp_T2_min_axioms_subset_T6_core:
+  "pp_T2_min_axioms \<subseteq> pp_T6_core_PP_axioms"
+  unfolding pp_T2_min_axioms_def pp_T6_core_PP_axioms_def by blast
+
+lemma pp_T2_min_axioms_into_T6_extension:
+  assumes "pp_T6_core_PP_axioms \<subseteq> T"
+  shows "pp_T2_min_axioms \<subseteq> T"
+  using pp_T2_min_axioms_subset_T6_core assms by blast
+
 subsection \<open>Core purity facts\<close>
 
 lemma pp_T6_identity_purity_axiom:
   "pp_pure pp_unary_ty pp_identity_operator
-    \<in> pp_T6_core_PP_axioms"
-  unfolding pp_T6_core_PP_axioms_def
+    \<in> pp_T2_min_axioms"
+  unfolding pp_T2_min_axioms_def
   using pp_identity_operator_purity_axiom by blast
 
 lemma pp_constant_ObjTrue_purity_axiom:
   "pp_pure pp_unary_ty (pp_constant_operator ObjTrue)
-    \<in> pp_T6_core_PP_axioms"
-  unfolding pp_T6_core_PP_axioms_def pp_purity_schema_def
+    \<in> pp_T2_min_axioms"
+  unfolding pp_T2_min_axioms_def pp_purity_schema_def
     pp_logical_vocabulary_def
 proof (intro UnI1 CollectI exI conjI)
   show "[] \<turnstile> pp_constant_operator ObjTrue : pp_unary_ty"
@@ -269,8 +284,8 @@ qed simp
 
 lemma pp_constant_ObjFalse_purity_axiom:
   "pp_pure pp_unary_ty (pp_constant_operator ObjFalse)
-    \<in> pp_T6_core_PP_axioms"
-  unfolding pp_T6_core_PP_axioms_def pp_purity_schema_def
+    \<in> pp_T2_min_axioms"
+  unfolding pp_T2_min_axioms_def pp_purity_schema_def
     pp_logical_vocabulary_def
 proof (intro UnI1 CollectI exI conjI)
   show "[] \<turnstile> pp_constant_operator ObjFalse : pp_unary_ty"
@@ -281,12 +296,12 @@ proof (intro UnI1 CollectI exI conjI)
 qed simp
 
 lemma pp_identity_operator_pure_in_core_extension:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     pp_pure pp_unary_ty pp_identity_operator"
 proof -
   have core_proof:
-    "\<Gamma> ; pp_T6_core_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+
+    "\<Gamma> ; pp_T2_min_axioms \<turnstile>\<^sub>CEV\<^sup>+
       pp_pure pp_unary_ty pp_identity_operator"
     using pp_T6_identity_purity_axiom
       typed_pp_pure[OF typed_pp_identity_operator]
@@ -296,12 +311,12 @@ proof -
 qed
 
 lemma pp_constant_ObjTrue_pure_in_core_extension:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     pp_pure pp_unary_ty (pp_constant_operator ObjTrue)"
 proof -
   have core_proof:
-    "\<Gamma> ; pp_T6_core_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+
+    "\<Gamma> ; pp_T2_min_axioms \<turnstile>\<^sub>CEV\<^sup>+
       pp_pure pp_unary_ty (pp_constant_operator ObjTrue)"
     using pp_constant_ObjTrue_purity_axiom
       typed_pp_pure[
@@ -312,12 +327,12 @@ proof -
 qed
 
 lemma pp_constant_ObjFalse_pure_in_core_extension:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     pp_pure pp_unary_ty (pp_constant_operator ObjFalse)"
 proof -
   have core_proof:
-    "\<Gamma> ; pp_T6_core_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+
+    "\<Gamma> ; pp_T2_min_axioms \<turnstile>\<^sub>CEV\<^sup>+
       pp_pure pp_unary_ty (pp_constant_operator ObjFalse)"
     using pp_constant_ObjFalse_purity_axiom
       typed_pp_pure[
@@ -330,7 +345,7 @@ qed
 subsection \<open>Truth and falsity do not satisfy \<open>fun\<acute>\<close>\<close>
 
 theorem CEV_not_fun_prime_ObjTrue:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Neg (pp_fun_prime ObjTrue)"
 proof -
   let ?I = "pp_identity_operator"
@@ -450,7 +465,7 @@ proof -
 qed
 
 theorem CEV_not_fun_prime_ObjFalse:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Neg (pp_fun_prime ObjFalse)"
 proof -
   let ?I = "pp_identity_operator"
@@ -568,7 +583,7 @@ qed
 subsection \<open>Consequences for a \<open>fun\<acute>\<close> proposition\<close>
 
 theorem CEV_fun_prime_neq_ObjTrue:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and p_type: "\<Gamma> \<turnstile> p : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp
@@ -627,7 +642,7 @@ proof -
 qed
 
 theorem CEV_fun_prime_neq_ObjFalse:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and p_type: "\<Gamma> \<turnstile> p : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp
@@ -742,7 +757,7 @@ lemma typed_pp_T2b_nontriviality:
   by (intro has_type.Conj has_type.Neg has_type.Eq)
 
 theorem CEV_Goodman_T2b:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and p_type: "\<Gamma> \<turnstile> p : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp

@@ -126,7 +126,8 @@ proof (rule CEVs_app_false)
       Neg (Eq Prop p ObjTrue)"
     using fun_p
       CEV_axiom_from.Theorem[
-        OF CEV_fun_prime_neq_ObjTrue[OF core p_type]]
+        OF CEV_fun_prime_neq_ObjTrue[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] p_type]]
     by (rule CEV_axiom_from.MP)
 qed
 
@@ -151,7 +152,8 @@ proof (rule CEVs_app_true)
       Neg (Eq Prop p ObjFalse)"
     using fun_p
       CEV_axiom_from.Theorem[
-        OF CEV_fun_prime_neq_ObjFalse[OF core p_type]]
+        OF CEV_fun_prime_neq_ObjFalse[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] p_type]]
     by (rule CEV_axiom_from.MP)
 qed
 

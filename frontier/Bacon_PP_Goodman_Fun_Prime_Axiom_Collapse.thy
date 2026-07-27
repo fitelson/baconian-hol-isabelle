@@ -81,7 +81,8 @@ proof -
     using ax F_type by (rule CEV_axiom_proves.Axiom)
   have d_notE:
     "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Neg (Eq Prop r ObjTrue)"
-    using d_F CEV_fun_prime_neq_ObjTrue[OF core r_type]
+    using d_F CEV_fun_prime_neq_ObjTrue[
+      OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]
     by (rule CEV_axiom_proves.MP)
   show ?thesis
     using E_type d_notE by (rule CEV_refuted_imp_eq_ObjFalse)
@@ -102,7 +103,8 @@ proof -
     using ax F_type by (rule CEV_axiom_proves.Axiom)
   have d_notE:
     "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Neg (Eq Prop r ObjFalse)"
-    using d_F CEV_fun_prime_neq_ObjFalse[OF core r_type]
+    using d_F CEV_fun_prime_neq_ObjFalse[
+      OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]
     by (rule CEV_axiom_proves.MP)
   show ?thesis
     using E_type d_notE by (rule CEV_refuted_imp_eq_ObjFalse)
@@ -163,13 +165,15 @@ proof -
   have d_F: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ pp_fun_prime r"
     using ax F_type by (rule CEV_axiom_proves.Axiom)
   have d_notE: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ Neg ?E"
-    using d_F CEV_fun_prime_neq_ObjTrue[OF core r_type]
+    using d_F CEV_fun_prime_neq_ObjTrue[
+      OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]
     by (rule CEV_axiom_proves.MP)
   have d_box_notE: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ \<box>\<^sub>o (Neg ?E)"
     using d_notE by (rule CEV_axiom_necessitation)
   have t2c: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
       Imp (pp_fun_prime r) (Imp (pp_pure Prop ObjTrue) (\<diamond>\<^sub>o ?E))"
-    using core r_type typed_ObjTrue by (rule CEV_Goodman_T2c_parameter)
+    using pp_T2_min_axioms_into_T6_extension[OF core]
+      r_type typed_ObjTrue by (rule CEV_Goodman_T2c_parameter)
   have step: "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
       Imp (pp_pure Prop ObjTrue) (\<diamond>\<^sub>o ?E)"
     using d_F t2c by (rule CEV_axiom_proves.MP)
@@ -198,4 +202,3 @@ proof -
 qed
 
 end
-

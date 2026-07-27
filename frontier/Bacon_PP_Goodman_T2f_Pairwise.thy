@@ -152,12 +152,14 @@ proof -
   have f1: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s Neg ?NC"
     using d_F
       CEV_axiom_from.Theorem[
-        OF CEV_Goodman_T2e_false[OF core r_type]]
+        OF CEV_Goodman_T2e_false[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]]
     by (rule CEV_axiom_from.MP)
   have f2: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s \<diamond>\<^sub>o ?NC"
     using d_F
       CEV_axiom_from.Theorem[
-        OF CEV_Goodman_T2e_possible[OF core r_type]]
+        OF CEV_Goodman_T2e_possible[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]]
     by (rule CEV_axiom_from.MP)
   have dA: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s App pp_identity_operator ?w"
     using typed_pp_identity_operator nNC_type nNC_type
@@ -195,12 +197,14 @@ proof -
   have f1: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s Neg ?NC"
     using d_F
       CEV_axiom_from.Theorem[
-        OF CEV_Goodman_T2e_false[OF core r_type]]
+        OF CEV_Goodman_T2e_false[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]]
     by (rule CEV_axiom_from.MP)
   have f2: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s \<diamond>\<^sub>o ?NC"
     using d_F
       CEV_axiom_from.Theorem[
-        OF CEV_Goodman_T2e_possible[OF core r_type]]
+        OF CEV_Goodman_T2e_possible[
+          OF pp_T2_min_axioms_into_T6_extension[OF core] r_type]]
     by (rule CEV_axiom_from.MP)
   have dA: "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s App pp_negation_operator ?w"
     using typed_pp_negation_operator NC_type nNC_type

@@ -1,0 +1,81 @@
+We need a hard-nosed final audit of the Goodman report and verification matrix.
+This is a bounded final review, not a request to reopen the entire historical
+model-construction program.
+
+Question
+--------
+Do the attached report, matrix, and audit theory now state the proved results
+accurately, with special attention to the repaired T2c and M5 stocks, the
+M1/footnote-60 qualification, the count of audited theorem objects, and the
+claim that every determinate statement in Goodman's notes has either been
+verified, corrected, precisely qualified, or classified as underspecified?
+
+Required checks
+---------------
+1. Confirm that the dedicated audit contains 96 principal target tuples, not
+   97, and that the report and matrix say 96.
+2. Check the theorem statements themselves for T2c and the displayed M5
+   collision.  They must now be stated over the minimal purity/application
+   stock rather than a stock containing PP.  Do not infer non-use merely from
+   proof tactics.
+3. Check M1/footnote 60 with unusual care.  Distinguish:
+   (a) exact existence of the infinitary join in the full unary function
+       domain;
+   (b) exact identification of its extension with the pure unary operators;
+   (c) exact identification with the interpretation of Pure at the next type;
+   (d) the equivalence between PP and membership of that operator in the next
+       pure stock; and
+   (e) nonmembership, which the current development proves only under the
+       additional PP-diagonal/QSS assumptions, not directly in Bacon's exact
+       generic model.
+4. Check that all conditional and model-relative results are labeled as such,
+   especially M4, M5 rebuild, M6, M7 invariant reachability, T2f, T5, T7b, and
+   the sufficient-condition theorem for the positive model program.
+5. Check for overstatement in the executive summary and concluding verdict.
+6. Audit the Goodman-facing prose for vocabulary.  The report should remain in
+   the terminology of Goodman, Bacon, and Dorr.  Identify internal project
+   jargon, implementation labels, or unexplained formalization terminology
+   that should be removed or translated.  Do not object to technical terms
+   actually used or immediately defined in the report.
+7. Check the LaTeX convention: every not-equal command must be \neq, never
+   \ne.
+8. Search active sources for sorry, oops, axiomatization, or other admitted
+   proof steps relevant to the audited claims.
+
+Debate standard
+---------------
+Claude and Codex must challenge one another directly.  Resolve disagreement by
+checking the exact theorem statements and report text, not by politeness.
+Classify each issue as:
+
+- PASS;
+- REQUIRED REVISION;
+- OPTIONAL CLARIFICATION; or
+- OPEN MATHEMATICAL ISSUE.
+
+End with one of these overall verdicts:
+
+- PASS;
+- PASS WITH REQUIRED REVISIONS;
+- FAIL.
+
+If revisions are required, quote or identify the exact report/matrix location
+and give replacement wording in Goodman/Bacon/Dorr's vernacular.
+
+Progress and output protocol
+----------------------------
+At the start, Claude must create or reset:
+
+  reports/CLAUDE_GOODMAN_FINAL_REPORT_AUDIT_PROGRESS_2026-07-27.md
+
+Claude must append a checkpoint at least every 4 minutes until completion.
+Each checkpoint must record elapsed time, tentative verdict, genuinely new
+results, the current obstruction, the next bounded step, and token/cost figures
+when available.  Two consecutive missed checkpoints or two consecutive
+non-progress checkpoints require stopping with the partial file preserved.
+
+Each Claude turn is a bounded micro-report tranche.  Both Claude and Codex must
+return compressed reports of at most 40,000 output tokens while preserving
+decisive arguments, qualifications, and the verdict.  If more detail is needed,
+write it to a project file and return a compact summary with the path.  Do not
+delegate to another model or initiate another debate.

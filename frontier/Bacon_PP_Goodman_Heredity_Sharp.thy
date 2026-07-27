@@ -456,7 +456,9 @@ proof -
   have t2c:
     "\<Gamma> ; T ; ?S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s
       Imp ?F (Imp (pp_pure Prop ObjTrue) (\<diamond>\<^sub>o ?E))"
-    using CEV_Goodman_T2c_parameter[OF core r_type typed_ObjTrue]
+    using CEV_Goodman_T2c_parameter[
+      OF pp_T2_min_axioms_into_T6_extension[OF core]
+        r_type typed_ObjTrue]
     by (rule CEV_axiom_from.Theorem)
   have d_pure_true:
     "\<Gamma> ; T ; ?S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s pp_pure Prop ObjTrue"

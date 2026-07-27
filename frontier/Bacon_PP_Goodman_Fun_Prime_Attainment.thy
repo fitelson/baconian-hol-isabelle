@@ -144,8 +144,8 @@ lemma pp_inequality_builder_purity_axiom:
   "pp_pure
       (Prop \<rightarrow>\<^sub>o pp_unary_ty)
       pp_inequality_builder
-    \<in> pp_T6_core_PP_axioms"
-  unfolding pp_T6_core_PP_axioms_def pp_purity_schema_def
+    \<in> pp_T2_min_axioms"
+  unfolding pp_T2_min_axioms_def pp_purity_schema_def
     pp_logical_vocabulary_def
 proof (intro UnI1 CollectI exI conjI)
   show "[] \<turnstile> pp_inequality_builder :
@@ -156,14 +156,14 @@ proof (intro UnI1 CollectI exI conjI)
 qed simp
 
 lemma pp_inequality_builder_pure_in_core_extension:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     pp_pure
       (Prop \<rightarrow>\<^sub>o pp_unary_ty)
       pp_inequality_builder"
 proof -
   have core_proof:
-    "\<Gamma> ; pp_T6_core_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+
+    "\<Gamma> ; pp_T2_min_axioms \<turnstile>\<^sub>CEV\<^sup>+
       pp_pure
         (Prop \<rightarrow>\<^sub>o pp_unary_ty)
         pp_inequality_builder"
@@ -175,7 +175,7 @@ proof -
 qed
 
 lemma pp_inequality_operator_pure_from:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and p_type: "\<Gamma> \<turnstile> p : Prop"
     and pure_p:
       "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s pp_pure Prop p"
@@ -184,7 +184,8 @@ lemma pp_inequality_operator_pure_from:
 proof -
   have closure:
     "pp_application_closure Prop pp_unary_ty \<in> T"
-    using pp_T6_application_closure_axiom core by blast
+    using core unfolding pp_T2_min_axioms_def
+      pp_application_closure_schema_def by blast
   have pure_builder:
     "\<Gamma> ; T ; S \<turnstile>\<^sub>CEV\<^sup>+\<^sub>s
       pp_pure
@@ -202,7 +203,7 @@ qed
 subsection \<open>The attainable-purity theorem\<close>
 
 theorem CEV_Goodman_T2c_parameter:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and r_type: "\<Gamma> \<turnstile> r : Prop"
     and p_type: "\<Gamma> \<turnstile> p : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
@@ -380,7 +381,7 @@ proof -
 qed
 
 theorem CEV_Goodman_T2c:
-  assumes core: "pp_T6_core_PP_axioms \<subseteq> T"
+  assumes core: "pp_T2_min_axioms \<subseteq> T"
     and r_type: "\<Gamma> \<turnstile> r : Prop"
   shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
     Imp
