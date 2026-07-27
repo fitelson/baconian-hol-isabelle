@@ -113,3 +113,27 @@ session Higher_Order_Metaphysics_PP_Models in "models" =
   options [timeout = 60]
 theories
   Bacon_PP_Vampire_Depth1_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Model in "zf_model" =
+    Higher_Order_Metaphysics_PP_Frontier +
+  description "
+    A direct preconstructed-domain model program for Goodman's central PP stock.
+
+    The universal carrier is the axiomatized ZFC universe supplied by HOL-ZF.
+    Results in this session are therefore relative to HOL-ZF's additional
+    set-theoretic assumptions.
+  "
+  options [timeout = 60]
+  sessions
+    "HOL-ZF"
+theories
+  Bacon_PP_ZF_Full_Frame
+  Bacon_PP_ZF_Hyper_Frame
+  Bacon_PP_ZF_Tree_Frame
+  Bacon_PP_ZF_Tree_Logical_Stock
+  Bacon_PP_ZF_Tree_Generic_Seed
+  Bacon_PP_ZF_Tree_Basis_Stock
+  Bacon_PP_ZF_Tree_Seeded_Stock
+  Bacon_PP_ZF_Tree_Range_Classifier
+  Bacon_PP_ZF_Tree_Range_Diagonal
+  Bacon_PP_ZF_Tree_Range_Term_Basis

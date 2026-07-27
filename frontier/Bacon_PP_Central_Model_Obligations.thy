@@ -400,14 +400,78 @@ proof
     using pp_uval_default_self_related by blast
 qed
 
+subsection \<open>The quantifier self-call obstruction\<close>
+
+definition pp_quantifier_cycle_body :: oterm where
+  "pp_quantifier_cycle_body =
+    Forall (Ind \<rightarrow>\<^sub>o Prop) (App (Var 0) (Var 1))"
+
+definition pp_quantifier_cycle_term :: oterm where
+  "pp_quantifier_cycle_term = Lam Ind pp_quantifier_cycle_body"
+
+definition pp_quantifier_cycle_closure :: pp_uval where
+  "pp_quantifier_cycle_closure =
+    PUVClosure Ind Prop pp_quantifier_cycle_body []"
+
+lemma pp_quantifier_cycle_term_typed:
+  "[] \<turnstile> pp_quantifier_cycle_term : (Ind \<rightarrow>\<^sub>o Prop)"
+  by (rule infer_type_sound;
+      simp add: pp_quantifier_cycle_term_def pp_quantifier_cycle_body_def
+        lookup_def)
+
+lemma pp_quantifier_cycle_closure_tagged:
+  "pp_uval_tagged (Ind \<rightarrow>\<^sub>o Prop)
+    pp_quantifier_cycle_closure"
+  by (simp add: pp_quantifier_cycle_closure_def)
+
+lemma pp_quantifier_cycle_closure_self_related:
+  assumes prop_total:
+      "\<And>n. pp_uval_tagged Prop
+        (app pp_quantifier_cycle_closure (PUVInd n))"
+  shows "pp_uval_per app (Ind \<rightarrow>\<^sub>o Prop)
+    pp_quantifier_cycle_closure pp_quantifier_cycle_closure"
+proof (simp add: pp_quantifier_cycle_closure_tagged, intro allI impI)
+  fix x y
+  assume xy: "pp_uval_per app Ind x y"
+  then obtain n where x: "x = PUVInd n" and y: "y = PUVInd n"
+    by (cases x; cases y) auto
+  obtain P where
+      "app pp_quantifier_cycle_closure (PUVInd n) = PUVProp P"
+    using prop_total[of n]
+    by (cases "app pp_quantifier_cycle_closure (PUVInd n)") auto
+  then show "pp_uval_per app Prop
+      (app pp_quantifier_cycle_closure x)
+      (app pp_quantifier_cycle_closure y)"
+    by (simp add: x y)
+qed
+
 text \<open>
-  The next construction tranche must replace \<open>pp_uval_default_app\<close> by the
-  closure evaluator's application operation, prove that its generated PER has a
-  self-related value at every type, then define \<open>den\<close> and prove the assumptions of
-  \<open>henkin_action_model\<close>.  Only after that do the constants
-  \<open>Pure\<close> and \<open>Fun\<close> get their type-indexed interpretations and the central stock
-  get checked.  This ordering prevents the target PP instance from being smuggled
-  into the representation itself.
+  These lemmas expose a circularity in the proposed closure evaluator.  Write
+  \<open>F\<close> for \<open>\<lambda>a. \<forall>P\<^sub>i\<^sub>\<rightarrow>\<^sub>p. P a\<close>.  It is a closed term of type
+  \<open>Ind \<rightarrow>\<^sub>o Prop\<close>.  Any tag-correct total application operation makes its
+  closure self-related at that arrow type, so the closure belongs to the PER
+  domain over which its own universal quantifier must range.  Evaluating
+  \<open>F a\<close> and choosing that very closure as the quantified predicate returns
+  the identical call \<open>F a\<close>.  Hence the natural evaluator is not structurally
+  recursive or well-founded.  Strong normalization of the simply typed term
+  calculus does not remove this semantic self-call.
+
+  There is a second, independent circularity.  The universal-quantifier clause
+  needs the diagonal of \<open>pp_uval_per app \<sigma>\<close>, but that PER is itself defined
+  using \<open>app\<close>.  The occurrence is not monotone: the quantified domain occurs
+  in the antecedent of the universal clause, and an arrow PER occurs in the
+  antecedent of its compatibility implication.  Consequently neither primitive
+  recursion nor an elementary least-fixed-point construction supplies the
+  requested classical evaluator.
+
+  The next honest construction must therefore replace closure-generated
+  domains by preconstructed typed domains with genuine function data at arrow
+  types.  Application and quantifier ranges are then available before term
+  interpretation is defined.  A HOL-ZF universe supplies such a carrier
+  directly but makes the result relative to its additional set-theoretic
+  assumptions.  A pure-HOL universal-domain construction would avoid that
+  qualification but requires a separate representation theorem.  No such
+  stronger choice is made in this theory.
 \<close>
 
 end

@@ -1,5 +1,369 @@
 # PP Consistency Status
 
+> **`Ind`-enumerator construction reduced to one exact absorption fixed
+> point, 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Range_Diagonal.thy` proves that root PER
+> equivalence is literal equality at every object type.  Therefore root
+> range-completeness is equivalent to all-world range-completeness, and both
+> are equivalent to the raw set identity between the unary basis and the
+> value set of `E`.  This corrects the earlier claim below that future-world
+> lifting was an additional open obligation.
+>
+> The same theory machine-checks the strongest typed diagonal obstruction:
+> a range-complete basis cannot contain an
+> `E`-reflecting map `P : Ind \<rightarrow>\<^sub>o Prop`.  This is conditional,
+> not an impossibility theorem.  Cone-naturality collapses every basis
+> proposition to truth or falsity, so stock-internal index codes are only
+> two-valued and the Cantor bridge is not generated.  The abstract theorem
+> `pp_b_generic_separator_for_countable_stock` separately constructs an
+> external separator for any countable cone-equivariant unary stock.
+>
+> `zf_model/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` defines the explicit
+> applicative basis generated from all closed logical denotations, all of
+> `Nat` at `Ind`, and one distinguished cone-natural enumerator `E`.  The
+> locale `pp_t_cone_natural_enumerator` verifies all five
+> `pp_t_stock_basis` obligations and `E`-membership.  The checked theorem
+> `pp_t_term_basis_range_complete_iff_fixed_point` leaves exactly:
+>
+> ```isabelle
+> pp_t_enumerator_basis E pp_t_unary_type =
+>   (\<lambda>n. E \<acute> n) ` {n. Elem n (pp_t_domain Ind)}.
+> ```
+>
+> `pp_t_term_basis_self_classifies_from_fixed_point` discharges the
+> remaining PP classifier condition from that equation.  No construction
+> or refutation of the equation is claimed.  It is now the sole mathematical
+> frontier; naive stage closure and the standard typed Cantor diagonal do
+> not decide it.  The focused ZF-model session passes.  See
+> `reports/IND_ENUMERATOR_FRONTIER_2026-07-26.md` and Claude's independent
+> `reports/CLAUDE_IND_ENUMERATOR_CONSULT_2026-07-26.md`.
+
+> **Seeded-basis model theorem and `Ind`-range criterion checked,
+> 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Seeded_Stock.thy` packages the semantic
+> construction over an arbitrary `pp_t_stock_basis`.  For every such basis it
+> selects a root generic seed, transports it by cone lift, interprets `Pure`
+> by the basis saturation and `Fun` by the local identity class of the
+> transported seed, and proves global validity of the complete Recombination
+> background: logical purity, application closure, unique proposition
+> fundamentality, no other fundamentals, and zeroary and unary Recombination.
+>
+> The exact residual condition is now basis-parametric.
+> `pp_t_seeded_recombination_PP_gvalid_iff_root` and its basis specialization
+> `pp_t_basis_recombination_PP_gvalid_iff_root` prove that the full central
+> stock is globally valid iff the unary-stock classifier belongs to the
+> next-type basis stock at the root.  This is the sufficient-basis theorem
+> requested by the classifier-frontier audit.
+>
+> `zf_model/Bacon_PP_ZF_Tree_Range_Classifier.thy` then verifies the live
+> simultaneous route.  The closed, logical, well-typed term
+> `pp_range_classifier_builder`, applied to any typed
+> `E : Ind \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)`, is
+> PER-equivalent to the classifier of the world-relative equivalence
+> saturation of `range E`
+> (`pp_t_range_classifier_builder_correct`).  The theorem
+> `pp_t_range_complete_basis_self_classifies` proves that a basis containing
+> such an `E` self-classifies whenever its unary stock agrees with that
+> saturated range **at every world**.  The later theorem
+> `pp_t_range_complete_all_worlds_iff_root` now proves that root
+> range-completeness already entails this all-world hypothesis, because root
+> PER equivalence is literal equality.
+>
+> Thus the positive problem has been reduced to one precise construction:
+> exhibit a countable cone-natural application-closed basis, containing the
+> logical denotations and a typed enumerator `E`, whose unary saturation is
+> the saturated range of `E` at every world.  Alternatively, refute the
+> existence of such an enumerator.  No existence or impossibility theorem is
+> claimed yet.
+>
+> Both the focused ZF-model session and the full project build pass.  The new
+> theories contain no `sorry` or `oops`, and `git diff --check` is clean.
+
+> **Countable cone-natural basis abstraction checked, 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Basis_Stock.thy` defines
+> `pp_t_basis_stock D`, the local-equivalence saturation of a typed
+> type-indexed basis `D`.  The locale `pp_t_stock_basis` assumes exactly the
+> current construction data: typedness, countability, cone naturality,
+> inclusion of all closed logical denotations, and application closure up to
+> root equivalence.
+>
+> Isabelle now proves that every such saturation is admissible and persistent,
+> contains every closed logical denotation, is closed under application, and
+> transports exactly through every Boolean-tree cone.  Its classifier is
+> consequently cone-natural.
+>
+> The generic-seed theorem is generalized beyond the exact logical stock.
+> `pp_t_generic_seed_recombines_basis_stock_at_root` constructs a typed root
+> seed for the unary saturation of every countable cone-natural basis;
+> `pp_t_basis_root_recombination_transports_to_cone` transports it; and
+> `pp_t_basis_generic_seed_at_every_world` supplies one root seed whose cone
+> lifts satisfy unary Recombination at their corresponding worlds.
+>
+> The abstraction is not merely sufficient-looking:
+> `ClosedLogicalBasis` instantiates every locale assumption, and
+> `pp_t_basis_stock_closed_logical_basis` proves that its saturation is
+> extensionally identical to the previously constructed exact
+> closed-logical stock.  The focused ZF-model session and full project build
+> pass with no proof escapes.
+>
+> **Next exact route:** build the seeded internal interpretation uniformly
+> over `pp_t_stock_basis`, prove the entire Recombination background globally
+> valid, and derive `pp_t_basis_recombination_PP_gvalid_iff_root`.  Only after
+> that theorem should the `D1` stabilization and `Ind`-indexed
+> range-completeness instantiations be attempted.
+
+> **Generic-seed background model and exact PP root reduction checked,
+> 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Generic_Seed.thy` now carries the generic root
+> seed through cone lift to every world, interprets `Fun_Prop` as the local
+> identity class of that transported seed, and proves global unique
+> fundamentality, no fundamentals at every non-proposition type, all
+> closed-logical purity instances, every application-closure instance, and
+> both zeroary and unary Recombination.  Hence
+> `pp_t_generic_recombination_background_gvalid` validates the complete
+> Recombination background in one concrete HOL-ZF Henkin interpretation.
+>
+> The remaining PP clause is isolated exactly.
+> `pp_t_generic_target_PP_holds_iff` identifies its truth with membership of
+> the exact unary-stock classifier in the next-type exact closed-logical
+> stock.  `pp_t_generic_recombination_PP_gvalid_iff` makes that condition
+> equivalent to global validity of the whole central stock.
+> `pp_t_closed_logical_stock_persistent` and
+> `pp_t_closed_logical_stock_all_worlds_iff_root` reduce the all-worlds
+> condition to one root fact, and
+> `pp_t_generic_recombination_PP_gvalid_iff_root` states the final exact
+> boundary.
+>
+> Supporting cone results are also checked: every closed logical proposition
+> denotation is root-truth constant; cone-invariant elements have
+> world-independent equivalence classes; closed-logical stock membership
+> transports through the cone relation; and the stock classifier is itself
+> cone-natural.  None of these facts proves that the classifier belongs to
+> the stock.  Thus the model validates the entire background but is not yet a
+> model of PP.
+>
+> **Next exact route:** define a countable cone-natural typed basis and its
+> local-equivalence saturation, prove a sufficient-basis model theorem, then
+> instantiate either the one-step basis generated by the old classifier or an
+> `Ind`-indexed range-complete basis with all of `Nat` explicitly included at
+> type `Ind`.  The latter route can define its range classifier internally,
+> but root range-completeness must first be lifted to every world and the
+> logical range-classifier builder must itself belong to the stock.  Merely
+> adjoining the old classifier is not enough: application closure changes the
+> unary stock, so PP asks for the new classifier.  Unary stabilization is a
+> sufficient discharge condition, not something presently proved.
+> Claude/Codex independently audited this frontier in
+> `reports/CONSENSUS_PP_CLASSIFIER_FRONTIER_2026-07-26.md`.  They agreed on
+> the checked results and the “sufficient basis, then concrete
+> instantiations” strategy; the runner recorded no formal consensus because
+> the first proposed range-completeness corollary omitted the two premises
+> just stated.
+
+> **All-type cone gluing and unconditional exact-stock Recombination
+> checked, 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Generic_Seed.thy` constructs, for every countable
+> stock of cone-equivariant proposition operators, one proposition whose
+> reserved Boolean cones diagonalize against every nonuniversal operator.
+> The exact stock of denotations of closed, typed, constant-free unary terms
+> is proved countable.  The denotations of `λq.¬□q`, `λq.◇□q`, and
+> `λq.(◇□q ∨ ◇□¬q)` are proved cone-equivariant, and one generic seed
+> satisfies the Recombination implication for all three simultaneously.
+>
+> The all-type support/gluing obligation is now discharged.  The proof uses
+> `pp_t_sibling_component`, a type-sensitive two-branch amalgamation relation:
+> it is equality at `Ind`, universal at `Prop`, and closed under higher-order
+> application.  `pp_t_sibling_component_iff_logical` verifies that the
+> explicit recursive sibling merge realizes the corresponding logical
+> relation.  `pp_t_support_rel` then tracks local equality inside the support
+> cone, root equality above it, and sibling-component equality off it.
+>
+> `pp_t_cone_transform_invariant_all` proves simultaneously at every object
+> type that `pp_t_cone_restrict` and `pp_t_cone_extend` lie in their typed
+> domains and preserve the appropriate support relation.  The canonical
+> witness theorem `pp_t_cone_canonical_invariant_all` proves that restriction
+> and supported extension realize `pp_t_cone_rel`; consequently
+> `pp_t_cone_left_total_all`, `pp_t_cone_right_total_all`, and
+> `pp_t_cone_compatible_all` hold at every type and cone.
+>
+> The formerly conditional locale `pp_t_cone_totality` is now instantiated as
+> `UnconditionalCone`.  The final theorem
+> `pp_t_generic_seed_recombines_exact_closed_logical_stock` gives, without
+> semantic assumptions, a typed proposition that satisfies root unary
+> Recombination for the full exact closed-logical stock.
+>
+> **Next exact route:** transport this root seed to every world by cone lift,
+> interpret `Fun_Prop` as the local identity class of the transported seed,
+> prove global unique fundamentality and all closed-logical Recombination
+> instances, and only then attack PP for that repaired central stock.
+
+> **Full closed-logical stock constructed; moving-seed tree model refuted,
+> 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Logical_Stock.thy` defines
+> `pp_t_closed_logical_stock`, the local-identity closure of the denotations
+> of all closed, well-typed, constant-free object terms.  It proves that this
+> stock is admissible, contains every evaluation of every such term, is least
+> among admissible stocks with that property, and is closed under application.
+> The object-language logical-purity instances and all application-closure
+> instances are globally valid under the resulting `Pure` interpretation.
+>
+> The enlarged stock exposes a decisive new Recombination obstruction.  The
+> closed logical operator
+> `λq.(◇□q ∨ ◇□¬q)` says that its argument eventually settles to truth or
+> falsity.  The moving fundamental seed settles on every future branch, so
+> this operator applies necessarily to the seed.  The proposition whose
+> truth alternates with word length never settles on any cone, so the operator
+> does not apply to every proposition.  Isabelle proves both the semantic
+> no-go `pp_t_closed_logical_stock_not_recombines` and the failure of
+> Goodman's actual object-language formula,
+> `pp_t_closed_logical_unary_recombination_not_gvalid`.
+>
+> Thus the Boolean-tree domains, structural evaluator, and Henkin-model
+> instantiation remain usable, but the true-child-cone interpretation of the
+> unique fundamental proposition cannot model the central stock.  The earlier
+> two-operator Recombination result remains correct but was not exhaustive.
+> PP was not tested for this stock because unary Recombination already fails.
+> **Next exact route:** replace the moving seed by a logically generic
+> proposition whose future copies realize every proposition behavior relevant
+> to closed logical operators, or prove that no such seed can coexist with
+> unique fundamentality on this frame.
+
+> **Branching HOL-ZF model scaffold instantiated; first logical
+> Recombination obstruction passed, 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Tree_Frame.thy` is the live positive construction.
+> Its worlds are finite Boolean words ordered by prefix.  A proved bijection
+> with `Nat` lets propositions remain the preconstructed set
+> `Power Nat`, without unused or duplicated world coordinates.
+>
+> The theory rebuilds every typed domain and the world-indexed logical
+> relation.  It proves application closure, persistence, nonemptiness, and
+> reflexivity, symmetry, and transitivity at every object type.
+> `pp_t_eval_fundamental` simultaneously proves type preservation and
+> relational invariance for the terminating structural evaluator, including
+> lambda abstraction and both higher-order quantifiers.
+> `DefaultTreeConstants.TreeHenkin` is consequently a concrete
+> `henkin_action_model`.
+>
+> The moving seed at `w` is the proposition true exactly on the subtree rooted
+> at `w@[True]`.  `pp_t_moving_internal_parameters` interprets `Fun` as its
+> local identity class.  The object-language theorems
+> `pp_t_moving_unique_fundamental_gvalid` and
+> `pp_t_moving_no_fundamentals_gvalid` prove global unique fundamentality at
+> `Prop` and every no-other-fundamentals instance.
+>
+> The first logical-purity stress test is positive.  The evaluator's exact
+> denotations of `λq.¬□q` and `λq.◇□q` are respectively
+> `pp_t_not_box_classifier` and `pp_t_diamond_box_classifier`.
+> Their local identity classes form the admissible fragment
+> `pp_t_obstruction_pair_pure`; the two containment lemmas connect that
+> fragment to the actual closed logical terms.
+> `pp_t_moving_obstruction_pair_recombines` proves unary Recombination for
+> this entire fragment at every world.  The true child falsifies the
+> `□¬□p` antecedent, and the incomparable false child falsifies the
+> `□◇□p` antecedent.
+>
+> This is not yet a model of the central stock.  **Next obligation:** enlarge
+> the purity interpretation from these two closed logical denotations to all
+> closed logical denotations and application closure, prove global unary
+> Recombination for the enlarged stock, and then tackle PP for the stock's own
+> classifier.  Base CEV soundness and vector-Equivalence remain downstream.
+
+> **Extensional full frame excluded; hyperintensional replacement opened,
+> 2026-07-26.**
+> The full-frame pivot solved the evaluator/domain circularity but exposed a
+> second obstruction.  `pp_zf_extensional_identity_blocks_recombination` proves
+> that if object identity is interpreted as metalanguage equality, the two
+> closed logical operators `λq.(q=⊤)` and `λq.¬(q=⊤)` defeat unary
+> Recombination for every proposed fundamental proposition.
+> `pp_zf_logical_purity_blocks_recombination` packages the exact consequence:
+> any purity interpretation containing all closed logical operators fails the
+> Recombination kernel.  Thus no choice of the parameter `Pure` can repair the
+> extensional HOL-ZF frame.  This is a limitation of Claude's initial
+> full-frame recommendation, not evidence that the central stock itself is
+> inconsistent.
+>
+> `zf_model/Bacon_PP_ZF_Hyper_Frame.thy` implements the required refinement
+> without returning to closure evaluation.  Propositions remain preconstructed
+> subsets of `Nat`, but object identity is the world-indexed relation
+> `pp_h_eqv`.  At proposition type, `P ≈_w Q` means agreement at every
+> future world `v≥w`; at arrow types it is the induced logical relation.
+> Arrow domains are genuine HOL-ZF functions restricted to those respecting
+> this relation at every world.
+>
+> The new theory proves typed application, persistence of equivalence,
+> nonemptiness of every domain, and reflexivity, symmetry, and transitivity at
+> every object type.  It also proves
+> `pp_h_prop_eqv_truth_iff`: identity with truth at `w` is exactly truth
+> throughout the tail above `w`.  Distinctness can therefore disappear later,
+> as required; it is no longer illicitly rigid.
+>
+> `pp_h_eval` now gives the terminating structural evaluator over these
+> domains.  Its equality clause denotes the proposition
+> `{w | pp_h_eqv σ w x y}`; `pp_h_eval_Eq_holds` proves the exact world-level
+> biconditional.  The clauses for negation, conjunction, disjunction,
+> implication, and both quantifiers are also proved.  The next construction
+> target is the combined typing/relational fundamental lemma for `pp_h_eval`,
+> needed to show that lambda denotations belong to the restricted arrow
+> domains, followed by a new `henkin_action_model` interpretation.
+
+> **Preconstructed HOL-ZF full frame instantiated, 2026-07-26.**
+> `zf_model/Bacon_PP_ZF_Full_Frame.thy` implements Claude's recommended
+> semantic pivot in a separate Isabelle session,
+> `Higher_Order_Metaphysics_PP_ZF_Model`.  The object domains are fixed before
+> denotation: `Ind` is `Nat`, `Prop` is `Power Nat`, and
+> `σ→τ` is the genuine HOL-ZF function set `Fun Dσ Dτ`.
+> `pp_zf_default_in_domain` and `pp_zf_domain_nonempty` prove every domain
+> inhabited; `pp_zf_app_closed`, `pp_zf_lambda_closed`, `pp_zf_beta`, and
+> `pp_zf_eta` prove the full application/abstraction interface.  The equality
+> PER has exactly these domains as its diagonal, and
+> `pp_zf_per_domain_nonempty` proves all PER domains nonempty.
+>
+> `pp_zf_eval` is structural recursion on the object term.  Quantifiers range
+> over the already constructed domains, so no closure evaluation or semantic
+> self-call occurs.  The locale `pp_zf_constants` proves type preservation and
+> renaming/shift, then instantiates `henkin_action_model` as the sublocale
+> `ZFHenkin`.  `DefaultZFConstants.ZFHenkin` is a concrete nonvacuous instance.
+>
+> The theory also implements Claude's internal-relation recommendation as a
+> negative-control candidate.
+> `pp_zf_internal_constants Pure` interprets every `Pure_σ` as the
+> characteristic function of the exposed relation `Pure σ`, and interprets
+> every `Fun_σ` as the characteristic function of
+> `pp_zf_fundamental σ`.  The latter selects exactly `Empty` at proposition
+> type and nothing at every other type.  The extensional-identity theorem above
+> shows that this candidate cannot validate the central stock, regardless of
+> the choice of `Pure`; it is retained as a checked negative control.
+>
+> This is a **relative** construction: `HOL-ZF` axiomatizes a ZFC universe as
+> an HOL type.  Nothing in the project presents it as a pure-HOL consistency
+> certificate.
+
+> **Closure-evaluator route closed, 2026-07-26.**
+> `frontier/Bacon_PP_Central_Model_Obligations.thy` now proves the typed
+> quantifier-cycle witness
+> `F = λa. ∀P^(Ind→Prop). P a` and proves that the corresponding closure is
+> self-related at `Ind→Prop` for every application operation that returns
+> proposition-tagged results there.  Hence the closure lies in the PER domain
+> traversed while evaluating `F a`; the instance `P := F` returns the identical
+> application call.  This defeats every well-founded closure evaluator on the
+> proposed carrier.  STLC strong normalization is irrelevant because the loop
+> is caused by semantic quantifier instantiation, not beta reduction.
+>
+> Independently, the quantifier range would be the diagonal of
+> `pp_uval_per app`, while `app` is the function being defined.  This
+> dependence is nonmonotone, so an elementary least-fixed-point repair is not
+> available.  `henkin_action_model` is also too weak by itself for the promised
+> endpoint: it has no semantic clauses for constants, application, abstraction,
+> equality, conjunction, or disjunction; base CEV and zeta soundness remain
+> separate obligations in `pp_central_stock_model`.
+>
+> The honest next move was a preconstructed typed-domain model with genuine
+> function data at arrow types, so domains and application exist before term
+> interpretation.  The HOL-ZF route has now been implemented, with its
+> additional set-theoretic assumptions explicit in the new session.  Claude
+> independently returned the same
+> verdict in `reports/CLAUDE_CLOSURE_EVALUATOR_CONSULT_2026-07-26.md`.
+> `isabelle build -D . Higher_Order_Metaphysics_PP_Frontier` is clean.
+
 > **Direct central-stock model program opened, 2026-07-26.**
 > `frontier/Bacon_PP_Central_Model_Obligations.thy` now fixes the exact
 > positive certificate as the locale `pp_central_stock_model`.  An
@@ -25,10 +389,10 @@
 > symmetry, transitivity, tag soundness, and application compatibility are
 > machine-proved.  `DefaultClosurePER` gives a concrete nonempty
 > interpretation, showing that the all-type PER interface itself is
-> consistent.  It is deliberately not the term model.  The next construction
-> obligation is a genuine closure evaluator/application operation whose
-> generated PER is nonempty, followed by `den_type`, the logical clauses,
-> `den_shift`, and the interpretations of `Pure` and `Fun`.
+> consistent.  It is deliberately not the term model.  The closure-evaluator
+> block above supersedes the originally stated next obligation.  The central
+> settlement locale remains the target, but it must now be instantiated from
+> preconstructed domains.
 > `isabelle build -D . Higher_Order_Metaphysics_PP_Frontier` is clean.
 
 > **Recombination--QSS repair, 2026-07-26.**
