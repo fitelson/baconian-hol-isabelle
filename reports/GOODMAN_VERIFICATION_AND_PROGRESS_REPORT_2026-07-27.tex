@@ -102,6 +102,13 @@ reduced to constructing one enumeration of the pure unary operators.  The
 enumeration must respect Bacon's substitution action, and its range must
 contain every unary operator definable using the enumeration itself.  All
 remaining soundness obligations for this reduction have been discharged.
+Separately, a HOL--ZF model validates \PP\ and the background principles
+listed below together with purity of identity, negation, constant truth, and
+constant falsity.  Consequently every subcollection of Goodman's principles
+whose logical-purity instances are confined to those four formulas is
+consistent in Bacon's proof system.  This does not settle the question,
+because Goodman's intended theory makes every closed logical term pure at
+every type.
 Conversely, any such model must falsify global \Ltwo\ or global \TU.  We have
 also verified every determinate object-language result in the
 notes, corrected a modal gap in T3, corrected a false countability argument in
@@ -466,6 +473,73 @@ disjunct.  A positive model may exploit either cross-kind collisions on
 \(\funp\) inputs or a pure reversible operator that is neither uniformly
 truth-preserving nor uniformly truth-flipping.
 
+\subsection{Adding purity of constant truth and constant falsity}
+
+Let \(C_{\top}\) and \(C_{\bot}\) be the unary operators
+\[
+ C_{\top}(p)=\mathsf{truth}
+ \qquad\text{and}\qquad
+ C_{\bot}(p)=\mathsf{falsity}.
+\]
+We now make these two closed logical operators pure, in addition to identity
+and negation.  Closure of purity under application gives truth and falsity at
+type \(t\), the four unary operators at type \(t\IC t\), and the proposition
+classifying those four unary operators at type \((t\IC t)\IC t\).
+
+\begin{theorem}[The four-logical-operators fragment]
+There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
+all of the following:
+\begin{enumerate}
+\item purity of identity, negation, \(C_{\top}\), and \(C_{\bot}\);
+\item \PP;
+\item every instance of closure of purity under application;
+\item zeroary and unary Recombination and Exhaustion;
+\item Modalized Functionality at arbitrary types; and
+\item unique fundamentality at proposition type and the absence of
+      fundamental entities at every other type.
+\end{enumerate}
+The collection consisting of exactly these principles is a subcollection of
+Goodman's principles and is consistent in Bacon's proof system.
+\end{theorem}
+
+Let \(T_G\) be Goodman's full collection of principles, and let
+\(\mathsf{LP}\subseteq T_G\) be its logical-purity schema.  Put
+\[
+ \mathsf{LP}_{4}=
+ \{\,\Pure(I),\Pure(N),\Pure(C_{\top}),\Pure(C_{\bot})\,\},
+\]
+where \(I\) is identity and \(N\) is negation.  The bridge theorem establishes,
+for every \(U\),
+\[
+ U\subseteq T_G
+ \quad\text{and}\quad
+ U\cap\mathsf{LP}\subseteq\mathsf{LP}_{4}
+ \quad\Longrightarrow\quad
+ \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
+\tag{IC}
+\]
+No finiteness assumption on \(U\) is required.  This does not settle
+Goodman's question, because the logical-purity schema in the intended theory
+includes every closed logical term, including terms at higher types.  The
+next planned extensions add purity of \(K\), then purity of conjunction; a
+complete result requires all closed logical terms at all types.
+
+\paragraph{Isabelle verification note.}
+The model and consistency theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_t_logical_constants_fragment_PP_gvalid
+pp_logical_constants_fragment_PP_axioms_consistent
+\end{verbatim}
+}
+The inclusion in Goodman's principles and the general bridge theorem are:
+{\footnotesize
+\begin{verbatim}
+pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman
+fresh_goodman_logical_constants_only_consistent
+\end{verbatim}
+}
+
 \subsection{Reduction of the positive program to one equation}
 
 We constructed a set-theoretic formalization of Bacon's substitution model and
@@ -630,7 +704,11 @@ The formal work has not settled which answer is more likely.  It has, however,
 made an affirmative answer significantly more concrete: it is enough to
 construct one enumeration satisfying \((\mathrm{SE})\) in the verified
 substitution model.  At the same time, the diagonal restrictions show why the
-most direct Cantorian objection to such an enumeration fails.
+most direct Cantorian objection to such an enumeration fails.  A separate
+positive result now handles every subcollection of Goodman's principles whose
+logical-purity instances are confined to identity, negation, constant truth,
+and constant falsity.  The next extension should add purity of \(K\), then
+purity of conjunction.
 
 \section{Remaining verification work on the notes}
 
@@ -648,15 +726,25 @@ The following items should not be reported as verified:
 \item Global semantic \Ltwo\ for Bacon's complete definable stock.  It is
       currently verified only for identity, necessity, possibility, constant
       truth, and constant falsity.
+\item A model validating \PP\ when the logical-purity schema extends beyond
+      identity, negation, constant truth, and constant falsity.  The next
+      cases are \(K\) and conjunction; Goodman's full question requires all
+      closed logical terms at all types.
 \item The existence or impossibility of an enumeration respecting Bacon's
       substitution action and satisfying \((\mathrm{SE})\).
 \end{enumerate}
 
 \section{Recommended next steps}
 
-We recommend preserving two parallel lines of attack.
+We recommend preserving the following lines of attack.
 
 \begin{enumerate}
+\item \textbf{Continue adding logical purity.}  Identity, negation, constant
+      truth, and constant falsity are now handled.  Add purity of \(K\), then
+      purity of conjunction, while preserving closure of purity under
+      application, Recombination, Exhaustion, Modalized Functionality, and
+      \PP.  A complete result requires every closed logical term at every
+      type.
 \item \textbf{Positive construction.}  Test whether a countable collection of
       pure operators can preserve a proposition separating its members while
       remaining closed under every operation definable in the language.
@@ -702,8 +790,12 @@ each result.  A successful audit build is obtained from the project root with:
 The appropriate overall verdict is therefore:
 \emph{the formalization verifies, corrects, or precisely qualifies every
 determinate claim in Goodman's notes, including two substantive repairs, and
-reduces the consistency problem to a
-single explicit model-construction equation, but it does not yet answer the
-question itself.}
+reduces the unrestricted consistency problem to a single explicit
+model-construction equation.  A HOL--ZF model also validates \PP\ and the
+displayed background together with purity of identity, negation, constant
+truth, and constant falsity, so every subcollection whose logical-purity
+instances are confined to those four formulas is consistent.  Goodman's
+question remains open because the intended theory requires purity of every
+closed logical term at every type.}
 
 \end{document}
