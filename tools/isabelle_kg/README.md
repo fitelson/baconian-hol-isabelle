@@ -24,9 +24,10 @@ writes:
 - `isabelle-kg/graph.json` — the queryable exact graph;
 - `isabelle-kg/graph.graphml` — a directed GraphML export for Gephi or yEd.
 
-The graph includes the foundational, PP, frontier, finite-model, HOL-ZF,
-binary-truth-function child, independent `Goodman_Fresh_Attack`, and
-fresh-to-HOL-ZF bridge sessions.
+The graph includes the base, Classicism/CE/CEV, Goodman CEV+, finite-model,
+HOL-ZF, binary-truth-function, modal, higher-order quantified, `fun-prime`,
+and T6-diagonal sessions, together with the canonical CEV+ and HOL-ZF bridge
+sessions.
 
 Generated output and compiled classes are intentionally git-ignored.  The
 graph is reproducible from the checked theories.  The build validates unique

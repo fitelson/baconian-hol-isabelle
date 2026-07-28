@@ -1,9 +1,0 @@
-session Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified =
-    Higher_Order_Metaphysics_PP_ZF_Possibility +
-  description "
-    HOL-ZF moving-seed fragment model absorbing six higher-order quantified
-    logical operators.
-  "
-  options [timeout = 60]
-theories
-  Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model

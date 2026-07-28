@@ -17,16 +17,16 @@ Read, in order:
 
 1. `STATUS.md`
 2. `README.md`
-3. `pp/Bacon_PP_MSet.thy`
-4. `pp/Bacon_PP_Uniform_Index.thy`
-5. `pp/Bacon_PP_Orbit_Stability.thy`
-6. `pp/Bacon_PP_TreeAut.thy`
-7. `pp/Bacon_PP_TreeAut_Functions.thy`
+3. `theories/goodman/core/Bacon_PP_MSet.thy`
+4. `theories/goodman/core/Bacon_PP_Uniform_Index.thy`
+5. `theories/goodman/core/Bacon_PP_Orbit_Stability.thy`
+6. `theories/goodman/core/Bacon_PP_TreeAut.thy`
+7. `theories/goodman/core/Bacon_PP_TreeAut_Functions.thy`
 
 Then run:
 
 ```sh
-isabelle build -D .
+isabelle build -j 1 -D .
 ```
 
 The repository should be green before any new work.
@@ -190,7 +190,7 @@ stronger. See item 6 above.
 ## Status of the recommended first attack: done, with a limitative verdict
 
 Steps 1--3 below are now complete and machine-checked in
-`pp/Bacon_PP_TypeCoherence.thy`; step 4 has been carried out and its answer is
+`theories/goodman/core/Bacon_PP_TypeCoherence.thy`; step 4 has been carried out and its answer is
 negative for the base-definability condition.
 
 1. Higher-type equality is preserved --- `pb_id_conjugate`, `pb_id_fixed`. Done.

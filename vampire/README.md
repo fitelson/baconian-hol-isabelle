@@ -41,7 +41,7 @@ identities.  Vampire must reconstruct the final liar contradiction.
 inconsistency of Goodman's advertised WI master family.  Vampire refutes it
 using only the master equation, `Pure(top)`, and `holds(top)`; the matching
 deep-embedding result is `CEV_T6_WI_master_family_inconsistent` in
-`frontier/Bacon_PP_Goodman_T6_WI_Master.thy`.  This benchmark and theorem do
+`theories/goodman/notes/Bacon_PP_Goodman_T6_WI_Master.thy`.  This benchmark and theorem do
 not yet derive the master family from WI and L2.
 
 `goodman_pp_recombination_depth1.in` removes `fun'` existence, L2, and Inv.  It
@@ -64,7 +64,7 @@ be certified independently in Isabelle; a THF timeout on that satisfiable probe
 is not evidence against the TFF model.
 
 The current TFF model is certified in
-`models/Bacon_PP_Vampire_Depth1_Model.thy`.  Its theorem
+`theories/goodman/models/finite/Bacon_PP_Vampire_Depth1_Model.thy`.  Its theorem
 `v_depth1_model_certificate` proves the conjunction of every axiom in
 `goodman_pp_recombination_depth1.in` from the printed three-element tables.
 Build it independently with:

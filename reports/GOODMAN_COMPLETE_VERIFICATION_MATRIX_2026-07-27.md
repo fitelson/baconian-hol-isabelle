@@ -14,9 +14,8 @@ This matrix distinguishes four statuses:
   does not yet discharge those premises.
 - **Open or underspecified**: there is no determinate verified theorem.
 
-The dedicated session `Goodman_Complete_Audit_2026_07_27` audits these 96
-principal theorem objects together with fifteen later \(K\)-, conjunction-,
-binary-truth-function-fragment, and bridge results.  The separate session
+The dedicated session `Goodman_Complete_Audit_2026_07_27` audits 128 theorem
+objects supporting the claims and qualifications in this matrix.  The separate session
 `Goodman_Modal_Quantified_Audit_2026_07_28` audits 30 necessity, possibility,
 higher-order quantified, and corresponding bridge results.  Fresh builds
 pass.  Every
@@ -61,7 +60,7 @@ fundamentality it also derives existence of a `fun-prime` proposition.
 |---|---|---|
 | M1, bottom type | **Verified** | The pure propositions are exactly the two invariant propositions, and the operator applying exactly to them is the noncontingency operator; it is denoted by a closed term containing only logical vocabulary. |
 | M1, first PP failure | **Verified conditionally and syntactically** | The exact footnote-59 liar is typed, beta-reduced, and proved pure from PP plus Purity of Fun. QSS then yields contradiction. Thus any Bacon model with the other premises must omit that liar from its pure unary stock. |
-| M1, fn. 60 corollary | **Exact identification; exclusion conditional** | The infinitary join exists in the full unary function domain and has exactly the pure unary operators as its extension. It is the interpretation of `Pure` at the next type, and PP at that type holds exactly when this operator belongs to the next pure stock. The current Isabelle development does not prove its nonmembership directly in Bacon's exact generic model. It proves nonmembership only from the additional PP-diagonal/QSS assumptions. Thus completeness of the function domain supplies the join, but does not by itself settle its purity. |
+| M1, fn. 60 corollary | **Exact identification; exclusion conditional** | The infinitary join exists in the full unary function domain and has exactly the pure unary operators as its extension. It is the interpretation of `Pure` at the next type, and PP at that type holds exactly when this operator belongs to the next pure stock. The current Isabelle development does not prove its nonmembership directly in Bacon's appendix construction. It proves nonmembership only from the additional PP-diagonal/QSS assumptions. Thus completeness of the function domain supplies the join, but does not by itself settle its purity. |
 | M2 | **Verified** | Goodman's operators \(G_T\) belong to the invariant function domain, and \(T \mapsto G_T\) is a bijection onto the invariant operators. Cantor yields the cardinal obstruction and failure of QSS under the invariance reading. |
 | M3 | **Verified with stock qualification** | Relative to the chosen stock of pure operators, `fun-prime` is equivalent to freeness against nonzero pure laws; it implies extreme views, the countable Boolean stock has a free generator, and the `fun-prime` class is product-meager. |
 | M4, explicit witness | **Verified conditionally; model instantiation open** | Preimage heredity and the lifted-branch witness follow from necessitated QSS at `r`, membership of every pure operator in Bacon's function domain, invariance, and the presence of identity, zero, and one. The result has not yet been instantiated for Bacon's stock of operators denoted by closed terms containing only logical vocabulary. |
@@ -69,42 +68,25 @@ fundamentality it also derives existence of a `fun-prime` proposition.
 | M5, exotic operator | **Verified** | The displayed fixed pair gives an invariant involution violating TU, WI, and Inv. |
 | M5, original orbit choice | **Refuted and repaired** | The notes' reason is false: worlds, their views, and the displayed world-indexed pairs are all countable, so countability alone does not select a pair outside the orbit. Isabelle now constructs, for every candidate `R`, a diagonal two-element pair outside every view of `R`; every proper view of either member is empty or universal. Its transposition is invariant, fixes `R`, and is nonidentity. |
 | M5, pre-rebuild QSS obstruction | **Verified conditionally** | If the repaired diagonal exotic and identity are both placed in the pure stock, then `R` is not `fun-prime` for that stock. This verifies the corrected form of the notes' claim that merely adjoining the exotic operator to the old model destroys QSS. |
-| M5, rebuild | **Conditional theorem; model instantiation open** | Bacon's Theorem 10.1 is proved in a set-theoretic formalization of his appendix model, together with a rebuilding theorem for a specified operator. The new diagonal exotic operator has not yet been included in a fully rebuilt model whose enlarged stock of definable operators is verified. |
+| M5, rebuild | **Verified** | Isabelle constructs the least application-closed pure stock containing every closed logical denotation and Goodman's displayed exotic operator. The stock is countable; the exotic denotation is typed, commutes with taking views, is self-inverse, violates TU, and is not a biconditional operator. A rebuilt fundamental proposition supplies Recombination and `fun-prime` separation at every world, and the resulting interpretation validates Bacon's Recombination background. This is not a PP model: PP would further require the classifier of the enlarged pure stock itself to belong to the next pure stock. |
 | M5, collision method | **Verified for the displayed witness** | From the core theory and `fun-prime(r)`, the closed operator `λp.(p ↔ NC(p))` takes the same value at `NC(r)` and truth, although `NC(r) ≠ truth`. This proves the advertised concrete failure of injectivity. A uniform extension to merely existentially given invertibles is a further proposal, not a consequence of this calculation. |
 | M6 | **Verified conditionally; model instantiation open** | Under necessitated QSS, membership of every pure operator in Bacon's function domain, and invariance, distinct substitutions are separated by a `fun-prime` proposition. With identity, zero, and one also pure, a strict-inclusion `fun-prime` pair blocks the indicated joint assignment. Single-coordinate arbitrary realization fails independently by countability. These results have not all been instantiated for Bacon's stock of operators denoted by closed terms containing only logical vocabulary. |
 | M7, definable reachability | **Verified** | The Tarski diagonal lies outside every value enumerated by the closed terms under consideration, so Fundamental Completeness fails for those denotations. |
 | M7, invariant reachability | **Verified equivalence; instance open** | Every proposition is reachable from `r` by an invariant operator iff the orbit map `i |-> view i r` is injective. Whether Bacon's chosen glued `r` has that property remains construction-sensitive. |
 | Bacon Theorem 10.1 | **Verified, qualified** | The rebuilt-family theorem is proved. At type `Ind`, its identity quotient forces the family to be constant; it cannot deliver a family of distinct individual denotations. |
+| L2 in Bacon's appendix model | **Refuted** | The operator \(Z(P)=\{w:P(w^\frown0)\) and \(P(w^\frown1)\) differ in truth value\(\}\) is denoted by a closed term containing only logical vocabulary. It is surjective, noninjective, right-cancellative among the operators so denoted, and nonreversible. Hence it carries `fun-prime` propositions to `fun-prime` propositions while furnishing an explicit cross-kind collision with identity. Therefore L2, and consequently strong L2, is false in Bacon's appendix model under the proposed interpretation of purity. |
 
 ## Claims that cannot presently be “verified”
 
 The following are not missing proof scripts for settled claims:
 
-1. Goodman's main consistency question remains open.  In the direct
-   substitution model, where `E` is typed at `Ind -> (Prop -> Prop)` and
-   commutes with taking views, the positive program is reduced to the
-   self-enumeration equation saying that the unary operators denoted by
-   closed expressions built using `E` are exactly `{E n | n in Nat}`.
-   Separately, a HOL--ZF model now proves consistency for every subcollection
-   of Goodman's principles whose logical-purity instances are restricted to
-   the verified Boolean stock, necessity, possibility, and the six
-   higher-order quantified unary operators.  The six operators denote,
-   respectively, necessity, necessary falsity, possible falsity, possibility,
-   constant falsity, and constant truth.  Necessary falsity and possible
-   falsity require two additional pure unary classes, for which both
-   directions of unary QLN have been verified.  This remains a fragment
-   theorem: its QLN stock is zeroary and unary, and it does not cover every
-   closed logical term at every type.
-2. Global semantic L2 for Bacon's complete definable stock remains open.  L2
-   is verified only for identity, necessity, possibility, constant truth, and
-   constant falsity, together with a precise
-   counterexample criterion for extensions.
-3. T7b is not stated precisely enough to encode uniquely.
-4. The full M5 rebuilt model with the exotic operator included in its pure stock is not yet
-   constructed.
-5. The multiple-fundamental “wide Fun” discussion in M4 does not specify
+1. Goodman's main consistency question remains open.
+2. T7b is not stated precisely enough to encode uniquely.
+3. The multiple-fundamental “wide Fun” discussion in M4 does not specify
    either the selection condition on `Fun` or a precise Separated Structure
    formula.  It therefore has no unique theorem statement to verify.
+4. The proposed generalization of the M5 collision method from its displayed
+   operator to invertibles given only existentially remains open.
 
 Thus “everything” does not receive a blanket PASS.  Every determinate claim in
 the notes has now been proved, refuted and repaired, or assigned the explicit

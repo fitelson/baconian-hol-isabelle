@@ -20,10 +20,12 @@ theory Audit_Goodman_Complete
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Bacon_10_1
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M1_Fn60
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Rebuild
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M7
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Model
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Child_Xor
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Tree_CEV_Soundness
-    Goodman_Fresh_ZF_Bridge.Bacon_PP_Fresh_ZF_Fragment_Bridge
+    Goodman_CEVplus_ZF_Bridge.Bacon_PP_Fresh_ZF_Fragment_Bridge
 begin
 
 section \<open>Kernel theorem-object audit\<close>
@@ -135,6 +137,10 @@ val targets = [
     @{thm pp_M1_fn60_exact_diagnosis}),
   ("M1 footnote-60 full-domain classifier",
     @{thm pp_t_M1_fn60_classifier_in_full_domain}),
+  ("M1 footnote-60 exact extension in appendix model",
+    @{thm pp_t_M1_fn60_classifier_exact_extension}),
+  ("M1 footnote-60 Pure interpretation",
+    @{thm pp_t_M1_fn60_is_Pure_interpretation}),
   ("M1 footnote-60 PP equivalence",
     @{thm pp_t_M1_fn60_global_PP_iff_classifier_pure_at_root}),
   ("M2 classifier bijection", @{thm pp_M2_classifier_bijection}),
@@ -182,6 +188,32 @@ val targets = [
     @{thm pp_t_Bacon_10_1_Ind_requires_constant_family}),
   ("M5 rebuilt model with fixed operator",
     @{thm pp_t_M5_rebuild_with_fixed_unary_operator}),
+  ("M5 rebuilt exotic involution",
+    @{thm pp_t_M5_exotic_involution}),
+  ("M5 rebuilt exotic violates TU",
+    @{thm pp_t_M5_exotic_not_truth_uniform}),
+  ("M5 rebuilt exotic violates WI",
+    @{thm pp_t_M5_exotic_not_biconditional}),
+  ("M5 rebuilt exotic denotation typed",
+    @{thm pp_t_M5_exotic_den_typed}),
+  ("M5 rebuilt exotic denotation cone-natural",
+    @{thm pp_t_M5_exotic_den_cone_natural}),
+  ("M5 rebuilt exotic denotation self-inverse",
+    @{thm pp_t_M5_exotic_den_involution}),
+  ("M5 exotic pure in rebuilt stock",
+    @{thm pp_t_M5_exotic_pure_in_rebuilt_definable_stock}),
+  ("M5 rebuilt fundamental supplies Recombination",
+    @{thm pp_t_M5_root_fundamental_recombines}),
+  ("M5 rebuilt fundamental is fun-prime",
+    @{thm pp_t_M5_root_fundamental_is_fun_prime}),
+  ("M5 rebuilt fun-prime at every world",
+    @{thm pp_t_M5_fundamental_at_is_fun_prime}),
+  ("M5 full rebuilt background validity",
+    @{thm pp_t_M5_full_rebuilt_background_gvalid}),
+  ("M5 full rebuilt exotic certificate",
+    @{thm pp_t_M5_full_rebuilt_exotic_certificate}),
+  ("M5 full rebuilt model",
+    @{thm pp_t_M5_full_rebuilt_model}),
   ("M6 substitution separation",
     @{thm pp_M6_fun_prime_separates_distinct_substitutions}),
   ("M6 single-coordinate failure",
@@ -207,6 +239,10 @@ val targets = [
   ("exact-stock L2 on five-operator base", @{thm pp_b_exact_L2_on_base}),
   ("exact-stock L2 counterexample criterion",
     @{thm pp_b_exact_not_L2_iff_counterexample}),
+  ("strong L2 entails L2 in appendix model",
+    @{thm pp_b_exact_strong_L2_imp_L2}),
+  ("closed logical operator refutes strong L2",
+    @{thm pp_b_child_xor_refutes_exact_strong_L2}),
   ("CEV base soundness", @{thm pp_t_constants.pp_t_base_sound}),
   ("CEV vector-Equivalence soundness",
     @{thm pp_t_constants.pp_t_zeta_sound}),

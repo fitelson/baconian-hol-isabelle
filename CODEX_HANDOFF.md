@@ -1,39 +1,126 @@
 # Handoff: Goodman's PP consistency problem
 
+## 0. Current repository layout and L2 status
+
+The source tree now has three explicit layers:
+
+1. `theories/base/`, session `Bacon_Base`;
+2. `theories/classicism/`, session `Bacon_Classicism`, including CE and CEV;
+3. `theories/goodman/`, session `Goodman_CEVplus`, with all Goodman proof,
+   model, canonical, and bridge sessions beneath it.
+
+All active project sessions are declared in the root `ROOT`.  The full serial
+build command is `isabelle build -j 1 -D .`.  The authoritative map is
+`docs/REPOSITORY_STRUCTURE.md`.
+
+Goodman's semantic L2 calibration is complete.  The closed logical operator
+\(Z\), which compares the truth values at the two immediate successor worlds,
+is formalized in
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_L2_Child_Xor.thy`
+and is proved surjective, noninjective, right-cancellative among the
+denotations of closed logical terms, and nonreversible.  The theorem
+`pp_b_child_xor_refutes_exact_L2` refutes L2 in Bacon's appendix model under
+that interpretation of purity.  Strong L2 fails there as well.  This does not settle
+Goodman's consistency question because the model independently fails PP.
+Sections below that call global L2 open are chronological records of an
+earlier frontier and are superseded by this checkpoint.
+
+## 0. New live checkpoint: verified-model cutoff and failure of the
+\(J+D\) stabilization
+
+The reader-facing report deliberately stops its verified model sequence at
+`theories/goodman/models/fragments/higher_order_quantified/Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model.thy`.
+That model contains the Boolean stock, necessity, possibility, and the six
+higher-order quantified unary operators.  Do not add the later \(J\) or
+T6-diagonal stages to the report's list of verified models unless a joint
+stabilization theorem is proved.
+
+The later work is a machine-checked investigation, not a new reported model:
+
+1. `theories/goodman/models/fragments/fun_prime/Bacon_PP_ZF_Fresh_Fun_Prime_Fragment_Model.thy` adds the
+   closed operator \(J=\lambda p.\mathit{fun}'(p)\).  The theorem
+   `pp_t_fun_prime_stabilizes` proves that recomputing
+   \(\mathit{fun}'\) after this one-step enlargement does not change its
+   extension.
+2. `theories/goodman/models/fragments/t6_diagonal/Bacon_PP_ZF_Fresh_T6_Diagonal_Fragment_Model.thy` evaluates
+   Goodman's T6 diagonal \(D\) against the \(J\)-enlarged stock.  The theorem
+   `pp_t_fun_prime_T6_collision_only_negation_like` proves that every harmful
+   old-stock collision at a \(\mathit{fun}'\) proposition is represented by
+   negation, necessary falsity, or possible falsity.
+3. `pp_t_T6_diagonal_absorbs_fun_prime_iff_three_classes` proves that
+   preservation of the old \(\mathit{fun}'\) propositions is equivalent to
+   three local harmlessness implications, one for each of those classes.
+   `pp_t_T6_diagonal_absorption_failure_iff` gives the exact counterexample
+   form.
+4. `theories/goodman/models/fragments/t6_diagonal/Bacon_PP_ZF_Fresh_T6_Collisions.thy` settles the
+   three-class test negatively.  Its recurrent proposition \(R\) is
+   \(\mathit{fun}'\) along an infinite branch and settled on every side
+   cone.  At the root \(D(R)\) is equivalent to necessary falsity applied
+   to \(R\), while \(D\) and necessary falsity are not equivalent operators.
+   The same witness has neither the negation nor the possible-falsity
+   collision.  Therefore
+   `pp_t_T6_diagonal_does_not_absorb_fun_prime`,
+   `pp_t_T6_diagonal_fun_prime_operator_does_not_stabilize`, and
+   `pp_t_T6_diagonal_no_joint_fixed_point` refute the proposed fixed point.
+5. The one-step \(D\) interpretation verifies unary Recombination and
+   Exhaustion, application closure, Modalized Functionality, unique
+   proposition-level fundamentality, and the displayed PP instance.  These
+   results do not establish that the denotation of \(J\), the denotation of
+   \(D\), and the pure stock are jointly fixed after simultaneous
+   reevaluation.
+
+The three-collision frontier is therefore closed for this construction:
+necessary falsity supplies an explicit harmful collision.  Do not try to
+complete its joint stabilization.  The next exact task is to determine
+whether a materially different interpretation can avoid this obstruction,
+or whether an abstract argument derives the same obstruction from Goodman's
+principles.
+
 ## 0. New live checkpoint: complete Goodman-claims audit
 
 The controlling ledger is
 `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.  Its associated
-Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits the original
-96 principal theorem objects plus fifteen later \(K\)-, conjunction-,
-binary-truth-function-fragment, and bridge results, and
+Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits 128 theorem
+objects supporting the current report and matrix, including the completed
+M5 rebuilt model and the refutation of L2, and
 passes with zero oracles, zero undischarged logical
 hypotheses, and zero flex-flex pairs.  T9's single sort hypothesis is ordinary
 polymorphism and is reported separately.
 
+The M5 rebuilding step is complete, not open.  The theory
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy`
+constructs the least application-closed pure stock containing all closed
+logical denotations and Goodman's displayed exotic operator.  The operator's
+denotation is typed, commutes with taking views, is self-inverse, is not
+truth-uniform, and is not a biconditional operator.  A rebuilt fundamental
+proposition supplies Recombination and fun-prime separation at every world,
+and the interpretation validates Bacon's Recombination background.  It is
+not a PP model: PP would further require the classifier of this enlarged
+stock to occur at the next type.
+
 Six significant additions are now checked:
 
-1. `frontier/Bacon_PP_Goodman_T9.thy` proves the PC map injective from its
+1. `theories/goodman/notes/Bacon_PP_Goodman_T9.thy` proves the PC map injective from its
    specification, constructs injective codes of kind-fibres from Goodman's
    representation hypothesis, and derives the advertised cardinal dichotomy.
-2. `frontier/Bacon_PP_Goodman_M7_Invariant_Reachability.thy` proves that
+2. `theories/goodman/notes/Bacon_PP_Goodman_M7_Invariant_Reachability.thy` proves that
    universal invariant reachability is equivalent to injectivity of the
    orbit map.
-3. `frontier/Bacon_PP_Goodman_M5_Orbit_Avoidance.thy` repairs a false
+3. `theories/goodman/notes/Bacon_PP_Goodman_M5_Orbit_Avoidance.thy` repairs a false
    countability argument in Goodman's M5.  For every proposed fundamental
    proposition `R`, it diagonally constructs a two-element pair avoiding
    every view of `R`, proves all proper views of the pair extreme, and builds
    an invariant nonidentity transposition fixing `R`.
-4. `frontier/Bacon_PP_Goodman_M1_Fn60.thy` proves that the infinitary join
+4. `theories/goodman/notes/Bacon_PP_Goodman_M1_Fn60.thy` proves that the infinitary join
    exists and has exactly the intended extension, while the PP diagonal and
    QSS prevent it from being certified pure.
-5. `zf_model/Bacon_PP_ZF_Goodman_M1_Fn60.thy` identifies that join with the
+5. `theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M1_Fn60.thy` identifies that join with the
    interpretation of `Pure` at the next type and proves that PP there is
    equivalent to membership of the classifier in the next pure stock.  It
    does not prove nonmembership directly in Bacon's exact generic model; the
    available exclusion theorem is conditional on the additional
    PP-diagonal/QSS assumptions.
-6. `frontier/Bacon_PP_Goodman_M5_Collision.thy` proves the displayed collision:
+6. `theories/goodman/notes/Bacon_PP_Goodman_M5_Collision.thy` proves the displayed collision:
    `λp.(p ↔ NC(p))` agrees at `NC(r)` and truth even though those inputs are
    distinct, assuming `fun-prime(r)`.
 
@@ -42,7 +129,8 @@ stated with the qualification on which it is true.  Do not turn this into a
 blanket PASS for every sentence.  T3 has the documented modal gap; T7b and the
 wide-Fun discussion in M4 are underspecified; the proposed general M5
 collision argument and the fully instantiated rebuilt M5 model remain open.
-The main consistency question and global semantic L2 remain open.
+The main consistency question remains open.  Global semantic L2 is refuted by
+the child-XOR theorem recorded in the current checkpoint above.
 
 The earlier adversarial audit is
 `reports/CONSENSUS_GOODMAN_FINAL_AUDIT_2026-07-27.md`.  Its three precision
@@ -124,7 +212,7 @@ checkpoints in
 
 ## 0. New live checkpoint: soundness complete; only absorption remains
 
-`zf_model/Bacon_PP_ZF_Tree_CEV_Soundness.thy` is included in
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_CEV_Soundness.thy` is included in
 `Higher_Order_Metaphysics_PP_ZF_Model` and discharges the two semantic
 assumptions left open by the preceding checkpoint.
 
@@ -156,7 +244,7 @@ The result is deliberately disjunctive.  Selecting L2 would require proving
 TU for every generated pure reversible; selecting TU would require proving
 global semantic L2.  Neither classification is presently available.
 
-`zf_model/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` now also names the exact
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` now also names the exact
 remaining fixed-point burden:
 
 1. `pp_t_enumerator_range_subset_basis` proves that every range value `E n`
@@ -179,7 +267,7 @@ currently claimed.
 
 ## 0. New live checkpoint: repaired stock and the T6 escape are exact
 
-`zf_model/Bacon_PP_ZF_Repaired_Central_Stock.thy` is included in
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Repaired_Central_Stock.thy` is included in
 `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 The semantic self-reference condition forced by PP is now named
@@ -230,7 +318,7 @@ contains no proof escapes.
 
 ## 0. New live checkpoint: `R_stab` is the actual tree stabilizer action
 
-`zf_model/Bacon_PP_ZF_Tree_Stabilizer_Orbit.thy` is included in
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Stabilizer_Orbit.thy` is included in
 `Higher_Order_Metaphysics_PP_ZF_Model`.  It supplies both the semantic
 action and its closed object-language relation.
 
@@ -288,7 +376,7 @@ The absorbing-enumerator construction remains the parallel positive route.
 
 ## 0. New live checkpoint: the closed `D_R` term is generated
 
-`zf_model/Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder.thy` is now included
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder.thy` is now included
 in `Higher_Order_Metaphysics_PP_ZF_Model`.  It defines the constant-free
 closed term `pp_qd_builder` at type
 
@@ -331,7 +419,7 @@ whether some stronger invariant forces homogeneity there.
 The first two items from the absorption consensus program are now
 machine-checked in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
-`zf_model/Bacon_PP_ZF_Tree_Ambient_Inverse.thy` proves:
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Ambient_Inverse.thy` proves:
 
 1. the exact Boolean cone decomposition
    `X_w \<cong> 2 \<times> X_{w@[False]} \<times> X_{w@[True]}`;
@@ -343,7 +431,7 @@ machine-checked in `Higher_Order_Metaphysics_PP_ZF_Model`.
    `\<lambda>\<psi> q. \<exists>p. (\<psi>p = q \<and> p)` is typed, logical, and
    computes the inverse pointwise.
 
-`zf_model/Bacon_PP_ZF_Tree_Quotient_Diagonal.thy` gives a parametric,
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Quotient_Diagonal.thy` gives a parametric,
 root-semantic formalization of separators, `H`-representations, a
 root-truth-congruent relation `R`, the diagonal `D_R`, and tag homogeneity.
 The theorem `pp_qd_absorption_forces_tag_heterogeneity` proves:
@@ -413,8 +501,8 @@ The full record is
 Two further theories are now included in
 `Higher_Order_Metaphysics_PP_ZF_Model`:
 
-- `zf_model/Bacon_PP_ZF_Tree_Range_Diagonal.thy`; and
-- `zf_model/Bacon_PP_ZF_Tree_Range_Term_Basis.thy`.
+- `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Diagonal.thy`; and
+- `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Term_Basis.thy`.
 
 The first proves that root PER equivalence is literal equality at every
 object type (`pp_t_root_eqv_imp_eq`, `pp_t_root_eqv_iff_eq`).  Hence the
@@ -482,7 +570,7 @@ Two new theories are included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 ### Uniform seeded-stock semantics
 
-`zf_model/Bacon_PP_ZF_Tree_Seeded_Stock.thy` defines the locale
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Seeded_Stock.thy` defines the locale
 `pp_t_seeded_stock`.  Its hypotheses isolate the exact semantic data used by
 the generic model: an admissible persistent stock, a typed world-indexed seed
 that recombines the unary stock, logical-term containment, and application
@@ -510,7 +598,7 @@ one root membership fact for that basis's unary classifier.
 
 ### `Ind`-indexed range classifier
 
-`zf_model/Bacon_PP_ZF_Tree_Range_Classifier.thy` defines the closed logical
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Classifier.thy` defines the closed logical
 term
 
 ```isabelle
@@ -553,7 +641,7 @@ one-step `D1` unary-stabilization route as the parallel fallback.
 
 ## 0. New live checkpoint: the abstract basis and generic seed are checked
 
-`zf_model/Bacon_PP_ZF_Tree_Basis_Stock.thy` is now the live frontier and is
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Basis_Stock.thy` is now the live frontier and is
 included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 - `pp_t_basis_stock D σ w x` is the local-identity saturation of a
@@ -586,7 +674,7 @@ included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 ## 0. New live checkpoint: the entire Recombination background has a model
 
-`zf_model/Bacon_PP_ZF_Tree_Generic_Seed.thy` remains the live frontier.
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Generic_Seed.thy` remains the live frontier.
 
 - The generic root seed is selected by `pp_t_generic_root_seed`, transported
   to each world by `pp_t_generic_seed_at`, and proved to satisfy exact-stock
@@ -644,7 +732,7 @@ included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 ## 0. New live checkpoint: all-type cone gluing is complete
 
-`zf_model/Bacon_PP_ZF_Tree_Generic_Seed.thy` is now the live frontier.
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Generic_Seed.thy` is now the live frontier.
 
 - The Boolean reserved-cone diagonal construction is machine-checked for
   every countable stock of cone-equivariant unary proposition operators.
@@ -687,7 +775,7 @@ included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 ## 0. New live checkpoint: the moving-seed tree route is refuted
 
-`zf_model/Bacon_PP_ZF_Tree_Logical_Stock.thy` is now the live frontier.
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Logical_Stock.thy` is now the live frontier.
 
 - `pp_t_closed_logical_stock` is the local-identity closure of every closed,
   well-typed, constant-free denotation.  Isabelle proves admissibility,
@@ -718,7 +806,7 @@ included in `Higher_Order_Metaphysics_PP_ZF_Model`.
 
 Codex has resumed as driver.
 
-- `zf_model/Bacon_PP_ZF_Tree_Frame.thy` is now the live positive frontier.
+- `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Frame.thy` is now the live positive frontier.
   Finite Boolean words are the semantic worlds, ordered by prefix, and a
   proved bijection with `Nat` supplies the coordinates of `Power Nat`.
   There are no unused or duplicated proposition coordinates.
@@ -807,7 +895,7 @@ Codex has resumed as driver.
   proves at every node that the seed falsifies both relevant necessary
   antecedents: `□p` holds on the true branch, while `◇□p` fails everywhere
   on the false branch.
-- Therefore `zf_model/Bacon_PP_ZF_Hyper_Frame.thy` is now a checked negative
+- Therefore `theories/goodman/models/hol_zf/Bacon_PP_ZF_Hyper_Frame.thy` is now a checked negative
   control for the natural-tail interpretation, while its abstract definitions
   now also contain the positive tree-frame seed.  The no-go remains
   frame-level, not a proof that Goodman's central stock is inconsistent.
@@ -823,7 +911,7 @@ Codex has resumed as driver.
   metalanguage equality is incompatible with logical purity plus unary
   Recombination for every proposed fundamental proposition.  The witnesses are
   the closed logical operators `λq.(q=⊤)` and `λq.¬(q=⊤)`.
-- `zf_model/Bacon_PP_ZF_Hyper_Frame.thy` remains the reusable evaluator and
+- `theories/goodman/models/hol_zf/Bacon_PP_ZF_Hyper_Frame.thy` remains the reusable evaluator and
   domain scaffold.  Its domains are preconstructed HOL-ZF sets.  Its identity
   relation `pp_h_eqv` is world-indexed: proposition identity is agreement on
   the future tail, and arrow identity is the induced logical relation.
@@ -840,7 +928,7 @@ Codex has resumed as driver.
   and quantifier truth clauses are also proved.
 - The earlier evaluator/domain milestone described below is complete; the
   moving-fundamental purity construction above is the live frontier.
-- `zf_model/Bacon_PP_ZF_Full_Frame.thy` is retained as the extensional
+- `theories/goodman/models/hol_zf/Bacon_PP_ZF_Full_Frame.thy` is retained as the extensional
   negative-control theory.
   Its session `Higher_Order_Metaphysics_PP_ZF_Model` imports Isabelle's
   `HOL-ZF`; all results in that session are explicitly relative to the
@@ -864,7 +952,7 @@ Codex has resumed as driver.
 - Its internal `Pure` search is closed by
   `pp_zf_logical_purity_blocks_recombination`; do not treat its
   `henkin_action_model` interpretation as a candidate central model.
-- `frontier/Bacon_PP_Central_Model_Obligations.thy` is the live model theory.
+- `theories/goodman/notes/Bacon_PP_Central_Model_Obligations.thy` is the live model theory.
   Its locale `pp_central_stock_model` is the exact positive certificate:
   denotable Henkin semantics, base CEV soundness, vector-Equivalence soundness,
   and global validity of every member of `pp_recombination_PP_axioms`.
@@ -917,7 +1005,7 @@ Codex has resumed as driver.
 
 ## Bridge checkpoint: the Recombination--QSS--T6 result is machine-proved
 
-- `frontier/Bacon_PP_QSS_Recombination_Bridge.thy` proves the precise
+- `theories/goodman/notes/Bacon_PP_QSS_Recombination_Bridge.thy` proves the precise
   Recombination-only core of Goodman's QSS argument:
   `CEV_QSS_modal_core_from_recombination` obtains both pointwise identity
   `∀q(Xq=Yq)` and pointwise necessary identity `∀q□(Xq=Yq)`, but not the
@@ -943,11 +1031,11 @@ Codex has resumed as driver.
   audit session in `reports/audit_qss_bridge/` inspected the nine principal
   theorem objects and found zero oracles, hypotheses, flex-flex pairs, and
   sort hypotheses.
-- `frontier/Bacon_PP_Modalized_Functionality_Derived.thy` proves, in bare CEV,
+- `theories/goodman/notes/Bacon_PP_Modalized_Functionality_Derived.thy` proves, in bare CEV,
   `[] ⊢CEV pp_modalized_functionality σ Prop`. Claude Opus 5 adversarially
   audited every rule and the de Bruijn closing step: correct and non-circular.
   This is the proposition-valued unary member only, not the full `σ,τ` schema.
-- `frontier/Bacon_PP_T6_Encoding.thy` faithfully encodes `fun′`, composition,
+- `theories/goodman/notes/Bacon_PP_T6_Encoding.thy` faithfully encodes `fun′`, composition,
   reversible operators, `G`, `≈`, weak L2, Inv, and Goodman's liar `D`.
 - The T6-Inv axiom set is now exact and QLN-free: purity schema, application
   closure, PP at `t→t`, `∃fun′`, weak L2, and Inv. It contains no
@@ -955,18 +1043,18 @@ Codex has resumed as driver.
   Purity of Fun.
 - The same theory machine-proves `Pure(D)` using an explicit constant-free
   abstraction over `Pure_{t→t}`.
-- `frontier/Bacon_PP_Goodman_T6_Inv.thy` proves
+- `theories/goodman/notes/Bacon_PP_Goodman_T6_Inv.thy` proves
   `[] ; pp_T6_Inv_axioms ⊢CEV+ ⊥`.  The axiom stock is exact: purity schema,
   application closure, PP at `t→t`, `∃fun′`, weak L2, and Inv.  Both the
   same-kind witness and the `fun′` witness are eliminated in the
   object-language calculus.  No QLN, Recombination, Exhaustion,
   fundamentality, Persistence, Purity of Fun, WI, TU, RS, or strong-L2 enters.
-- `frontier/Bacon_PP_Goodman_T6_TU.thy` proves
+- `theories/goodman/notes/Bacon_PP_Goodman_T6_TU.thy` proves
   `[] ; pp_T6_TU_axioms ⊢CEV+ ⊥` from the exact core plus `∃fun′`, weak L2,
   and TU.  The truth-flipping case eliminates the inverse existential and
   uses the conjugate `Z∘D∘Z⁻¹`; it imports no Inv, WI, strong-L2, RS, QLN,
   fundamentality, Persistence, or Purity of Fun.
-- `frontier/Bacon_PP_Goodman_T6_WI.thy` proves
+- `theories/goodman/notes/Bacon_PP_Goodman_T6_WI.thy` proves
   `[] ; pp_T6_WI_axioms ⊢CEV+ ⊥` from the exact core plus `∃fun′`, weak L2,
   and WI.  The key theorem `CEV_axiom_WI_implies_TU` derives TU directly:
   every WI witness has the form `λp.(p↔A)`, hence is truth-preserving if `A`
@@ -974,7 +1062,7 @@ Codex has resumed as driver.
   Exhaustion.  An explicit axiom translation then reuses the verified TU
   contradiction.  No Inv, strong-L2, RS, QLN, Recombination, fundamentality,
   Persistence, or Purity of Fun enters.
-- `frontier/Bacon_PP_Goodman_T6_WI_Master.thy` formalizes Goodman's advertised
+- `theories/goodman/notes/Bacon_PP_Goodman_T6_WI_Master.thy` formalizes Goodman's advertised
   family `a_A ↔ ∀C(Pure(C) → (a_C ↔ ¬A))`, with
   `a_A = D((Dr) ↔ A)`, and proves the family propositionally inconsistent.
   `CEV_T6_WI_master_family_inconsistent` needs only `Pure(⊤)` once the family
@@ -986,12 +1074,12 @@ Codex has resumed as driver.
   inconsistent WI stock is separately recorded as
   `CEV_Goodman_T6_WI_advertised_master_claim_ex_falso`; its name prevents
   confusing explosion with Goodman's intended derivation.
-- `frontier/Bacon_PP_Goodman_Composition.thy` now machine-proves the
+- `theories/goodman/notes/Bacon_PP_Goodman_Composition.thy` now machine-proves the
   composition beta law, left and right identity, associativity, and purity of
   composition from the exact T6 core. It also provides versions of application
   closure and equality reasoning that are sound under temporary local
   assumptions.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves Goodman T2a:
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Closure.thy` proves Goodman T2a:
   `fun′(p) ∧ G(Z) → fun′(Zp)`, `G(¬)`, and
   `fun′(p) → fun′(¬p)`, over every extension of the §4 core.
   The existential inverse in `G` is eliminated inside the object-language
@@ -1003,7 +1091,7 @@ Codex has resumed as driver.
   de Bruijn and local-assumption steps, and machine-checked exclusion of the
   stronger Goodman principles from the core.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2A_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Nontriviality.thy` proves Goodman T2b:
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Nontriviality.thy` proves Goodman T2b:
   `¬fun′(⊤)`, `¬fun′(⊥)`, and
   `fun′(p) → (p ≠ ⊤ ∧ p ≠ ⊥ ∧ p ≠ ¬p)` for every typed proposition `p`.
   The last inequality is proved already in bare CEV.
@@ -1013,7 +1101,7 @@ Codex has resumed as driver.
   not used.  It also generalized the argument to every closed constant-free
   proposition `M`, for which `¬fun′(M)` follows.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2B_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Attainment.thy` proves Goodman T2c in
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Attainment.thy` proves Goodman T2c in
   both parameter and exact quantified form:
   `fun′(r) → ∀p(Pure(p) → ◇(r=p))`.  Its diagonal proof identifies
   `λq.¬(q=p)` with the constant-truth operator under the supposition
@@ -1025,7 +1113,7 @@ Codex has resumed as driver.
   Thus PP itself, QSS, Recombination, Persistence, fundamentality, L2, Inv,
   and classification are all unused.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2C_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Possibly_Pure.thy` proves T2d,
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Possibly_Pure.thy` proves T2d,
   `fun′(r) → ◇Pure(r)`, from T2c at `⊤`, identity transport for purity, and
   derived possibility monotonicity.  Neither PP nor Persistence is needed:
   the required `Pure(⊤)` instance is a purity-schema axiom and is therefore
@@ -1035,18 +1123,18 @@ Codex has resumed as driver.
   PP-free strengthening, and also machine-checked Goodman's original
   arbitrary-pure-`p` derivation using Persistence.  Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T2D_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Noncontingency.thy` machine-proves
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Noncontingency.thy` machine-proves
   T2e using the literal modal rendering `□r ∨ □¬r`.
-  `frontier/Bacon_PP_Goodman_T2f_Verified.thy` machine-proves T2f as one
+  `theories/goodman/notes/Bacon_PP_Goodman_T2f_Verified.thy` machine-proves T2f as one
   conditional object-language theorem containing all fifteen pairwise
   inequalities among `⊤`, `⊥`, `r`, `¬r`, `(r=⊤)`, and `(r=⊥)`.
   Claude Opus 5 independently rebuilt these results and replayed the entire
   T2a--T2f chain over the PP-free core consisting only of the purity schema
   and application closure.  PP and Persistence are unused; application
   closure is genuinely needed.
-- `frontier/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`,
-  `frontier/Bacon_PP_Goodman_Biconditional_Classification.thy`, and
-  `frontier/Bacon_PP_Goodman_WI_Collapse.thy` machine-prove all three stages
+- `theories/goodman/notes/Bacon_PP_Goodman_Pure_Proposition_Triviality.thy`,
+  `theories/goodman/notes/Bacon_PP_Goodman_Biconditional_Classification.thy`, and
+  `theories/goodman/notes/Bacon_PP_Goodman_WI_Collapse.thy` machine-prove all three stages
   of T1: every pure proposition is `⊤` or `⊥`, each pure-indexed
   biconditional operator is `id` or `¬`, and WI collapses to Inv.
   Claude Opus 5 independently audited both consequence derivations and
@@ -1081,7 +1169,7 @@ Codex has resumed as driver.
   countermodel must use a nonstandard purity extension containing an exotic
   noninvariant operator; Bacon's intended closed-denotation interpretation
   cannot supply it.
-- `frontier/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
+- `theories/goodman/notes/Bacon_PP_Goodman_Higher_Type_Diagonal.thy` machine-proves T4 in
   the stronger object-language form
   `∀C(Pure(C) → ¬fun′_{t→t}(C(r)))`.  Its exact closed stock is
   `pp_T4_axioms = pp_purity_schema ∪ pp_application_closure_schema`;
@@ -1093,12 +1181,12 @@ Codex has resumed as driver.
   non-vacuity of the weak stock and the generic open-axiom interface, not the
   T4 derivation. Full report:
   `reports/CLAUDE_AUDIT_GOODMAN_T4_2026-07-25.md`.
-- `frontier/Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse.thy` records a crucial
+- `theories/goodman/notes/Bacon_PP_Goodman_Fun_Prime_Axiom_Collapse.thy` records a crucial
   consistency qualification found by Claude: if `fun′(r)` is inserted into
   the theorem-level axiom stock rather than retained as an antecedent, Rule
   of Equivalence collapses `(r=⊤)` and `(r=⊥)` to `⊥`; T2f fails and the
   resulting theory proves `⊥`.
-- `frontier/Bacon_PP_Goodman_Proliferation.thy` machine-proves T5:
+- `theories/goodman/notes/Bacon_PP_Goodman_Proliferation.thy` machine-proves T5:
   `fun′(r) → ∃q(fun′(q) ∧ q ≠ r ∧ q ≠ ¬r)`.  Its exact headline stock is
   `pp_purity_schema ∪ pp_application_closure_schema ∪ {pp_target_PP}`.
   The existence of a `fun′` proposition remains an object-language
@@ -1122,35 +1210,35 @@ Codex has resumed as driver.
   `reports/CLAUDE_AUDIT_MF_T6_2026-07-25.md`; the T1--T9 controlling matrix is
   `reports/GOODMAN_OBJECT_LANGUAGE_VERIFICATION_2026-07-25.md` (both local and
   gitignored by project policy).
-- `frontier/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
-  `frontier/Bacon_PP_Goodman_T6_RS.thy` machine-prove the remaining T6 route.
+- `theories/goodman/notes/Bacon_PP_Goodman_T6_RS_Encoding.thy` and
+  `theories/goodman/notes/Bacon_PP_Goodman_T6_RS.thy` machine-prove the remaining T6 route.
   `CEV_Goodman_T6_RS` establishes `T₀ + PP + strong-L2 + RS ⊢ ⊥` from the
   exact stock. RS itself supplies a nonempty `fun′`-only specification, so no
   separate `∃fun′` axiom is present. The proof derives collision injectivity,
   proves the existential diagonal pure, verifies both directions of its liar
   law, and eliminates both existential witnesses object-linguistically.
 - T7a is now machine-proved in
-  `frontier/Bacon_PP_Goodman_T7_Absorption.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_T7_Absorption.thy`.
   `CEV_Goodman_T7a` establishes the exact closed absorption result from
   `T₀ + PP + ∃fun′ + L2`, with no Inv/WI/TU/RS classification axiom.
   The object-language proof extracts the liar counterexample witnesses,
   obtains same-kind via weak L2, transports truth to `D(Zd)`, and eliminates
   all witnesses.
 - T8 now has an exact 31-object encoding in
-  `frontier/Bacon_PP_Goodman_T8_Encoding.thy`: the five advertised base
+  `theories/goodman/notes/Bacon_PP_Goodman_T8_Encoding.thy`: the five advertised base
   operators, their 31 nonempty subsets, the corresponding kind properties,
   and literal pairwise-distinctness formulas for both operators and values.
   The file proves both lists have length 31 and type-checks the full target.
 - T8b is machine-proved by `CEV_Goodman_T8_kind_uniqueness` in
-  `frontier/Bacon_PP_Goodman_T8_Kind_Uniqueness.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_T8_Kind_Uniqueness.thy`.
 - T8a is machine-proved by `CEV_Goodman_T8a` in
-  `frontier/Bacon_PP_Goodman_T8_Base_Kinds.thy`.  The theorem packages all
+  `theories/goodman/notes/Bacon_PP_Goodman_T8_Base_Kinds.thy`.  The theorem packages all
   ten base-pair separations and uses no L2 or group-classification principle.
   The nonconstant cases use `fun′` closure under arbitrary group members;
   the constant cases use the checked left-absorption equations for `K⊤` and
   `K⊥`.
 - T8c is machine-proved in
-  `frontier/Bacon_PP_Goodman_T8_Growth.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_T8_Growth.thy`.
   `CEV_Goodman_T8c` proves the witness-parametric 31-operator/31-value claim;
   `CEV_Goodman_T8c_closed` proves the exact closed existential from
   `pp_T8_full_axioms = {∃fun′, L2} ∪ pp_T6_core_PP_axioms`. The proof
@@ -1234,7 +1322,7 @@ Three things about this statement that are easy to get wrong:
 
 - **Zeroary Recombination is redundant** and is *not* in A. CEV proves modal T
   unrestrictedly, so the purity antecedent is idle. Checked:
-  `CEV_proves_zeroary_recombination` in `frontier/Bacon_PP_Minimal_Axioms.thy`.
+  `CEV_proves_zeroary_recombination` in `theories/goodman/notes/Bacon_PP_Minimal_Axioms.thy`.
 - **Purity of Fun is deliberately absent.** `pp_purity_of_fun` is defined but in
   no axiom set. That omission *is* the question.
 - **CEV⁺, not CEV.** Goodman writes `T₀ + PP + ∃fun′ + L2 + Inv ⊢ ⊥`, i.e.
@@ -1304,7 +1392,7 @@ very model**. So `pp_purity_of_pure_holds_in_word_action` — which correctly
 proves `pp_second_order_invariant pp_purity_operator` — does **not** show PP holds
 in the word action, and the claim attached to it is false. Withdrawn.
 
-Fix 2 is in `frontier/Bacon_PP_Definable_Purity.thy`: `pp_definable_purity L F =
+Fix 2 is in `theories/goodman/notes/Bacon_PP_Definable_Purity.thy`: `pp_definable_purity L F =
 {i. pp_fun_view i F ∈ L}` with the logical stock `L` a parameter (pinning it down
 needs the `oterm` denotation bridge; everything proved is uniform in `L`), plus
 `pp_definable_purity_subset_invariance`, `pp_readings_differ_of_proper_stock`,
@@ -1328,9 +1416,9 @@ independently gives `pp_purity_operator (λP. b ∩ P) = pp_decided b` with
 3. **No `sorry`, `oops`, `admit`, `quick_and_dirty`.** A claim counts as proved
    only when a checked Isabelle theorem represents it.
 4. **Do not use `ContextVectorEquivalence`.** It is not part of this problem.
-5. Sessions are split (`Higher_Order_Metaphysics`, `..._PP` in `pp/`,
-   `..._PP_Frontier` in `frontier/`) specifically to keep iteration short. New
-   work goes in `frontier/`; avoid editing the base session, which forces a
+5. Sessions are split (`Higher_Order_Metaphysics`, `..._PP` in `theories/goodman/core/`,
+   `..._PP_Frontier` in `theories/goodman/notes/`) specifically to keep iteration short. New
+   work goes in `theories/goodman/notes/`; avoid editing the base session, which forces a
    full rebuild.
 6. **Beware bare `auto`.** The `H_proves`/`C_proves`/`CE_proves`/`CEV_proves`/
    `compatible_step` constructors are all `[intro]`, so `auto` on goals in this
@@ -1340,7 +1428,7 @@ independently gives `pp_purity_operator (λP. b ∩ P) = pp_decided b` with
 
 ## 5. First Codex checkpoint: Unary Intensionality is complete
 
-**Unary Intensionality in repo-CEV**, `frontier/Bacon_PP_Intensionality.thy`.
+**Unary Intensionality in repo-CEV**, `theories/goodman/notes/Bacon_PP_Intensionality.thy`.
 Codex completed it after this handoff was written. Machine-checked theorem:
 
 ```
@@ -1435,21 +1523,21 @@ The determinate model-theoretic suite is now formalized and green:
 
 - M1 exact footnote-59 syntax, beta conversion, purity derivation, and the
   QSS/unique-`Fun` diagonal:
-  `frontier/Bacon_PP_Goodman_M1_Complete.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_M1_Complete.thy`.
 - M2 definability-vs-invariance correction:
-  `frontier/Bacon_PP_Goodman_M2.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_M2.thy`.
 - M3 countable gluing/free generator and explicit product-meagerness theorem:
-  `frontier/Bacon_PP_Goodman_M3_Complete.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_M3_Complete.thy`.
 - M4 heredity calibration:
-  `frontier/Bacon_PP_Goodman_M4.thy` and
-  `pp/Bacon_PP_Heredity_Semantics.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_M4.thy` and
+  `theories/goodman/core/Bacon_PP_Heredity_Semantics.thy`.
 - M5 rebuilt-model theorem via the formal Theorem 10.1 interface:
-  `zf_model/Bacon_PP_ZF_Bacon_10_1.thy` and
-  `zf_model/Bacon_PP_ZF_Goodman_M5_Rebuild.thy`.
+  `theories/goodman/models/hol_zf/Bacon_PP_ZF_Bacon_10_1.thy` and
+  `theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M5_Rebuild.thy`.
 - M6 separation plus the strict inclusion obstruction to joint independence:
-  `frontier/Bacon_PP_Goodman_M6.thy`.
+  `theories/goodman/notes/Bacon_PP_Goodman_M6.thy`.
 - M7 countable-stock diagonal and failure of fundamental completeness:
-  `zf_model/Bacon_PP_ZF_Goodman_M7.thy`.
+  `theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M7.thy`.
 
 `isabelle build -D . -o timeout=60` passes. The next action is the promised
 single Claude adversarial audit over the completed M-suite. After repairs, if
@@ -1465,7 +1553,7 @@ For theory/dependency questions, use the project-native graph in
 ## 10. Semantic L2 attack: exact tree model (2026-07-27)
 
 The first recommended consistency-frontier attack is now implemented in
-`zf_model/Bacon_PP_ZF_Goodman_L2_Model.thy`.
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_L2_Model.thy`.
 
 The formal semantics uses exactly
 `pp_b_closed_logical_operator_stock`: Boolean operators induced by denotations
@@ -1508,7 +1596,7 @@ explicit inequivalent pair as a semantic counterexample candidate.
 
 ### Fresh CEV extension
 
-The independent `Goodman_Fresh_Attack` session now contains eight green
+The independent `Goodman_CEVplus_Canonical` session now contains eight green
 theories.  The principal results are:
 
 1. relative Lindenbaum extension for CEV with an added stock of principles;
@@ -1534,7 +1622,7 @@ including PP, are globally true.
 
 ### Rebuilt model for M5
 
-`zf_model/Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy` now gives the full
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy` now gives the full
 rebuilt model requested in M5.  Its pure stock is the least stock closed under
 application that contains every closed logical denotation and the repaired
 exotic operator.  Isabelle verifies that this stock is countable, that the
@@ -1571,7 +1659,7 @@ whose denotation escapes the modal and constant classes.
 
 ## 12. Sparse model for every fragment without logical purity (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Sparse_Fragment_Model.thy` constructs an explicit
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Sparse_Fragment_Model.thy` constructs an explicit
 HOL-ZF tree interpretation in which:
 
 1. PP is globally valid;
@@ -1587,7 +1675,7 @@ classifier of the empty unary stock is nevertheless pure at the next type,
 which validates PP.  Thus the QLN clauses hold vacuously at arities zero and
 one, while application closure remains valid at all types.
 
-`fresh_attack_bridge/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` identifies the
+`theories/goodman/bridges/cevplus_zf/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` identifies the
 fresh statement of Modalized Functionality with the established statement and
 proves the exact fresh-stock result:
 
@@ -1617,7 +1705,7 @@ by themselves generate the contradiction.
 
 ## 13. First logical-purity extension: proposition identity (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Identity_Fragment_Model.thy` adds the
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Identity_Fragment_Model.thy` adds the
 logical-purity instance for the closed identity operator on propositions to
 the sparse model.  At the level of world-relative equivalence classes, PP and
 application closure give the following three-member closure:
@@ -1644,7 +1732,7 @@ pp_identity_fragment_PP_axioms_consistent:
   CEV_axiom_consistent [] pp_identity_fragment_PP_axioms
 ```
 
-`fresh_attack_bridge/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` verifies that this
+`theories/goodman/bridges/cevplus_zf/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` verifies that this
 axiom package is genuinely a subcollection of the independently formulated
 fresh Goodman stock and proves:
 
@@ -1674,7 +1762,7 @@ isabelle build -d . -d fresh_attack -D fresh_attack_bridge
 
 ## 14. Second logical-purity extension: propositional negation (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Identity_Negation_Fragment_Model.thy` retains
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Identity_Negation_Fragment_Model.thy` retains
 purity of proposition identity and adds purity of propositional negation.
 The application-closed pure stock consists of five world-relative
 equivalence classes:
@@ -1738,7 +1826,7 @@ term size at 4 while increasing proof-rule coverage. The implementation is:
 - `finite_core_search/context_c_input.py`
 - `finite_core_search/run_context_c_search.py`
 - `finite_core_search/c_engine/finite_core_context1.c`
-- `fresh_attack/Bacon_PP_Fresh_Finite_Core_Search.thy`
+- `theories/goodman/cevplus/Bacon_PP_Fresh_Finite_Core_Search.thy`
 
 The search state is keyed by `(context, formula)` for the empty context and
 all six singleton contexts. The engine includes PC at the displayed formula
@@ -1763,7 +1851,7 @@ ignored by Git). This is bounded non-derivability only. It does not establish
 Goodman's consistency claim.
 
 All new rule families have Isabelle replay lemmas and the
-`Goodman_Fresh_Attack` session builds. The C engine has warning-clean builds,
+`Goodman_CEVplus_Canonical` session builds. The C engine has warning-clean builds,
 static-analysis checks, sanitizer fixtures, and synthetic rule tests.
 
 The next proof-search expansion should increase context/vector depth from 1
@@ -1775,7 +1863,7 @@ core until its trace replays in Isabelle.
 
 ## 16. Third logical-purity extension: constant truth and falsity (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model.thy` retains
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model.thy` retains
 purity of proposition identity and negation and adds purity of the closed
 constant-truth and constant-falsity operators.  The application-closed pure
 stock consists of seven world-relative equivalence classes:
@@ -1811,7 +1899,7 @@ pp_logical_constants_fragment_consistent:
   CEV_axiom_consistent [] U
 ```
 
-`fresh_attack_bridge/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` proves:
+`theories/goodman/bridges/cevplus_zf/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` proves:
 
 ```isabelle
 pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman:
@@ -1845,7 +1933,7 @@ especially the self-referential requirement imposed by Purity of Pure.
 
 ## 17. Fourth logical-purity extension: the constant builder \(K\) (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model.thy` adds purity
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model.thy` adds purity
 of the closed constant builder
 \(K=\lambda p.\lambda q.p\), at type
 `Prop -> (Prop -> Prop)`, to the preceding four purity instances.  Its
@@ -1875,7 +1963,7 @@ pp_constant_builder_fragment_consistent:
   CEV_axiom_consistent [] U
 ```
 
-`fresh_attack_bridge/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` proves:
+`theories/goodman/bridges/cevplus_zf/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` proves:
 
 ```isabelle
 pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman:
@@ -1906,7 +1994,7 @@ The conjunction extension below supersedes this stated next step.
 
 ## 18. Fifth logical-purity extension: curried conjunction (2026-07-28)
 
-`zf_model/Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model.thy` imports the
+`theories/goodman/models/hol_zf/Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model.thy` imports the
 constant-builder fragment and adds the closed logical term
 \[
  \mathsf{And}=\lambda p{:}t.\lambda q{:}t.\,(p\wedge q).
@@ -1971,7 +2059,7 @@ truth-function extension below.
 
 The child session
 `Higher_Order_Metaphysics_PP_ZF_Truth_Functions` contains
-`zf_truth_functions/Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model.thy`.
+`theories/goodman/models/fragments/truth_functions/Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model.thy`.
 For every Boolean table \(F:\mathbf 2\times\mathbf 2\to\mathbf 2\), it defines
 a closed curried object-language term
 \[
@@ -2091,7 +2179,7 @@ pp_quantified_fragment_PP_axioms_consistent:
   CEV_axiom_consistent [] pp_quantified_fragment_PP_axioms
 ```
 
-The bridge session `Goodman_Modal_Quantified_ZF_Bridge` proves:
+The bridge session `Goodman_CEVplus_Modal_Quantified_Bridge` proves:
 
 ```isabelle
 fresh_goodman_modal_quantified_only_consistent:

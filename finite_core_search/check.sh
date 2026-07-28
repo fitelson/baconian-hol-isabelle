@@ -26,7 +26,7 @@ python3 -m finite_core_search.context_c_input \
 finite_core_search/c_engine/finite_core_context1 \
   finite_core_search/runs/check_context_c/input.bin \
   5000000
-isabelle build -d . -D fresh_attack
+isabelle build -j 1 -D .
 python3 finite_core_search/audit_manifest.py \
   --profile central_recombination \
   --type-depth 1 \

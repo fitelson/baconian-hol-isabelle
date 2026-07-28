@@ -158,7 +158,7 @@ existential generalization, beta and eta conversion, lazy Leibniz
 substitution, Generalization, Instantiation, unary Vector Equivalence, and
 the Boolean and Classicist identities. Each new rule has a corresponding
 Isabelle replay lemma in
-`fresh_attack/Bacon_PP_Fresh_Finite_Core_Search.thy`.
+`theories/goodman/cevplus/Bacon_PP_Fresh_Finite_Core_Search.thy`.
 
 The completed central-Recombination run reached a fixed point after deriving
 13,094,962 context-indexed judgments and constructing 19,993,531 term nodes.
@@ -196,7 +196,7 @@ The initial exact forward saturator includes:
 - zeroary Equivalence.
 
 Every positive step has a direct Isar replay macro in
-`fresh_attack/Bacon_PP_Fresh_Finite_Core_Search.thy`.
+`theories/goodman/cevplus/Bacon_PP_Fresh_Finite_Core_Search.thy`.
 
 The original Python/Vampire engine remains sound but incomplete for the whole
 CEV+ calculus at a fixed term bound. The context-indexed engine now covers the

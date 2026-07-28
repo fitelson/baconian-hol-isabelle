@@ -1,8 +1,0 @@
-session Bacon_Canonical_Prefix = HOL +
-  description "
-    Cached prefix for sandboxed incremental checks of the canonical-model layer.
-  "
-  directories
-    ".."
-  theories
-    "../Bacon_Completeness"

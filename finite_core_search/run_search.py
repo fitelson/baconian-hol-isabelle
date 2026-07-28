@@ -223,8 +223,6 @@ def _run_one(
         "build",
         "-d",
         str(PROJECT),
-        "-d",
-        str(PROJECT / "fresh_attack"),
         "-D",
         str(replay_dir),
     ]

@@ -1,6 +1,6 @@
 theory Audit_Goodman_Modal_Quantified
   imports
-    Goodman_Modal_Quantified_ZF_Bridge.Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge
+    Goodman_CEVplus_Modal_Quantified_Bridge.Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge
 begin
 
 section \<open>Kernel theorem-object audit\<close>

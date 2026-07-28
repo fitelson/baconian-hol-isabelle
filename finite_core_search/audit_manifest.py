@@ -59,8 +59,6 @@ def main() -> int:
         "build",
         "-d",
         str(PROJECT),
-        "-d",
-        str(PROJECT / "fresh_attack"),
         "-D",
         str(args.output),
     ]

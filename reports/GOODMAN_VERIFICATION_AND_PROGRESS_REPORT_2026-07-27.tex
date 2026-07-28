@@ -80,7 +80,7 @@
 \vspace{4pt}
 {\large A machine-checked report on Goodman's project notes\par}
 \vspace{8pt}
-{\normalsize 27 July 2026}
+{\normalsize 27 July 2026; updated 28 July 2026}
 \end{center}
 
 \bigskip
@@ -96,28 +96,26 @@ formalization that genuinely narrow the open consistency problem.
 \medskip
 
 \noindent\textbf{Bottom line.}
-Goodman's central consistency question remains open.  But the formalization
-has substantially changed its shape.  The positive model program is now
-reduced to constructing one enumeration of the pure unary operators.  The
-enumeration must respect Bacon's substitution action, and its range must
-contain every unary operator definable using the enumeration itself.  All
-remaining soundness obligations for this reduction have been discharged.
-Separately, a HOL--ZF model validates \PP\ and the background principles
-listed below together with purity of identity, negation, constant truth,
-constant falsity, the constant-function builder \(K\), conjunction, every
-curried binary truth-function, necessity, possibility, and the six
-higher-order quantified unary operators discussed below.  Consequently every
-subcollection of Goodman's principles whose logical-purity instances are
-confined to these formulas is consistent in Bacon's proof system.
-This does not settle the question, because Goodman's intended theory makes
-every closed logical term pure at every type.
-Conversely, any such model must falsify global \Ltwo\ or global \TU.  We have
-also verified every determinate object-language result in the
-notes, corrected a modal gap in T3, corrected a false countability argument in
-M5, proved the T9 cardinal dichotomy from its explicit counting assumptions,
-and isolated the exact qualifications required by several model-theoretic
-claims.  Every determinate claim in the notes has now been proved, refuted and
-repaired, or assigned the explicit qualification on which it is true.
+Goodman's central consistency question remains open.  Isabelle nevertheless
+settles the determinate subsidiary claims in the notes: each is proved,
+refuted and repaired, or assigned the explicit qualification under which it
+is true.  In particular, the formalization identifies and repairs a modal gap
+in T3 and a false countability argument in M5; verifies the four T6
+contradiction routes and the T9 cardinal dichotomy from their explicit
+premises; completes the rebuilt M5 model containing the displayed exotic
+operator; and isolates the assumptions still needed for several of the
+remaining model-theoretic claims.  It also proves that Recombination together with
+zeroary Exhaustion and unique proposition-level fundamentality supplies the
+\(\funp\) witness used in T6.  Hence T6 has the following exact semantic
+consequence: any model of the repaired background theory plus \PP\ must
+falsify global \Ltwo\ or global \TU.  That consequence sharply constrains a
+positive answer, but it does not decide whether such a model exists.  We have
+also settled Goodman's proposed calibration of \Ltwo\ in Bacon's appendix
+model: a closed logical operator \(Z\) refutes \Ltwo\ when the pure unary
+operators are the denotations of closed terms containing only logical
+vocabulary.  This is a substantive result about
+the notes, although Bacon's model still fails \PP\ and therefore does not
+answer the consistency question.
 
 \section{Formal setting and verification standard}
 
@@ -132,14 +130,12 @@ appendix model is not thereby a derivation in the theory, and an Isabelle
 theorem with explicit premises does not show that those premises hold in the
 intended model.
 
-The complete audit checks the original 96 principal results together with
-fifteen later \(K\)-, conjunction-, binary-truth-function, and bridge
-results.  A separate 30-target audit checks the necessity, possibility,
-higher-order quantified, and corresponding bridge results.  Fresh builds
-pass.  None of these proofs contains an admitted lemma, an untrusted proof step, or an
-undischarged assumption beyond the assumptions stated in the theorem itself.
-The type restriction carried by the general cardinal theorems in T9 is part of
-their formally checked statement, not a further mathematical premise.
+The complete audit checks the theorem objects supporting the claims summarized
+below.  Fresh builds pass.  None of these proofs contains an admitted lemma,
+an untrusted proof step, or an undischarged assumption beyond the assumptions
+stated in the theorem itself.  The type restriction carried by the general
+cardinal theorems in T9 is part of their formally checked statement, not a
+further mathematical premise.
 
 \section{Background definitions and two important distinctions}
 
@@ -172,6 +168,103 @@ A formally verified theorem may still have explicit premises concerning
 Bacon's function domains, invariance, or \QSS.  We therefore distinguish a
 verified conditional theorem from a proof that all of its premises hold in
 Bacon's particular appendix model.
+
+\section{Goodman's L2 principles}
+
+Goodman's July notes state one principle bearing the label \(L\), in two
+forms.  Weak \Ltwo\ is
+\[
+ \Pure(X)\AND\Pure(Y)\AND\funp(p)\AND\funp(q)\AND Xp=Yq
+ \quad\Longrightarrow\quad
+ X\approx Y.
+\tag{L2}
+\]
+The strong form requires the same reversible operator to witness both the
+relation between the operators and the relation between their inputs:
+\[
+ \Pure(X)\AND\Pure(Y)\AND\funp(p)\AND\funp(q)\AND Xp=Yq
+ \quad\Longrightarrow\quad
+ \exists Z\in G\,
+   \bigl(X=Y\circ Z\AND q=Zp\bigr).
+\tag{strong L2}
+\]
+The notes contain no separate principle labeled \(L1\).  Accordingly, the
+plural ``L principles'' below refers to weak and strong \Ltwo.
+
+\subsection{Object-language verification}
+
+Both forms have been encoded as closed, well-typed object-language formulas.
+Isabelle verifies all four uses made in T6:
+\[
+\begin{array}{c}
+ T_0+\PP+\exists\funp+\Ltwo+\Inv\vdash\bot,\\
+ T_0+\PP+\exists\funp+\Ltwo+\WI\vdash\bot,\\
+ T_0+\PP+\exists\funp+\Ltwo+\TU\vdash\bot,\\
+ T_0+\PP+\text{strong \Ltwo}+\RS\vdash\bot.
+\end{array}
+\]
+The repaired Recombination--Exhaustion bridge derives the required
+\(\exists\funp\) premise from Recombination, zeroary Exhaustion, and unique
+proposition-level fundamentality.  Isabelle also verifies the uses of \Ltwo\
+in T7--T9, including uniqueness of kind in T8 and the conditional cardinal
+dichotomy in T9.
+
+\subsection{Refutation of L2 in Bacon's appendix model}
+
+Goodman's first suggested attack asks whether \Ltwo\ holds in Bacon's appendix
+model when the pure unary operators are exactly the denotations of closed
+terms containing only logical vocabulary.  Isabelle answers this question
+negatively.
+
+Define the unary operator
+\[
+ Z(P)=
+ \{\,w :
+   P(w^\frown 0)\text{ and }P(w^\frown 1)
+   \text{ have different truth values}\,\}.
+\]
+There is a closed term containing only logical vocabulary whose denotation is
+exactly \(Z\).  Hence \(Z\) is one of the pure unary operators denoted by
+closed terms containing only logical vocabulary.  Isabelle proves:
+\[
+\begin{array}{ll}
+\text{(i)}   & Z\text{ is surjective};\\
+\text{(ii)}  & Z(P)=Z(\neg P),\text{ so }Z\text{ is not injective};\\
+\text{(iii)} & Z\text{ is right-cancellative on the denotations of closed
+                    logical terms};\\
+\text{(iv)}  & Z\notin G.
+\end{array}
+\]
+Surjectivity is witnessed explicitly by
+\[
+ P_S=\{\,v^\frown 0:v\in S\,\},
+ \qquad Z(P_S)=S.
+\]
+Right-cancellativity implies that \(Zp\) is \(\funp\) whenever \(p\) is
+\(\funp\).  Choose such a \(p\).  Then
+\[
+ \mathsf{id}(Zp)=Zp=Z(p),
+\]
+although \(\mathsf{id}\not\approx Z\), since \(Z\) is not reversible.  This is
+an explicit counterexample to \Ltwo.  Since strong \Ltwo\ entails weak
+\Ltwo, it fails in this model as well.
+
+\subsection{What this advances}
+
+This settles the first open problem in Goodman's list: \Ltwo\ is false in
+Bacon's appendix model under the proposed interpretation of purity.  The
+earlier Isabelle analysis had shown
+that no counterexample occurs among identity, necessity, possibility,
+constant truth, and constant falsity; \(Z\) is the first verified
+nonreversible closed logical operator that nevertheless preserves the
+distinctions relevant to \(\funp\).
+
+The result does not prove the consistency of \PP.  Bacon's appendix model
+still fails \PP\ at the unary-operator type.  What it shows is that failure of
+\Ltwo---one of the two escape routes forced by T6---is mathematically
+available in Bacon's own semantic setting.  It also shows that a negative
+solution cannot treat \Ltwo\ as automatic merely because purity is
+interpreted by closed logical definability.
 
 \section{Audit of the object-language theorems}
 
@@ -294,8 +387,8 @@ next type, the infinitary join exists in the full function domain and has
 exactly the pure unary operators as its extension.  It interprets
 \(\Pure\) at that type.  \PP\ holds there exactly when this operator is
 itself in the next pure stock.  The current formalization does not prove
-directly that it is absent from the next pure stock in Bacon's exact generic
-model.  It proves that absence only from the additional PP-diagonal and
+directly that it is absent from the next pure stock in Bacon's appendix
+construction.  It proves that absence only from the additional PP-diagonal and
 \QSS\ assumptions.  Completeness of the function domain therefore supplies
 the join, but does not by itself settle its purity.\\
 
@@ -321,7 +414,7 @@ yet been instantiated for Bacon's stock of operators denoted by closed terms
 containing only logical vocabulary.  The
 multiple-fundamental ``wide Fun'' argument remains prose-level.\\
 
-M5 & Verified, repaired, and partly open &
+M5 & Verified and repaired; one generalization open &
 The operator \(f=G_T\) obtained by exchanging \(s\) and \(s'\) is an invariant involution violating \TU, \WI,
 and \Inv.  The notes' subsequent countability argument is false: both the
 orbit and the displayed world-indexed family are countable.  We replace it
@@ -331,9 +424,15 @@ are all empty or universal.  The induced invariant nonidentity
 transposition fixes \(R\).  If it and identity are both included among the
 pure operators, \(R\)
 ceases to be \(\funp\), proving the corrected pre-rebuild \QSS\
-obstruction.  The full rebuilt model and the proposed generalization of the
-collision method remain separate questions.  The displayed collision
-calculation itself is verified: the closed operator
+obstruction.  The rebuilding question is now settled.  Isabelle constructs
+the least application-closed pure stock containing every closed logical
+denotation and the displayed \(f\), proves that \(f\) is a pure self-inverse
+operator in the modalized function domain, and rebuilds a fundamental
+proposition that supplies Recombination and \(\funp\)-separation at every
+world.  The rebuilt interpretation validates Bacon's Recombination
+background.  It does not validate \PP; that would require the classifier of
+the enlarged pure stock itself to belong to the next pure stock.  The
+displayed collision calculation is also verified: the closed operator
 \[
   \lambda p\,(p\IFF\mathsf{NC}(p))
 \]
@@ -421,6 +520,12 @@ If \(f_R\) and identity are both included among the pure operators, evaluation a
 injective.  This is exactly the pre-rebuild \QSS\ obstruction the M5 strategy
 needs.
 
+The separate rebuilding step is also now verified.  Instead of retaining
+this old \(R\), the rebuilt model chooses a new fundamental proposition
+generic for the enlarged application-closed stock containing Goodman's
+displayed \(f\).  That proposition again satisfies Recombination and
+\(\funp\)-separation.
+
 \subsection{The scope of several semantic claims}
 
 The M4 and M6 theorems are genuine mathematical results, but at present they
@@ -437,8 +542,8 @@ model.
 \section{New theorems advancing the consistency question}
 
 The audit was not merely defensive.  The formalization has produced several
-theorems not stated in the original notes.  These results materially narrow
-both the positive and negative programs.
+theorems not stated in the original notes.  These results materially clarify
+the logical relations among Goodman's central claims.
 
 \subsection{Recombination, Exhaustion, and the existence of a
 \texorpdfstring{\(\funp\)}{fun-prime} proposition}
@@ -478,482 +583,26 @@ disjunct.  A positive model may exploit either cross-kind collisions on
 \(\funp\) inputs or a pure reversible operator that is neither uniformly
 truth-preserving nor uniformly truth-flipping.
 
-\subsection{Adding purity of constant truth and constant falsity}
+\subsection{The rebuilt M5 model}
 
-Let \(C_{\top}\) and \(C_{\bot}\) be the unary operators
-\[
- C_{\top}(p)=\mathsf{truth}
- \qquad\text{and}\qquad
- C_{\bot}(p)=\mathsf{falsity}.
-\]
-We now make these two closed logical operators pure, in addition to identity
-and negation.  Closure of purity under application gives truth and falsity at
-type \(t\), the four unary operators at type \(t\IC t\), and the proposition
-classifying those four unary operators at type \((t\IC t)\IC t\).
-
-\begin{theorem}[The four-logical-operators fragment]
-There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
-all of the following:
-\begin{enumerate}
-\item purity of identity, negation, \(C_{\top}\), and \(C_{\bot}\);
-\item \PP;
-\item every instance of closure of purity under application;
-\item zeroary and unary Recombination and Exhaustion;
-\item Modalized Functionality at arbitrary types; and
-\item unique fundamentality at proposition type and the absence of
-      fundamental entities at every other type.
-\end{enumerate}
-The collection consisting of exactly these principles is a subcollection of
-Goodman's principles and is consistent in Bacon's proof system.
-\end{theorem}
-
-Let \(T_G\) be Goodman's full collection of principles, and let
-\(\mathsf{LP}\subseteq T_G\) be its logical-purity schema.  Put
-\[
- \mathsf{LP}_{4}=
- \{\,\Pure(I),\Pure(N),\Pure(C_{\top}),\Pure(C_{\bot})\,\},
-\]
-where \(I\) is identity and \(N\) is negation.  The bridge theorem establishes,
-for every \(U\),
-\[
- U\subseteq T_G
- \quad\text{and}\quad
- U\cap\mathsf{LP}\subseteq\mathsf{LP}_{4}
- \quad\Longrightarrow\quad
- \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
-\tag{IC}
-\]
-No finiteness assumption on \(U\) is required.  This does not settle
-Goodman's question, because the logical-purity schema in the intended theory
-includes every closed logical term, including terms at higher types.  The
-following subsection strengthens this result by adding purity of \(K\).  The
-subsection after it adds conjunction.  A complete result requires all closed
-logical terms at all types.
-
-\paragraph{Isabelle verification note.}
-The model and consistency theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_t_logical_constants_fragment_PP_gvalid
-pp_logical_constants_fragment_PP_axioms_consistent
-\end{verbatim}
-}
-The inclusion in Goodman's principles and the general bridge theorem are:
-{\footnotesize
-\begin{verbatim}
-pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman
-fresh_goodman_logical_constants_only_consistent
-\end{verbatim}
-}
-
-\subsection{Adding purity of \texorpdfstring{\(K\)}{K}}
-
-Let
-\[
- K=\lambda p{:}t.\lambda q{:}t.\,p.
-\]
-Thus \(Kp\) is the constant unary operator with value \(p\).  In the preceding
-model, the pure propositions lie in the truth and falsity classes.  Hence
-closure of purity under application sends \(K\) applied to a pure proposition
-to one of the two constant unary classes already present in the four-operator
-stock.
-
-\begin{theorem}[The constant-function-builder fragment]
-There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
-all of the following:
-\begin{enumerate}
-\item purity of identity, negation, \(C_{\top}\), \(C_{\bot}\), and \(K\);
-\item \PP;
-\item every instance of closure of purity under application;
-\item the zeroary and unary instances of Recombination and Exhaustion;
-\item Modalized Functionality at arbitrary types; and
-\item unique fundamentality at proposition type and the absence of
-      fundamental entities at every other type.
-\end{enumerate}
-The collection consisting of exactly these principles is a subcollection of
-Goodman's principles and is consistent in Bacon's proof system.
+\begin{theorem}[Completion of the rebuilding step]
+There is a typed interpretation of Bacon's Recombination background whose
+pure denotations form the least application-closed stock containing all
+closed logical denotations and Goodman's displayed exotic operator \(f\).
+That stock is countable.  The operator \(f\) is in the modalized unary
+function domain, commutes with taking views, is self-inverse, is not
+truth-uniform, and is not a biconditional operator.  A rebuilt fundamental
+proposition supplies Recombination and \(\funp\)-separation at every world.
 \end{theorem}
 
 \noindent
-The qualification in item 4 is important: this model verifies only the
-zeroary and unary instances in the present \(\mathsf{QLN}\) stock.  It does
-not establish a binary instance or the unrestricted \(\mathsf{QLN}\) schema.
+This discharges the rebuilding step that Goodman's notes left ``modulo
+Theorem 10.1.''  It verifies the intended M5 independence result for Bacon's
+Recombination background.  It does not provide a model of \PP: \PP\ would
+add the further requirement that the classifier of this enlarged pure stock
+itself occur at the next type.
 
-Let
-\[
- \mathsf{LP}_{K}=
- \mathsf{LP}_{4}\cup\{\,\Pure(K)\,\}.
-\]
-The strengthened bridge theorem establishes, for every \(U\),
-\[
- U\subseteq T_G
- \quad\text{and}\quad
- U\cap\mathsf{LP}\subseteq\mathsf{LP}_{K}
- \quad\Longrightarrow\quad
- \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
-\tag{KIC}
-\]
-As in \((\mathrm{IC})\), no finiteness assumption on \(U\) is required.  This
-is a genuine extension of the four-operator result: the higher-type closed
-logical operator \(K:t\IC(t\IC t)\) is now itself pure, and its applications
-remain inside the verified pure stock.  Goodman's full question nevertheless
-remains open, since the intended logical-purity schema contains every closed
-logical term at every type.  The following subsection strengthens the result
-by adding conjunction.
-
-\paragraph{Isabelle verification note.}
-The model, validity of the displayed axioms, and consistency theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_t_constant_builder_fragment_PP_gvalid
-pp_constant_builder_fragment_PP_axioms_consistent
-\end{verbatim}
-}
-The inclusion and general bridge theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman
-fresh_goodman_constant_builder_only_subset
-fresh_goodman_constant_builder_only_consistent
-pp_constant_builder_fragment_is_goodman_consistent
-\end{verbatim}
-}
-
-\subsection{Adding purity of conjunction}
-
-Let
-\[
- \mathsf{And}=\lambda p{:}t.\lambda q{:}t.\,(p\wedge q).
-\]
-The preceding model has exactly the truth and falsity classes as pure
-propositions.  Consequently
-\[
- \mathsf{And}\,\top\approx I,
- \qquad
- \mathsf{And}\,\bot\approx C_{\bot}.
-\]
-Both unary classes already occur in the verified pure stock, so closure of
-purity under application introduces no new unary operator.
-
-\begin{theorem}[The conjunction fragment]
-There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
-all of the following:
-\begin{enumerate}
-\item purity of identity, negation, \(C_{\top}\), \(C_{\bot}\), \(K\), and
-      \(\mathsf{And}\);
-\item \PP;
-\item every instance of closure of purity under application;
-\item the zeroary and unary instances of Recombination and Exhaustion;
-\item Modalized Functionality at arbitrary types; and
-\item unique fundamentality at proposition type and the absence of
-      fundamental entities at every other type.
-\end{enumerate}
-The collection consisting of exactly these principles is a subcollection of
-Goodman's principles and is consistent in Bacon's proof system.
-\end{theorem}
-
-Let
-\[
- \mathsf{LP}_{\wedge}
- =\mathsf{LP}_{K}\cup\{\,\Pure(\mathsf{And})\,\}.
-\]
-The bridge theorem establishes, for every \(U\),
-\[
- U\subseteq T_G
- \quad\text{and}\quad
- U\cap\mathsf{LP}\subseteq\mathsf{LP}_{\wedge}
- \quad\Longrightarrow\quad
- \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
-\tag{AIC}
-\]
-No finiteness assumption on \(U\) is required.  As before, the verified QLN
-stock is zeroary and unary; no binary or unrestricted QLN claim is made.
-This remains a fragment theorem, since Goodman's logical-purity schema
-contains every higher-order closed logical term.
-
-\paragraph{Isabelle verification note.}
-The model and consistency theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_t_conjunction_fragment_PP_gvalid
-pp_conjunction_fragment_PP_axioms_consistent
-pp_conjunction_fragment_consistent
-\end{verbatim}
-}
-The inclusion and bridge theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_conjunction_fragment_PP_axioms_subset_fresh_goodman
-fresh_goodman_conjunction_only_subset
-fresh_goodman_conjunction_only_consistent
-pp_conjunction_fragment_is_goodman_consistent
-\end{verbatim}
-}
-
-\subsection{Adding all binary truth-functions}
-
-For each Boolean function
-\[
- F:\{\mathsf{true},\mathsf{false}\}^{2}
-   \longrightarrow \{\mathsf{true},\mathsf{false}\},
-\]
-let \(B_F\) be the closed curried logical operator
-\[
- B_F=\lambda p{:}t.\lambda q{:}t.\,F(p,q),
-\]
-written in the object language using conjunction, disjunction, negation,
-truth, and falsity.  There are sixteen such truth-functions.  Once the first
-argument is fixed as truth or falsity, the remaining unary truth table is one
-of the following four:
-\[
- C_{\top},\qquad I,\qquad N,\qquad C_{\bot}.
-\]
-The preceding model already makes all four pure.  Thus application closure
-for the operators \(B_F\) introduces no new pure proposition and no new pure
-unary operator.
-
-\begin{theorem}[The binary truth-functions]
-There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
-all of the following:
-\begin{enumerate}
-\item purity of \(B_F\) for every binary Boolean truth-function \(F\), together
-      with the six previously displayed logical-purity formulas;
-\item \PP;
-\item every instance of closure of purity under application;
-\item the zeroary and unary instances of Recombination and Exhaustion;
-\item Modalized Functionality at arbitrary types; and
-\item unique fundamentality at proposition type and the absence of
-      fundamental entities at every other type.
-\end{enumerate}
-This collection is a subcollection of Goodman's principles and is consistent
-in Bacon's proof system.
-\end{theorem}
-
-Let
-\[
- \mathsf{LP}_{2}
- =\mathsf{LP}_{\wedge}
-   \cup\{\,\Pure(B_F):F:\mathbf 2^{2}\to\mathbf 2\,\}.
-\]
-The bridge theorem establishes, for every \(U\),
-\[
- U\subseteq T_G
- \quad\text{and}\quad
- U\cap\mathsf{LP}\subseteq\mathsf{LP}_{2}
- \quad\Longrightarrow\quad
- \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
-\tag{BIC}
-\]
-No finiteness assumption on \(U\) is required.  The result still concerns
-the zeroary and unary instances of QLN.  It makes no claim about a binary or
-unrestricted instance of QLN.
-
-\paragraph{Isabelle verification note.}
-The model and consistency theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_t_binary_truth_fragment_PP_gvalid
-pp_binary_truth_fragment_PP_axioms_consistent
-pp_binary_truth_fragment_consistent
-\end{verbatim}
-}
-The inclusion and bridge theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_binary_truth_fragment_PP_axioms_subset_fresh_goodman
-fresh_goodman_binary_truth_only_subset
-fresh_goodman_binary_truth_only_consistent
-pp_binary_truth_fragment_is_goodman_consistent
-\end{verbatim}
-}
-
-\subsection{Adding necessity, possibility, and six quantified operators}
-
-The next two extensions add the closed necessity operator
-\(\lambda p.\Box p\), and then the closed possibility operator
-\(\lambda p.\Diamond p\).  They are treated successively so that the effect
-of each new pure unary operator is explicit.  In both extensions the
-application-closed pure stock validates \PP, the zeroary and unary instances
-of Recombination and Exhaustion, Modalized Functionality, unique
-proposition-level fundamentality, and the absence of fundamental entities at
-other types.
-
-We then add the following six higher-order quantified unary operators:
-\[
-\begin{array}{rcl}
-\text{Leibniz truth} &\equiv& \lambda p.\Box p,\\
-\text{Leibniz falsity} &\equiv& \lambda p.\Box\neg p,\\
-\text{negated Leibniz truth} &\equiv& \lambda p.\Diamond\neg p,\\
-\text{negated Leibniz falsity} &\equiv& \lambda p.\Diamond p,\\
-\text{universal application} &\equiv& \lambda p.\bot,\\
-\text{existential application} &\equiv& \lambda p.\top.
-\end{array}
-\tag{HQ}
-\]
-These are equivalences of denotation in the model, not merely informal
-glosses.  Four terms belong to world-relative equivalence classes already
-present.  Leibniz falsity and negated Leibniz truth require two further pure
-unary classes, necessary falsity and possible falsity.  Both directions of
-unary QLN are verified separately for these two classes.
-
-\begin{theorem}[The six quantified operators]
-There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
-purity of the six operators in \((\mathrm{HQ})\), together with the preceding
-Boolean and modal purity formulas, and all of the following:
-\begin{enumerate}
-\item \PP;
-\item every instance of closure of purity under application;
-\item the zeroary and unary instances of Recombination and Exhaustion;
-\item Modalized Functionality at arbitrary types; and
-\item unique fundamentality at proposition type and the absence of
-      fundamental entities at every other type.
-\end{enumerate}
-This collection is a subcollection of Goodman's principles and is consistent
-in Bacon's proof system.
-\end{theorem}
-
-More generally, let \(\mathsf{LP}_{MQ}\) contain the preceding Boolean purity
-formulas, purity of necessity and possibility, and the six formulas in
-\((\mathrm{HQ})\).  The bridge theorem establishes, for every \(U\),
-\[
- U\subseteq T_G
- \quad\text{and}\quad
- U\cap\mathsf{LP}\subseteq\mathsf{LP}_{MQ}
- \quad\Longrightarrow\quad
- \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
-\tag{MQ}
-\]
-No finiteness assumption on \(U\) is required.  The formal QLN stock remains
-zeroary and unary.
-
-\paragraph{Isabelle verification note.}
-The model and consistency theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_necessity_fragment_PP_axioms_consistent
-pp_possibility_fragment_PP_axioms_consistent
-pp_t_quantified_fragment_PP_gvalid
-pp_quantified_fragment_PP_axioms_consistent
-pp_quantified_fragment_consistent
-\end{verbatim}
-}
-The exact denotation theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_t_HO_leibniz_truth_eqv_necessity
-pp_t_HO_leibniz_false_eqv_necessary_falsity
-pp_t_HO_not_leibniz_truth_eqv_possible_falsity
-pp_t_HO_not_leibniz_false_eqv_possibility
-pp_t_HO_forall_application_eqv_constant_falsity
-pp_t_HO_exists_application_eqv_constant_truth
-\end{verbatim}
-}
-The inclusion and bridge theorems are:
-{\footnotesize
-\begin{verbatim}
-pp_quantified_fragment_PP_axioms_subset_fresh_goodman
-fresh_goodman_modal_quantified_only_subset
-fresh_goodman_modal_quantified_only_consistent
-pp_quantified_fragment_is_goodman_consistent
-\end{verbatim}
-}
-
-\subsection{Reduction of the positive program to one equation}
-
-We constructed a set-theoretic formalization of Bacon's substitution model and
-verified directly:
-
-\begin{itemize}
-\item every axiom of Bacon's base proof theory;
-\item the vector Equivalence rule;
-\item beta and eta compatibility;
-\item the Boolean, quantifier, identity, and modal clauses used by the
-      central theory;
-\item the proposition-type instance of Exhaustion for every relevant choice
-      of pure entities.
-\end{itemize}
-
-Let \(E\) be an enumerator of unary operators, represented in the language by
-a term of type \(\mathsf{Ind}\IC(t\IC t)\).  It must commute with taking the
-view from any substitution, as Bacon's function-domain condition requires.
-Let \(\mathcal C_E\) be the class of unary operators denoted by closed
-expressions built from the logical vocabulary, the natural-number indices,
-\(E\), and application.
-
-\begin{theorem}[Sufficient condition for a model]
-If \(E\) has the preceding properties and satisfies
-\[
- \mathcal C_E=\{E(n):n\in\N\},
- \tag{SE}
-\]
-then the resulting model validates Bacon's base theory, Recombination, the
-proposition-type instance of Exhaustion, unique proposition-level
-fundamentality, and \PP\ at the target type.  Hence \((\mathrm{SE})\) gives an
-affirmative answer to Goodman's question.
-\end{theorem}
-
-\begin{theorem}[Equivalent formulation]
-The inclusion
-\[
- \{E(n):n\in\N\}\subseteq\mathcal C_E
-\]
-is automatic.  Thus \((\mathrm{SE})\) is equivalent to the assertion that
-every well-typed unary expression built in the indicated way has the same
-denotation as \(E(n)\) for some \(n\).
-\end{theorem}
-
-\noindent
-This is the cleanest current formulation of the positive problem.  No
-independent soundness premise remains.  The residual task is not to construct
-an arbitrary set-theoretic enumeration, but an enumeration compatible with
-Bacon's substitution action whose range contains every operator definable
-using the enumeration itself.
-
-\subsection{Diagonal restrictions on any solution}
-
-\begin{theorem}[Restriction on definable diagonal predicates]
-If \(E\) satisfies \((\mathrm{SE})\), then there is no expression
-\(P:\mathsf{Ind}\IC t\), built in the indicated way, that diagonalizes against
-the enumeration at the actual world:
-\[
- P(n)\quad\IFF\quad \NOT\,\mathsf{Truth}(E(n)(P))
-\]
-in the required sense.  In particular, no definable predicate can assign
-different truth values to all indices in the naive Cantorian way.
-\end{theorem}
-
-\noindent
-This explains why a straightforward internal enumeration diagonal does not
-immediately refute \((\mathrm{SE})\): compatibility with Bacon's substitution
-action collapses the obvious index predicates.
-
-We also formalized a more flexible diagonal \(D_R(E,H,R)\).  It treats two
-representations as equivalent according to a relation \(R\), rather than
-requiring literal identity.  The construction is a closed term containing
-only logical vocabulary; consequently it is pure whenever its parameters
-\(H\) and \(R\) are pure.
-
-\begin{theorem}[Generalized diagonal constraint]
-Assume \((\mathrm{SE})\).  Suppose \(R\) cannot distinguish propositions that
-agree in truth value at the actual world, and \(H\) distinguishes the relevant
-indices.  Then some proposition \(H(q)\) has two representations that are not
-\(R\)-related.
-\end{theorem}
-
-\noindent
-One natural choice says that \(F\) and \(G\) are related at \(q\) when
-\[
- F=G\circ\psi
- \quad\text{for some bijection \(\psi\) with}\quad \psi(q)=q.
-\]
-This relation is itself expressible using only logical vocabulary and cannot
-distinguish propositions agreeing in actual truth value.  It relates every
-pair obtained by a reversible change of input that fixes \(q\), eliminating
-that entire class of prospective counterexamples.  What remains is either to
-show that it relates all representations of some suitable \(H(q)\), or to
-construct two representations that it does not relate.
-
-\subsection{A uniform M5 obstruction}
+\subsection{A uniform pre-rebuild M5 obstruction}
 
 \begin{theorem}[Uniform version of the M5 construction]
 For every candidate proposition \(R\), there is a pair
@@ -965,10 +614,10 @@ transposition fixes \(R\) and is not identity.
 \noindent
 This is stronger and cleaner than the original M5 selection argument.  It
 shows that an exotic invariant operator fixing any preassigned \(R\) can be
-constructed without cardinal assumptions.  It also sharpens the role of
-Bacon's rebuilding theorem: the hard part is not constructing the exotic
-operator, but rebuilding a generic fundamental proposition relative to the
-enlarged definable stock.
+constructed without cardinal assumptions.  It shows that the pre-rebuild
+failure is caused by keeping the old fundamental proposition fixed while
+enlarging the pure operators.  The preceding theorem shows how rebuilding
+the fundamental proposition avoids that failure.
 
 \subsection{The T9 and M7 reductions}
 
@@ -999,35 +648,42 @@ than following from general facts about substitutions.
 
 \section{Where the open question now stands}
 
-The current affirmative and negative routes can be stated compactly.
+Goodman's question asks whether Bacon's background theory, unique
+proposition-level fundamentality, and \PP\ have a model.  The verified results
+clarify both possible answers without deciding between them.
 
 \paragraph{Affirmative route.}
-Construct an \(E\) satisfying \((\mathrm{SE})\): \(E\) must respect Bacon's
-substitution action, and every pure unary operator definable using \(E\) must
-already occur among the values \(E(n)\).  We have explored systematic ways of
-closing a countable collection of operators while preserving a proposition
-that distinguishes its members.  Those proposals remain preliminary and are
-not counted among the verified results in this report.
+A positive answer requires a model of the full theory plus \PP, with purity
+interpreted at every relevant type.  T6 shows that such a model must falsify
+\Ltwo\ or \TU.  Thus it must contain either pure operators from distinct
+\(\approx\)-classes that agree on suitable \(\funp\) propositions, or a pure
+reversible operator that is neither uniformly truth-preserving nor uniformly
+truth-flipping.  Bacon's substitution-structure models do not already supply
+the desired example: M1 locates their first obstruction to \PP, while M2 shows
+that identifying purity with invariance is incompatible with \QSS.  The
+operator \(Z\) shows that the operators denoted by Bacon's closed logical
+terms already take the \(\neg\Ltwo\) branch, but the model's independent
+failure of \PP\ prevents
+this from being a positive solution.
 
 \paragraph{Negative route.}
-Show that every proposed enumeration omits some pure unary operator definable
-from that very enumeration.  The generalized diagonal \(D_R\) identifies one
-precise route: find a pure relation \(R\) that respects actual truth and
-relates all representations of a suitable proposition \(H(q)\).  The natural
-relation generated by bijections fixing \(q\) handles representations related
-by reversible changes of input, but not yet all representations.
+The most direct negative route is the one already isolated in Goodman's
+notes: derive enough of \Ltwo\ and one of \Inv, \WI, \TU, or \RS\ from the
+remaining principles, and apply T6.  The formalization verifies the relevant
+T6 implications and removes the need to assume a \(\funp\) witness separately.
+The \(Z\) counterexample shows that Bacon's base theory and the interpretation
+of purity by denotations of closed logical terms do not by themselves secure
+\Ltwo.  Any
+negative proof along this route must therefore use \PP\ or some further
+principle not validated by that model.
 
 \paragraph{Relative plausibility.}
-The formal work has not settled which answer is more likely.  It has, however,
-made an affirmative answer significantly more concrete: it is enough to
-construct one enumeration satisfying \((\mathrm{SE})\) in the verified
-substitution model.  At the same time, the diagonal restrictions show why the
-most direct Cantorian objection to such an enumeration fails.  A separate
-positive result now handles every subcollection of Goodman's principles whose
-logical-purity instances are confined to identity, negation, constant truth,
-constant falsity, \(K\), conjunction, the sixteen curried binary
-truth-functions, necessity, possibility, and the six higher-order quantified
-unary operators in \((\mathrm{HQ})\).
+The formal work does not establish that either answer is more likely.  It
+shows exactly what each answer must overcome.  A positive model must depart
+from Bacon's familiar substitution structures in one of the ways forced by
+the T6 disjunction.  A negative proof must promote one of Goodman's
+model-sensitive principles, especially \Ltwo\ or \TU, to a consequence of the
+background theory itself.
 
 \section{Remaining verification work on the notes}
 
@@ -1040,54 +696,39 @@ The following items should not be reported as verified:
       Structure formula.
 \item The proposed extension of the verified M5 collision calculation from
       its displayed operator to merely existentially given invertibles.
-\item A full rebuilt version of Bacon's model containing the repaired exotic operator
-      in its pure stock.
-\item Global semantic \Ltwo\ for Bacon's complete definable stock.  It is
-      currently verified only for identity, necessity, possibility, constant
-      truth, and constant falsity.
-\item A model validating \PP\ when the logical-purity schema extends beyond
-      identity, negation, constant truth, constant falsity, \(K\),
-      conjunction, all curried binary truth-functions, necessity,
-      possibility, and the six higher-order quantified unary operators in
-      \((\mathrm{HQ})\).  Goodman's full question requires all closed logical
-      terms at all types.
-\item The existence or impossibility of an enumeration respecting Bacon's
-      substitution action and satisfying \((\mathrm{SE})\).
 \end{enumerate}
 
 \section{Recommended next steps}
 
-We recommend preserving the following lines of attack.
+The following tasks arise directly from the unresolved or qualified claims in
+Goodman's notes.
 
 \begin{enumerate}
-\item \textbf{Continue adding logical purity.}  Identity, negation, constant
-      truth, constant falsity, \(K\), conjunction, every curried binary
-      truth-function, necessity, possibility, and the six operators in
-      \((\mathrm{HQ})\) are now handled.  Continue with higher-order closed
-      logical terms beyond those six while preserving closure of purity under
-      application, the verified zeroary and unary instances of Recombination
-      and Exhaustion, Modalized Functionality, and \PP.  If a stage fails,
-      distinguish failure of the particular tree model from a derivation of
-      contradiction from Goodman's principles.  A complete result requires
-      every closed logical term at every type.
-\item \textbf{Positive construction.}  Test whether a countable collection of
-      pure operators can preserve a proposition separating its members while
-      remaining closed under every operation definable in the language.
-\item \textbf{Sharp negative test.}  Search for one closed logical unary
-      \(F\) whose action makes two distinct members of the proposed pure
-      collection agree at its separating proposition.  Such an \(F\) would
-      refute that proposed construction immediately.
-\item \textbf{Finish the source audit only when formulas are available.}
+\item \textbf{Obtain determinate formulations.}
       Obtain an exact T7b statement, an exact formulation of the wide-Fun
-      discussion, and an exact statement of the proposed general collision
-      argument before encoding them.
+      discussion before encoding them.
+\item \textbf{Generalize the M5 collision method.}
+      Determine whether the displayed noninjectivity calculation can be
+      extended to invertible operators given only existentially, as would be
+      required for the proposed PP-derived use of the method.
+\item \textbf{Test Goodman's negative route.}
+      In light of the \(Z\) counterexample, determine whether \Ltwo\ follows
+      only after adding \PP\ or some independently acceptable principle not
+      valid in Bacon's appendix model.  Together with \TU, \WI, \Inv, or the
+      strong-\Ltwo+\RS\ route, the verified T6 theorems then give the
+      corresponding inconsistency result.
 \item \textbf{Keep model claims and proof-theoretic claims separate.}
       In particular, do not promote the conditional M4/M6 stock theorems to
-      claims about Bacon's exact model until their stock premises are
+      claims about Bacon's appendix model until their stock premises are
       instantiated.
 \end{enumerate}
 
 \section{Reproducibility}
+
+The repository's three-layer organization and current build commands are
+documented in \isa{README.md} and
+\isa{docs/REPOSITORY_STRUCTURE.md}.  We do not reproduce that implementation
+documentation here.
 
 The controlling verification ledger is
 \[
@@ -1097,46 +738,20 @@ The dedicated audit theory is
 \[
 \isa{reports/audit_goodman_complete/Audit_Goodman_Complete.thy}.
 \]
-The modal and quantified extension is audited separately in
-\url{reports/audit_modal_quantified/Audit_Goodman_Modal_Quantified.thy}.
-The final Claude--Codex adversarial transcript is
-\[
-\isa{reports/CONSENSUS_GOODMAN_FINAL_AUDIT_2026-07-27.md}.
-\]
-The project status and handoff files identify the theories corresponding to
-each result.  A successful audit build is obtained from the project root with:
-\begin{verbatim}
-/opt/homebrew/bin/isabelle build -v \
-  -d . -d zf_truth_functions \
-  -d fresh_attack -d fresh_attack_bridge \
-  -D reports/audit_goodman_complete \
-  Goodman_Complete_Audit_2026_07_27
-
-/opt/homebrew/bin/isabelle build -v \
-  -d . -d zf_truth_functions \
-  -d zf_modal_necessity -d zf_modal_possibility \
-  -d zf_higher_order_quantified \
-  -d fresh_attack -d fresh_attack_bridge \
-  -d zf_modal_quantified_bridge \
-  -D reports/audit_modal_quantified \
-  Goodman_Modal_Quantified_Audit_2026_07_28
-\end{verbatim}
+The verification matrix gives, for each claim, the exact Isabelle theorem and
+the qualification under which it has been proved.  The project status and
+handoff files identify the source theory corresponding to each result.
 
 \bigskip
 
 \noindent
 The appropriate overall verdict is therefore:
 \emph{the formalization verifies, corrects, or precisely qualifies every
-determinate claim in Goodman's notes, including two substantive repairs, and
-reduces the unrestricted consistency problem to a single explicit
-model-construction equation.  A HOL--ZF model also validates \PP\ and the
-displayed background together with purity of identity, negation, constant
-truth, constant falsity, \(K\), conjunction, every curried binary
-truth-function, necessity, possibility, and the six higher-order quantified
-unary operators in \((\mathrm{HQ})\), so every subcollection whose
-logical-purity instances are confined to those formulas is consistent.
-The present \(\mathsf{QLN}\) result is restricted to its zeroary and unary
-instances.  Goodman's question remains open because the intended theory
-requires purity of every closed logical term at every type.}
+determinate claim in Goodman's notes, including two substantive repairs.  It
+also completes the rebuilding step in M5, refutes L2 in Bacon's appendix
+model under the proposed interpretation of purity, and proves the exact T6
+semantic consequence and several strengthening results directly relevant to
+the notes.  The remaining underspecified and model-dependent claims are
+explicitly identified.  Goodman's consistency question itself remains open.}
 
 \end{document}

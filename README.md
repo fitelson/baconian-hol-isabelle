@@ -1,338 +1,128 @@
 # Higher-Order Metaphysics in Isabelle/HOL
 
-This repository contains a deep embedding of the Bacon--Dorr higher-order
-background logic and a separate Isabelle session for Jeremy Goodman's
-Purity-of-Pure consistency question.
+This repository formalizes three successive layers of the Bacon--Dorr--Goodman
+project:
 
-`CEV_proves` has the theorem-level vector Equivalence rule only; the former
-`ContextVectorEquivalence` rule is not part of the theory.
+1. Bacon's base higher-order theory \(H\);
+2. Classicism, including CE and CEV;
+3. Goodman's CEV+ theory for the Purity-of-Pure consistency question.
 
-## Sessions
+The theory names and theorem identifiers remain stable.  The directory and
+session structure now makes the three mathematical layers explicit.
 
-### `Higher_Order_Metaphysics`
+## Repository structure
 
-The background session develops:
+| Layer | Isabelle session | Source directory | Terminal theory |
+|---|---|---|---|
+| Base theory \(H\) | `Bacon_Base` | `theories/base/` | `Bacon_Deduction` |
+| Classicism, CE, and CEV | `Bacon_Classicism` | `theories/classicism/` | `Bacon_Finite_CEV_Model` |
+| Goodman's CEV+ | `Goodman_CEVplus` | `theories/goodman/` | `Bacon_CEV_Axiom_Extension` |
 
-1. typed higher-order syntax, substitution, beta and eta conversion;
-2. Bacon's deductive system H;
-3. Classicism C;
-4. propositional Equivalence CE;
-5. vector or zeta Equivalence CEV;
-6. clean Henkin completeness through CEV;
-7. local intensional quotients and diagram-preserving arrows.
+Everything specific to Goodman's question is below `theories/goodman/`:
 
-In particular, Isabelle proves:
+- `core/`: reusable formal machinery for purity, fundamentality, and Bacon's
+  substitution structures;
+- `notes/`: the object-language and model-theoretic claims T1--T9 and M1--M7;
+- `cevplus/`: finite-fragment, Henkin, and canonical metatheory for CEV+;
+- `models/finite/`: Isabelle certificates for bounded external models;
+- `models/hol_zf/`: Bacon-style models formalized over HOL-ZF;
+- `models/fragments/`: separately localized model extensions;
+- `bridges/`: translations between the CEV+ formulation and the model
+  sessions.
 
-```isabelle
-H_clean_Henkin_valid_iff_proves
-C_clean_Henkin_valid_iff_proves
-CE_clean_Henkin_valid_iff_proves
-CEV_clean_Henkin_valid_iff_proves
+The detailed directory and session map is in
+[`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
 
-CEV_identity_separator_consistent
-CEV_identity_modal_successor
-CEV_identity_arrow_separates_unequal_classes
-```
+## Goodman's question
 
-The full category-level truth lemma still requires the uniform Henkin-name
-reserve and the quotient-valued evaluation construction described in
-[`STATUS.md`](STATUS.md).
+The central question is whether Bacon's background theory, together with
+exactly one fundamental proposition, no fundamental entities at other types,
+and Purity of Pure, is consistent without assuming Purity of Fun.
 
-### `Higher_Order_Metaphysics_PP`
+The question remains open.  The determinate claims in Goodman's July 2026
+notes have been proved, refuted and repaired, or given their exact
+qualifications.  The reader-facing account is:
 
-The `pp/` session formalizes Goodman's question:
+- [Goodman verification and progress report
+  (PDF)](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf);
+- [LaTeX source](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex);
+- [complete verification matrix](reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md).
 
-> Is \(T_0\), together with QLN, exactly one fundamental proposition, no
-> fundamental entities at other types, and Purity of Pure, consistent without
-> assuming Purity of Fun?
+Among the principal results:
 
-Here QLN is divided into Recombination and Exhaustion so that the contribution
-of each direction remains explicit.  The additional principles are treated as
-axioms of CEV: Generalization, Instantiation, and vector Equivalence may still
-be applied to conclusions obtained from them.
+- T3 has a modal gap and is repaired by zeroary Exhaustion or a restricted
+  pure-identity rigidity principle.
+- M5's countability argument is false and is replaced by a uniform
+  orbit-avoidance construction.
+- M5's rebuilding step is complete: the rebuilt application-closed pure
+  stock contains Goodman's displayed self-inverse exotic operator and has a
+  new fundamental proposition satisfying Recombination and `fun-prime`
+  separation at every world.
+- Recombination plus zeroary Exhaustion and unique proposition-level
+  fundamentality derives the existence of a `fun-prime` proposition.
+- All four T6 contradiction routes are machine-checked.
+- T9's cardinal dichotomy is verified from its explicit counting assumptions.
+- Goodman's L2 is false in Bacon's appendix model.  The closed logical
+  operator \(Z\), defined by comparing the truth values at the two immediate
+  successor worlds, is surjective, noninjective, right-cancellative among the
+  operators denoted by closed terms containing only logical vocabulary, and
+  nonreversible; it therefore supplies an explicit L2 counterexample.
 
-Goodman's question remains open.  The development verifies the determinate
-T1--T9 and M1--M7 claims in the July 2026 notes, with the corrections and
-qualifications stated in:
+The last item settles Goodman's proposed semantic calibration of L2.  It does
+not settle the consistency question, because Bacon's appendix model independently
+fails Purity of Pure at the unary-operator type.
 
-- [`reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf);
-- [`reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`](reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md).
+## Building
 
-The original dedicated audit checks 96 principal theorem objects plus fifteen
-later \(K\)-, conjunction-, binary-truth-function-fragment, and bridge results.
-A separate 30-target audit checks the necessity, possibility, and
-higher-order quantified extensions and their bridge to Goodman's principles.
-In particular, these audits
-records the modal gap in T3, repairs the countability argument in M5, proves
-the T6 contradictions and T9 counting result at their stated levels, and
-separates what is proved in Bacon's appendix model from what remains
-conditional.
-
-### `Higher_Order_Metaphysics_PP_Frontier`
-
-The `frontier/` session contains current proofs concerning Goodman's
-object-language theorems, Bacon's appendix model, and the remaining consistency
-question.  It is a leaf session over the stored heap of the PP session, so an
-individual theory can be checked without rebuilding the stable base.
-
-The present affirmative route asks for an enumerator \(E\) of unary operators
-that respects Bacon's substitution action and satisfies
-\[
-  \mathcal C_E=\{E(n):n\in\mathbb N\},
-\]
-where \(\mathcal C_E\) is the class of unary operators denoted by closed
-expressions built from the logical vocabulary, the natural-number indices,
-\(E\), and application.  This equation is a sufficient condition for a model
-of the relevant principles including PP.  No such enumerator, and no proof
-that none exists, is currently known.
-
-### `Goodman_Fresh_Attack`
-
-The independent session in `fresh_attack/` imports only the foundational CEV
-axiom-extension theory.  It proves that the full consistency question is
-equivalent to consistency of every finite set of Goodman's additional
-principles.  Equivalently, a negative answer requires one finite set from
-which CEV derives falsity while retaining Generalization, Instantiation, and
-vector Equivalence above the added principles.
+Isabelle builds must be run serially:
 
 ```sh
-isabelle build -v -d . -d fresh_attack -b Goodman_Fresh_Attack
+isabelle build -j 1 -D .
 ```
 
-That Henkin step is now complete.  For every typed, consistent stock of added
-principles using only finitely many constants, the session constructs a clean
-Henkin extension and proves canonical validity exactly when the formula is
-derivable in CEV with those added principles.  Goodman's principal stocks meet
-the finite-vocabulary condition: their only nonlogical constants are `Pure`
-and `Fun`.
-
-The associated term quotient now has nonempty domains, constants, application,
-the closed truth lemma, the Boolean and quantifier clauses, and the
-corresponding open-substitution clauses.  This remains a conditional
-completeness result, not a proof that Goodman's theory plus PP is consistent.
-The next step is to prove that evaluation is independent of the representatives
-chosen for quotient classes, package the resulting denotable Henkin evaluator,
-and supply the worlds and substitutions required for global validity.
-
-The HOL-ZF bridge now gives an unconditional consistency result for the
-largest presently constructed subtheory.  There is a tree model of PP,
-application closure, unique proposition-level fundamentality, the absence of
-fundamentals at every other type, zeroary and unary Recombination and
-Exhaustion, and Modalized Functionality at arbitrary types.  The model omits
-the logical-purity schema: it has no pure propositions or pure unary
-proposition operators, while the predicate that classifies pure unary
-operators is itself pure at the next type.  Consequently Isabelle proves that
-every subset of the fresh Goodman stock containing no logical-purity instance
-is CEV-axiom-consistent, and hence so is every finite such fragment.  Build the
-bridge with:
+Focused builds use the central session graph:
 
 ```sh
-isabelle build -v -d . -d zf_truth_functions -d fresh_attack \
-  -D fresh_attack_bridge
+isabelle build -j 1 -d . Bacon_Base
+isabelle build -j 1 -d . Bacon_Classicism
+isabelle build -j 1 -d . Goodman_CEVplus
+isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_Frontier
+isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_ZF_Model
 ```
 
-This does not settle Goodman's question, because the intended background
-contains the logical-purity schema.  It identifies that schema, rather than
-PP, QLN, fundamentality, application closure, or Modalized Functionality, as
-the first family that the model construction must add.
-
-The first such extension is now checked.  Add the logical-purity instance for
-the closed identity operator on propositions.  PP and application closure then
-require the pure truth proposition and the predicate that classifies the
-identity class; those three equivalence classes are application-closed.  In
-this enlarged HOL-ZF interpretation, PP, both zeroary and unary directions of
-QLN, fundamentality, all application-closure instances, and Modalized
-Functionality remain globally valid.  Isabelle consequently proves that every
-subcollection of the fresh Goodman stock whose only logical-purity instance is
-purity of the proposition identity operator is CEV-axiom-consistent.  This
-result has no finiteness restriction.
-
-Purity of propositional negation can also be added.  The resulting pure stock
-contains truth and falsity, identity and negation, and the predicate
-classifying the identity-negation pair.  Unary Recombination requires one
-change to the preceding model: the unique fundamental proposition must be
-contingent rather than necessarily false.  On the Boolean tree it is chosen
-true on one immediate branch and false on the other.  Isabelle verifies that
-PP, both zeroary and unary directions of QLN, fundamentality, application
-closure, and Modalized Functionality all survive.  Every subcollection of the
-fresh Goodman stock whose only logical-purity instances are identity and
-negation purity is therefore CEV-axiom-consistent.
-
-The next extension is also checked.  In addition to identity and negation, it
-makes the closed constant-truth and constant-falsity operators pure.  The
-application-closed stock has seven world-relative equivalence classes: truth
-and falsity; identity, negation, constant truth, and constant falsity; and the
-predicate classifying those four unary operators.  Isabelle proves global
-validity of PP, all four displayed logical-purity instances, every
-application-closure instance, unique proposition-level fundamentality, no
-fundamentality at other types, zeroary and unary Recombination and Exhaustion,
-and Modalized Functionality at arbitrary types.  The principal HOL-ZF theorem
-is:
-
-```isabelle
-pp_logical_constants_fragment_PP_axioms_consistent:
-  CEV_axiom_consistent []
-    pp_logical_constants_fragment_PP_axioms
-```
-
-The bridge theorem
-`fresh_goodman_logical_constants_only_consistent` applies this result to every
-subcollection of the fresh Goodman principles whose logical-purity instances
-are restricted to identity, negation, constant truth, and constant falsity.
-This has no finiteness restriction.  It is not a proof of consistency for
-Goodman's full theory, whose logical-purity schema includes all closed terms
-formed from the logical vocabulary.
-
-The constant builder \(K=\lambda p.\lambda q.p\) has now also been added.
-The enlarged interpretation makes \(K\), identity, negation, constant truth,
-and constant falsity pure.  Isabelle verifies PP, every application-closure
-instance, unique proposition-level fundamentality, no fundamentality at other
-types, zeroary and unary Recombination and Exhaustion, and Modalized
-Functionality at arbitrary types.  Its principal theorem is:
-
-```isabelle
-pp_constant_builder_fragment_PP_axioms_consistent:
-  CEV_axiom_consistent []
-    pp_constant_builder_fragment_PP_axioms
-```
-
-The unrestricted bridge theorem
-`fresh_goodman_constant_builder_only_consistent` covers every subcollection
-of the fresh Goodman principles whose logical-purity instances are restricted
-to \(K\) and the preceding four unary operators.  This is not a proof of
-consistency for Goodman's full theory.
-
-Curried conjunction
-\(\mathsf{And}=\lambda p.\lambda q.(p\mathbin{\wedge}q)\) has now been added
-as well.  Application closure forces no new unary classes:
-\(\mathsf{And}\,\top\) is equivalent to identity, while
-\(\mathsf{And}\,\bot\) is equivalent to constant falsity.  Thus the pure
-proposition and unary stocks are unchanged.  Isabelle again verifies PP,
-every application-closure instance, unique proposition-level fundamentality,
-no fundamentality at other types, zeroary and unary Recombination and
-Exhaustion, and Modalized Functionality at arbitrary types.  Its principal
-theorem is:
-
-```isabelle
-pp_conjunction_fragment_PP_axioms_consistent:
-  CEV_axiom_consistent []
-    pp_conjunction_fragment_PP_axioms
-```
-
-The unrestricted bridge theorem
-`fresh_goodman_conjunction_only_consistent` covers every subcollection of
-the fresh Goodman principles whose logical-purity instances are restricted
-to conjunction, \(K\), and the preceding four unary operators.  This is not
-a proof of consistency for Goodman's full theory.
-
-All sixteen curried binary truth-functions have now been handled uniformly.
-For a Boolean truth table \(F\), the closed term
-\(\lambda p.\lambda q.F(p,q)\) is interpreted by the corresponding
-world-by-world truth-function.  Fixing a pure first input makes every such
-operator equivalent to exactly one of constant truth, identity, negation, or
-constant falsity.  Consequently the proposition and unary pure stocks remain
-unchanged, and adjoining the sixteen builder classes preserves PP, every
-application-closure instance, unique proposition-level fundamentality, no
-fundamentality at other types, zeroary and unary Recombination and Exhaustion,
-and Modalized Functionality.  The principal theorem is:
-
-```isabelle
-pp_binary_truth_fragment_PP_axioms_consistent:
-  CEV_axiom_consistent []
-    pp_binary_truth_fragment_PP_axioms
-```
-
-The bridge theorem `fresh_goodman_binary_truth_only_consistent` has no
-finiteness restriction.  It covers every subcollection of Goodman's stock
-whose logical-purity instances are among the six previously displayed
-formulas together with the uniform family
-`pp_truth_function_purity_axioms`.
-
-The closed necessity and possibility operators have now been added in
-successive extensions.  Each extension preserves PP, every application-
-closure instance, unique proposition-level fundamentality, the absence of
-fundamentals at other types, zeroary and unary Recombination and Exhaustion,
-and Modalized Functionality at arbitrary types.
-
-The six higher-order quantified unary operators singled out in the notes have
-also been added.  Their denotations are, respectively,
-\[
-  \Box p,\quad \Box\neg p,\quad
-  \Diamond\neg p,\quad \Diamond p,\quad
-  \bot,\quad \top.
-\]
-Thus Leibniz truth reduces to necessity; Leibniz falsity to necessary
-falsity; negated Leibniz truth to possible falsity; negated Leibniz falsity
-to possibility; universal application to constant falsity; and existential
-application to constant truth.  Necessary falsity and possible falsity
-require two new world-relative equivalence classes of pure unary operators.
-Isabelle verifies both directions of unary QLN for these new classes and all
-the preceding principles for the enlarged stock.
-
-The principal consistency theorem is:
-
-```isabelle
-pp_quantified_fragment_PP_axioms_consistent:
-  CEV_axiom_consistent []
-    pp_quantified_fragment_PP_axioms
-```
-
-The bridge theorem `fresh_goodman_modal_quantified_only_consistent` applies
-to every subcollection of Goodman's principles whose logical-purity instances
-are confined to the preceding Boolean, modal, and six quantified formulas.
-It has no finiteness restriction.
-
-This remains a fragment theorem.  The formal QLN stock is zeroary and unary,
-and Goodman's full logical-purity schema contains every closed logical term at
-every type.  The remaining obstacle is therefore the unrestricted class of
-higher-order closed logical terms, including the self-referential condition
-imposed by Purity of Pure.
-
-## Finite-core search
-
-`finite_core_search/` contains the bounded search for a finite derivation of
-falsity. The strongest completed tranche holds structural type depth at 1 and
-logical term size at 4, but includes the empty context and every singleton
-context together with PC, UI, targeted EG, Ref, beta/eta conversion, Leibniz
-substitution, MP, Gen, Inst, and zeroary/unary Vector Equivalence.
-
-That search reached a fixed point after 13,094,962 context-indexed judgments
-without deriving `ObjFalse`. This is bounded non-derivability, not a
-consistency proof. See
-[`finite_core_search/README.md`](finite_core_search/README.md) for the exact
-command, bounds, and certification boundary.
-
-## Documentation terminology
-
-Reader-facing documentation and Isabelle `text` blocks use the vocabulary of
-Bacon, Dorr, and Goodman.  Stable Isabelle identifiers are not renamed.
-[`docs/ISABELLE_TERMINOLOGY.md`](docs/ISABELLE_TERMINOLOGY.md) records the
-translation between source terminology and implementation names.
-
-## Verification
-
-The project requires Isabelle2025-2 and no AFP or third-party theory.
+The complete Goodman audit is:
 
 ```sh
-isabelle build -D .
+isabelle build -j 1 -d . \
+  -D reports/audit_goodman_complete \
+  Goodman_Complete_Audit_2026_07_27
 ```
 
-or:
+The project contains no admitted Isabelle proofs.  The audit session checks
+the principal theorem objects for oracle dependencies, residual hypotheses,
+and flex-flex pairs.
+
+## Documentation
+
+- [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md): authoritative
+  layer, directory, and session map;
+- [`docs/ISABELLE_TERMINOLOGY.md`](docs/ISABELLE_TERMINOLOGY.md): Bacon--Dorr--
+  Goodman vocabulary for reader-facing documentation;
+- [`STATUS.md`](STATUS.md): detailed chronological theorem status;
+- [`CODEX_HANDOFF.md`](CODEX_HANDOFF.md): implementation-level handoff;
+- [`GOODMAN_HANDOFF.md`](GOODMAN_HANDOFF.md): earlier Goodman-specific handoff.
+
+## Isabelle knowledge graph
+
+The hand-written Isabelle graph extractor uses Isabelle's elaborated session
+database rather than parsing source text heuristically:
 
 ```sh
-./check_isabelle.sh
+tools/isabelle_kg/build_graph.sh
+tools/isabelle_kg/query_graph.py stats
+tools/isabelle_kg/query_graph.py search L2
+tools/isabelle_kg/query_graph.py deps pp_b_child_xor_refutes_exact_L2 --depth 2
 ```
 
-To iterate on the frontier only:
-
-```sh
-isabelle build -d . Higher_Order_Metaphysics_PP_Frontier
-```
-
-No active theory contains `sorry`, `oops`, `admit`, or `quick_and_dirty`.
-
-Reader-facing terminology can be checked with:
-
-```sh
-./tools/check_goodman_documentation_vocabulary.sh
-```
+The generated graph is stored in `isabelle-kg/` and is the default source for
+theory, theorem, import, and dependency questions.

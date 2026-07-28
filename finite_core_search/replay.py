@@ -263,7 +263,7 @@ def emit_replay(
     theory = "\n".join(
         [
             "theory Finite_Core_Replay",
-            "  imports Goodman_Fresh_Attack.Bacon_PP_Fresh_Finite_Core_Search",
+            "  imports Goodman_CEVplus_Canonical.Bacon_PP_Fresh_Finite_Core_Search",
             "begin",
             "",
             "text \\<open>",
@@ -320,7 +320,7 @@ def emit_replay(
     root_path.write_text(
         "\n".join(
             [
-                f"session {session_name} = Goodman_Fresh_Attack +",
+                f"session {session_name} = Goodman_CEVplus_Canonical +",
                 "  options [timeout = 120]",
                 "  theories",
                 "    Finite_Core_Replay",
@@ -366,7 +366,7 @@ def emit_manifest_audit(
         "\n".join(
             [
                 "theory Finite_Core_Manifest_Audit",
-                "  imports Goodman_Fresh_Attack.Bacon_PP_Fresh_Finite_Core_Search",
+                "  imports Goodman_CEVplus_Canonical.Bacon_PP_Fresh_Finite_Core_Search",
                 "begin",
                 "",
                 *membership_lines,
@@ -391,7 +391,7 @@ def emit_manifest_audit(
     root_path.write_text(
         "\n".join(
             [
-                f"session {session_name} = Goodman_Fresh_Attack +",
+                f"session {session_name} = Goodman_CEVplus_Canonical +",
                 "  options [timeout = 900]",
                 "  theories",
                 "    Finite_Core_Manifest_Audit",

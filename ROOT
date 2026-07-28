@@ -1,13 +1,29 @@
-session Higher_Order_Metaphysics = HOL +
+session Bacon_Base in "theories/base" = HOL +
   description "
-    A deep embedding of a Bacon-style higher-order object language in Isabelle/HOL.
+    Bacon's base higher-order language and proof theory H.
   "
   sessions
     "HOL-Library"
   theories
+    Bacon_Deduction
+
+session Bacon_Classicism in "theories/classicism" = Bacon_Base +
+  description "
+    Classicism, including CE, CEV, modal derivations, semantics, and
+    canonical-model infrastructure.
+  "
+  theories
+    Bacon_Finite_CEV_Model
+
+session Goodman_CEVplus in "theories/goodman" = Bacon_Classicism +
+  description "
+    Goodman's CEV+ vocabulary and axiom-extension interface for Purity of Pure.
+  "
+  theories
     Bacon_CEV_Axiom_Extension
 
-session Higher_Order_Metaphysics_PP in "pp" = Higher_Order_Metaphysics +
+session Higher_Order_Metaphysics_PP in "theories/goodman/core" =
+    Goodman_CEVplus +
   description "
     Settled results on the Goodman Purity-of-Pure consistency question.
 
@@ -30,7 +46,7 @@ theories
   Bacon_PP_Purity_Operator
   Bacon_PP_Symmetric_Witness
 
-session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
+session Higher_Order_Metaphysics_PP_Frontier in "theories/goodman/notes" =
     Higher_Order_Metaphysics_PP +
   description "
     Work in progress on the self-classifying stock.
@@ -115,7 +131,7 @@ theories
   Bacon_PP_QSS_Recombination_Bridge
   Bacon_PP_Central_Model_Obligations
 
-session Higher_Order_Metaphysics_PP_Models in "models" =
+session Higher_Order_Metaphysics_PP_Models in "theories/goodman/models/finite" =
     Higher_Order_Metaphysics_PP +
   description "
     Explicit Isabelle certificates for finite candidate models produced by
@@ -129,7 +145,8 @@ theories
   Bacon_PP_Vampire_Fresh_Finite_Model
   Bacon_PP_Vampire_Unworlded_Finite_Model
 
-session Higher_Order_Metaphysics_PP_ZF_Model in "zf_model" =
+session Higher_Order_Metaphysics_PP_ZF_Model
+    in "theories/goodman/models/hol_zf" =
     Higher_Order_Metaphysics_PP_Frontier +
   description "
     A direct preconstructed-domain model program for Goodman's central PP stock.
@@ -158,6 +175,8 @@ theories
   Bacon_PP_ZF_Tree_Range_Term_Basis
   Bacon_PP_ZF_Repaired_Central_Stock
   Bacon_PP_ZF_Tree_CEV_Soundness
+  Bacon_PP_ZF_Tree_One_Step_Classifier_Stock
+  Bacon_PP_ZF_Tree_One_Classifier_Contexts
   Bacon_PP_ZF_Tree_Ambient_Inverse
   Bacon_PP_ZF_Tree_Quotient_Diagonal
   Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder
@@ -174,3 +193,123 @@ theories
   Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model
   Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model
   Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Truth_Functions
+    in "theories/goodman/models/fragments/truth_functions" =
+    Higher_Order_Metaphysics_PP_ZF_Model +
+  description "
+    Uniform HOL-ZF fragment model for all sixteen curried binary
+    truth-functions.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Necessity
+    in "theories/goodman/models/fragments/necessity" =
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions +
+  description "
+    HOL-ZF moving-seed fragment model with the pure necessity operator.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Necessity_Fragment_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Possibility
+    in "theories/goodman/models/fragments/possibility" =
+    Higher_Order_Metaphysics_PP_ZF_Necessity +
+  description "
+    HOL-ZF moving-seed fragment model with pure necessity and possibility.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Possibility_Fragment_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified
+    in "theories/goodman/models/fragments/higher_order_quantified" =
+    Higher_Order_Metaphysics_PP_ZF_Possibility +
+  description "
+    HOL-ZF moving-seed fragment model absorbing six higher-order quantified
+    logical operators.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model
+
+session Higher_Order_Metaphysics_PP_ZF_Fun_Prime
+    in "theories/goodman/models/fragments/fun_prime" =
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified +
+  description "
+    HOL-ZF moving-seed fragment model enlarged by the object-language
+    fun-prime operator.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Fun_Prime_Fragment_Model
+
+session Higher_Order_Metaphysics_PP_ZF_T6_Diagonal
+    in "theories/goodman/models/fragments/t6_diagonal" =
+    Higher_Order_Metaphysics_PP_ZF_Fun_Prime +
+  description "
+    HOL-ZF moving-seed investigation of the fun-prime and T6 diagonal
+    operators.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_T6_Diagonal_Fragment_Model
+  Bacon_PP_ZF_Fresh_T6_Collisions
+
+session Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two
+    in "theories/goodman/models/fragments/modal_depth_two" =
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified +
+  description "
+    HOL-ZF moving-seed fragment for modal-depth-two alternations, based on a
+    reusable modal-word normalization language.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Modal_Word_Normalization
+  Bacon_PP_ZF_Fresh_Modal_Depth_Two_Fragment_Model
+
+session Goodman_CEVplus_Canonical in "theories/goodman/cevplus" =
+    Goodman_CEVplus +
+  description "
+    Canonical and Henkin metatheory for Goodman's CEV+ formulation.
+  "
+  options [timeout = 120]
+theories
+  Bacon_PP_Fresh_Finite_Fragment
+  Bacon_PP_Fresh_Finite_Core_Search
+  Bacon_PP_Fresh_Local_Henkin_Extension
+  Bacon_PP_Fresh_CEVplus_Closure
+  Bacon_PP_Fresh_Relative_Lindenbaum
+  Bacon_CEV_Axiom_Relative_Henkin
+  Bacon_PP_Fresh_Relative_Henkin_Completion
+  Bacon_PP_Fresh_CEVplus_Canonical_Semantics
+  Bacon_PP_Fresh_Canonical_Quotient_Frontier
+
+session Goodman_CEVplus_ZF_Bridge
+    in "theories/goodman/bridges/cevplus_zf" =
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions +
+  description "
+    Bridge between Goodman's CEV+ formulation and the explicit HOL-ZF fragment
+    models.
+  "
+  options [timeout = 60]
+  sessions
+    Goodman_CEVplus_Canonical
+theories
+  Bacon_PP_Fresh_ZF_Fragment_Bridge
+
+session Goodman_CEVplus_Modal_Quantified_Bridge
+    in "theories/goodman/bridges/modal_quantified" =
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified +
+  description "
+    Bridge from the modal and higher-order quantified fragment models to
+    Goodman's CEV+ principles.
+  "
+  options [timeout = 60]
+  sessions
+    Goodman_CEVplus_ZF_Bridge
+theories
+  Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge

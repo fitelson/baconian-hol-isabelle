@@ -1,5 +1,5 @@
 session Goodman_Modal_Quantified_Audit_2026_07_28 =
-    Goodman_Modal_Quantified_ZF_Bridge +
+    Goodman_CEVplus_Modal_Quantified_Bridge +
   description "
     Kernel theorem-object audit of the necessity, possibility, and six
     higher-order quantified logical-operator extensions.

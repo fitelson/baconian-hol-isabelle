@@ -8,7 +8,7 @@ $project_dir/README.md
 $project_dir/docs/ISABELLE_TERMINOLOGY.md
 $project_dir/reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex
 $project_dir/reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md
-$project_dir/fresh_attack/Bacon_PP_Fresh_Finite_Fragment.thy
+$project_dir/theories/goodman/cevplus/Bacon_PP_Fresh_Finite_Fragment.thy
 "
 
 discouraged='self-classifying stock|central-stock|repaired-central|exact[- ]stock|cone-natural|range[- ]classifier|tag homogeneity|semantic-stock|machine-referee|negative control|load-bearing|kind fibre|positive frontier|negative frontier'

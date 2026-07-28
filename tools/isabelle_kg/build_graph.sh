@@ -15,29 +15,18 @@ TOOL_CLASSPATH="$ISABELLE_SCALA_JAR:$ISABELLE_CLASSPATH:$CLASSES_DIR"
 mkdir -p "$CLASSES_DIR"
 
 build_sessions() {
-  isabelle build "$@" -D "$PROJECT_ROOT" -D "$PROJECT_ROOT/fresh_attack" \
-    -D "$PROJECT_ROOT/zf_truth_functions" \
-    -D "$PROJECT_ROOT/zf_modal_necessity" \
-    -D "$PROJECT_ROOT/zf_modal_possibility" \
-    -D "$PROJECT_ROOT/zf_higher_order_quantified" \
-    -D "$PROJECT_ROOT/fresh_attack_bridge" \
-    -D "$PROJECT_ROOT/zf_modal_quantified_bridge" \
+  isabelle build -j 1 "$@" -D "$PROJECT_ROOT" \
     -D "$PROJECT_ROOT/reports/audit_modal_quantified" \
     -o export_theory=true
 }
 
 force_export_sessions() {
-  isabelle build -f -d "$PROJECT_ROOT" \
-    -d "$PROJECT_ROOT/zf_truth_functions" \
-    -d "$PROJECT_ROOT/zf_modal_necessity" \
-    -d "$PROJECT_ROOT/zf_modal_possibility" \
-    -d "$PROJECT_ROOT/zf_higher_order_quantified" \
-    -d "$PROJECT_ROOT/fresh_attack" \
-    -d "$PROJECT_ROOT/fresh_attack_bridge" \
-    -d "$PROJECT_ROOT/zf_modal_quantified_bridge" \
+  isabelle build -j 1 -f -d "$PROJECT_ROOT" \
     -d "$PROJECT_ROOT/reports/audit_modal_quantified" \
     -o export_theory=true \
-    Higher_Order_Metaphysics \
+    Bacon_Base \
+    Bacon_Classicism \
+    Goodman_CEVplus \
     Higher_Order_Metaphysics_PP \
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
@@ -46,9 +35,12 @@ force_export_sessions() {
     Higher_Order_Metaphysics_PP_ZF_Necessity \
     Higher_Order_Metaphysics_PP_ZF_Possibility \
     Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
-    Goodman_Fresh_Attack \
-    Goodman_Fresh_ZF_Bridge \
-    Goodman_Modal_Quantified_ZF_Bridge \
+    Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
+    Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
+    Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two \
+    Goodman_CEVplus_Canonical \
+    Goodman_CEVplus_ZF_Bridge \
+    Goodman_CEVplus_Modal_Quantified_Bridge \
     Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
@@ -71,7 +63,9 @@ run_extractor() {
     isabelle.Isabelle_KG \
     "$PROJECT_ROOT" \
     "$GRAPH_JSON" \
-    Higher_Order_Metaphysics \
+    Bacon_Base \
+    Bacon_Classicism \
+    Goodman_CEVplus \
     Higher_Order_Metaphysics_PP \
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
@@ -80,9 +74,12 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_ZF_Necessity \
     Higher_Order_Metaphysics_PP_ZF_Possibility \
     Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
-    Goodman_Fresh_Attack \
-    Goodman_Fresh_ZF_Bridge \
-    Goodman_Modal_Quantified_ZF_Bridge \
+    Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
+    Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
+    Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two \
+    Goodman_CEVplus_Canonical \
+    Goodman_CEVplus_ZF_Bridge \
+    Goodman_CEVplus_Modal_Quantified_Bridge \
     Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
@@ -114,6 +111,18 @@ required_dependencies = {
     "pp_quantified_fragment_PP_axioms_consistent",
     "theorem:Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge."
     "fresh_goodman_modal_quantified_only_consistent",
+    "theorem:Bacon_PP_ZF_Fresh_Fun_Prime_Fragment_Model."
+    "pp_t_fun_prime_stabilizes",
+    "theorem:Bacon_PP_ZF_Fresh_T6_Diagonal_Fragment_Model."
+    "pp_t_T6_diagonal_absorption_failure_iff",
+    "theorem:Bacon_PP_ZF_Goodman_L2_Child_Xor."
+    "pp_b_child_xor_refutes_exact_L2",
+    "theorem:Bacon_PP_ZF_Goodman_L2_Child_Xor."
+    "pp_b_child_xor_refutes_exact_strong_L2",
+    "theorem:Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model."
+    "pp_t_M5_full_rebuilt_exotic_certificate",
+    "theorem:Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model."
+    "pp_t_M5_full_rebuilt_model",
 }
 sources = {
     edge["source"]
