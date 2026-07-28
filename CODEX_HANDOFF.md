@@ -2038,3 +2038,80 @@ Modalized Functionality, and fundamentality.  A failure in the present tree
 model is not by itself a negative answer to Goodman: it must be classified as
 either a seed/model obstruction or a model-independent derivation of
 contradiction.
+
+This stated next step has now been completed by the modal and
+higher-order-quantified extension below.
+
+---
+
+## 20. Necessity, possibility, and six quantified operators (2026-07-28)
+
+Three successive child sessions now extend the uniform Boolean model:
+
+1. `Higher_Order_Metaphysics_PP_ZF_Necessity`;
+2. `Higher_Order_Metaphysics_PP_ZF_Possibility`;
+3. `Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified`.
+
+The first two add the closed unary operators
+\(\lambda p.\Box p\) and \(\lambda p.\Diamond p\).  Each model verifies PP,
+every application-closure instance, unique proposition-level
+fundamentality, no fundamentality at other types, zeroary and unary
+Recombination and Exhaustion, and Modalized Functionality at arbitrary types.
+The principal consistency results are:
+
+```isabelle
+pp_necessity_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent [] pp_necessity_fragment_PP_axioms
+
+pp_possibility_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent [] pp_possibility_fragment_PP_axioms
+```
+
+The third session adds the six higher-order quantified unary operators
+identified in Goodman's notes.  Isabelle proves their exact denotations:
+
+\[
+\begin{array}{rcl}
+\text{Leibniz truth} &\equiv& \Box p,\\
+\text{Leibniz falsity} &\equiv& \Box\neg p,\\
+\text{negated Leibniz truth} &\equiv& \Diamond\neg p,\\
+\text{negated Leibniz falsity} &\equiv& \Diamond p,\\
+\text{universal application} &\equiv& \bot,\\
+\text{existential application} &\equiv& \top.
+\end{array}
+\]
+
+Necessary falsity and possible falsity are two new world-relative
+equivalence classes of pure unary operators.  The theory proves Recombination
+and Exhaustion for each, application closure for the full enlarged stock,
+and:
+
+```isabelle
+pp_quantified_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent [] pp_quantified_fragment_PP_axioms
+```
+
+The bridge session `Goodman_Modal_Quantified_ZF_Bridge` proves:
+
+```isabelle
+fresh_goodman_modal_quantified_only_consistent:
+  U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+  U \<inter> pp_purity_schema
+    \<subseteq> pp_modal_quantified_allowed_purity \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+This covers arbitrary subcollections, not only finite fragments.  Its
+logical-purity restriction includes the earlier Boolean stock, necessity,
+possibility, and the six quantified formulas.  The formal QLN stock remains
+zeroary and unary.
+
+The 30-target session `Goodman_Modal_Quantified_Audit_2026_07_28` audits the
+principal modal, quantified, and bridge theorem objects.  Every target has
+zero oracle dependencies, zero theorem hypotheses, and zero flex-flex pairs.
+
+This is genuine positive progress but not consistency of Goodman's complete
+theory.  The next controlled construction must add higher-order closed
+logical terms beyond these six while preserving the same principles.  A
+complete result must cover every closed logical term at every type and the
+self-referential Purity-of-Pure condition.

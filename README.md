@@ -58,9 +58,11 @@ qualifications stated in:
 - [`reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf);
 - [`reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`](reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md).
 
-The dedicated audit checks the original 96 principal theorem objects plus
-fifteen later \(K\)-, conjunction-, binary-truth-function-fragment, and bridge
-results.  In particular, it
+The original dedicated audit checks 96 principal theorem objects plus fifteen
+later \(K\)-, conjunction-, binary-truth-function-fragment, and bridge results.
+A separate 30-target audit checks the necessity, possibility, and
+higher-order quantified extensions and their bridge to Goodman's principles.
+In particular, these audits
 records the modal gap in T3, repairs the countability argument in M5, proves
 the T6 contradictions and T9 counting result at their stated levels, and
 separates what is proved in Bacon's appendix model from what remains
@@ -246,13 +248,45 @@ whose logical-purity instances are among the six previously displayed
 formulas together with the uniform family
 `pp_truth_function_purity_axioms`.
 
-This remains a fragment theorem.  The next controlled extension adds the
-closed modal operators \(\lambda p.\Box p\) and
-\(\lambda p.\Diamond p\), separately.  These are the first operators in this
-sequence whose unary denotations are not among the four Boolean unary
-classes.  The remaining obstacle is still the full class of higher-order
-closed logical terms, including the self-referential condition imposed by
-Purity of Pure.
+The closed necessity and possibility operators have now been added in
+successive extensions.  Each extension preserves PP, every application-
+closure instance, unique proposition-level fundamentality, the absence of
+fundamentals at other types, zeroary and unary Recombination and Exhaustion,
+and Modalized Functionality at arbitrary types.
+
+The six higher-order quantified unary operators singled out in the notes have
+also been added.  Their denotations are, respectively,
+\[
+  \Box p,\quad \Box\neg p,\quad
+  \Diamond\neg p,\quad \Diamond p,\quad
+  \bot,\quad \top.
+\]
+Thus Leibniz truth reduces to necessity; Leibniz falsity to necessary
+falsity; negated Leibniz truth to possible falsity; negated Leibniz falsity
+to possibility; universal application to constant falsity; and existential
+application to constant truth.  Necessary falsity and possible falsity
+require two new world-relative equivalence classes of pure unary operators.
+Isabelle verifies both directions of unary QLN for these new classes and all
+the preceding principles for the enlarged stock.
+
+The principal consistency theorem is:
+
+```isabelle
+pp_quantified_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_quantified_fragment_PP_axioms
+```
+
+The bridge theorem `fresh_goodman_modal_quantified_only_consistent` applies
+to every subcollection of Goodman's principles whose logical-purity instances
+are confined to the preceding Boolean, modal, and six quantified formulas.
+It has no finiteness restriction.
+
+This remains a fragment theorem.  The formal QLN stock is zeroary and unary,
+and Goodman's full logical-purity schema contains every closed logical term at
+every type.  The remaining obstacle is therefore the unrestricted class of
+higher-order closed logical terms, including the self-referential condition
+imposed by Purity of Pure.
 
 ## Finite-core search
 

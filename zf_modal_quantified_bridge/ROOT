@@ -1,0 +1,11 @@
+session Goodman_Modal_Quantified_ZF_Bridge =
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified +
+  description "
+    Bridge from the necessity, possibility, and higher-order quantified
+    fragment model to the fresh statement of Goodman's principles.
+  "
+  options [timeout = 60]
+  sessions
+    Goodman_Fresh_ZF_Bridge
+theories
+  Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge

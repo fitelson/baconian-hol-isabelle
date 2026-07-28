@@ -1,0 +1,8 @@
+session Higher_Order_Metaphysics_PP_ZF_Necessity =
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions +
+  description "
+    HOL-ZF moving-seed fragment model with the pure necessity operator.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Necessity_Fragment_Model

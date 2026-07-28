@@ -217,29 +217,41 @@ A separate result relocates the difficulty: PP is *true* in the full
 word-action M-set (`pp_purity_of_pure_holds_in_word_action`), and what fails
 there is Recombination (`pp_full_stock_has_no_recombination_witness`).
 
+## Latest controlled extension
+
+Necessity and possibility have now been added in successive HOL--ZF models.
+Both extensions preserve PP, both directions of zeroary and unary QLN,
+application closure, unique proposition-level fundamentality, the absence of
+fundamentals at other types, and Modalized Functionality.
+
+The same is true after adding the six higher-order quantified unary operators:
+
+1. Leibniz truth, equivalent to \(\lambda p.\Box p\);
+2. Leibniz falsity, equivalent to \(\lambda p.\Box\neg p\);
+3. negated Leibniz truth, equivalent to \(\lambda p.\Diamond\neg p\);
+4. negated Leibniz falsity, equivalent to \(\lambda p.\Diamond p\);
+5. universal application, equivalent to constant falsity;
+6. existential application, equivalent to constant truth.
+
+The Leibniz-falsity and negated-Leibniz-truth cases require two new pure unary
+classes, necessary falsity and possible falsity.  Isabelle verifies both QLN
+directions for those classes and verifies the complete enlarged stock.
+`fresh_goodman_modal_quantified_only_consistent` consequently proves
+consistency for every subcollection of Goodman's principles whose
+logical-purity instances are confined to the Boolean, modal, and six
+quantified formulas treated so far.  There is no finiteness restriction.
+
 ## Recommended next attack
 
-Continue the controlled logical-purity extensions in increasing type and
-term complexity:
-
-1. add the closed necessity operator \(\lambda p.\Box p\);
-2. add the closed possibility operator \(\lambda p.\Diamond p\) separately;
-3. if both extensions survive, absorb the six already evaluated
-   higher-order quantified unary operators, whose denotations collapse to
-   necessity, possibility, their negated variants, truth, or falsity;
-4. continue upward through the remaining higher-order closed logical terms.
-
-At each stage retain the same obligations: PP, both directions of the
-zeroary and unary QLN clauses, application closure, unique
+Continue upward through higher-order closed logical terms not covered by the
+six quantified cases.  At each stage retain the same obligations: PP, both
+directions of the zeroary and unary QLN clauses, application closure, unique
 proposition-level fundamentality, no fundamentality at other types, and
-Modalized Functionality.  If a modal extension fails, distinguish failure of
-the present moving-seed interpretation from a model-independent derivation of
-contradiction.  Only the latter answers Goodman's question negatively.
+Modalized Functionality.
 
-Even success at both stages would not answer the full question.  The
-remaining obstacle is logical purity for every higher-order closed logical
-term, including quantified operators, together with the self-referential
-condition imposed by Purity of Pure.
+This still does not answer the full question.  The remaining obstacle is
+logical purity for every higher-order closed logical term at every type,
+together with the self-referential condition imposed by Purity of Pure.
 
 ## Working protocol
 

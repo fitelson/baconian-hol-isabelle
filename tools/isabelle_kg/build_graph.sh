@@ -17,15 +17,25 @@ mkdir -p "$CLASSES_DIR"
 build_sessions() {
   isabelle build "$@" -D "$PROJECT_ROOT" -D "$PROJECT_ROOT/fresh_attack" \
     -D "$PROJECT_ROOT/zf_truth_functions" \
+    -D "$PROJECT_ROOT/zf_modal_necessity" \
+    -D "$PROJECT_ROOT/zf_modal_possibility" \
+    -D "$PROJECT_ROOT/zf_higher_order_quantified" \
     -D "$PROJECT_ROOT/fresh_attack_bridge" \
+    -D "$PROJECT_ROOT/zf_modal_quantified_bridge" \
+    -D "$PROJECT_ROOT/reports/audit_modal_quantified" \
     -o export_theory=true
 }
 
 force_export_sessions() {
   isabelle build -f -d "$PROJECT_ROOT" \
     -d "$PROJECT_ROOT/zf_truth_functions" \
+    -d "$PROJECT_ROOT/zf_modal_necessity" \
+    -d "$PROJECT_ROOT/zf_modal_possibility" \
+    -d "$PROJECT_ROOT/zf_higher_order_quantified" \
     -d "$PROJECT_ROOT/fresh_attack" \
     -d "$PROJECT_ROOT/fresh_attack_bridge" \
+    -d "$PROJECT_ROOT/zf_modal_quantified_bridge" \
+    -d "$PROJECT_ROOT/reports/audit_modal_quantified" \
     -o export_theory=true \
     Higher_Order_Metaphysics \
     Higher_Order_Metaphysics_PP \
@@ -33,8 +43,13 @@ force_export_sessions() {
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
     Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
+    Higher_Order_Metaphysics_PP_ZF_Necessity \
+    Higher_Order_Metaphysics_PP_ZF_Possibility \
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
     Goodman_Fresh_Attack \
-    Goodman_Fresh_ZF_Bridge
+    Goodman_Fresh_ZF_Bridge \
+    Goodman_Modal_Quantified_ZF_Bridge \
+    Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
 compile_extractor() {
@@ -62,8 +77,13 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
     Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
+    Higher_Order_Metaphysics_PP_ZF_Necessity \
+    Higher_Order_Metaphysics_PP_ZF_Possibility \
+    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
     Goodman_Fresh_Attack \
-    Goodman_Fresh_ZF_Bridge
+    Goodman_Fresh_ZF_Bridge \
+    Goodman_Modal_Quantified_ZF_Bridge \
+    Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
 semantic_graph_present() {
@@ -86,6 +106,14 @@ required_dependencies = {
     "pp_binary_truth_fragment_PP_axioms_consistent",
     "theorem:Bacon_PP_Fresh_ZF_Fragment_Bridge."
     "fresh_goodman_binary_truth_only_consistent",
+    "theorem:Bacon_PP_ZF_Fresh_Necessity_Fragment_Model."
+    "pp_necessity_fragment_PP_axioms_consistent",
+    "theorem:Bacon_PP_ZF_Fresh_Possibility_Fragment_Model."
+    "pp_possibility_fragment_PP_axioms_consistent",
+    "theorem:Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model."
+    "pp_quantified_fragment_PP_axioms_consistent",
+    "theorem:Bacon_PP_Fresh_ZF_Modal_Quantified_Bridge."
+    "fresh_goodman_modal_quantified_only_consistent",
 }
 sources = {
     edge["source"]

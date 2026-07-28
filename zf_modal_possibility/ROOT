@@ -1,0 +1,8 @@
+session Higher_Order_Metaphysics_PP_ZF_Possibility =
+    Higher_Order_Metaphysics_PP_ZF_Necessity +
+  description "
+    HOL-ZF moving-seed fragment model with pure necessity and possibility.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Possibility_Fragment_Model

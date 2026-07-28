@@ -104,11 +104,11 @@ contain every unary operator definable using the enumeration itself.  All
 remaining soundness obligations for this reduction have been discharged.
 Separately, a HOL--ZF model validates \PP\ and the background principles
 listed below together with purity of identity, negation, constant truth,
-constant falsity, the constant-function builder \(K\), conjunction, and every
-curried binary truth-function.  Consequently every subcollection of
-Goodman's principles whose logical-purity instances are confined to the six
-displayed formulas and those sixteen truth-function formulas is consistent
-in Bacon's proof system.
+constant falsity, the constant-function builder \(K\), conjunction, every
+curried binary truth-function, necessity, possibility, and the six
+higher-order quantified unary operators discussed below.  Consequently every
+subcollection of Goodman's principles whose logical-purity instances are
+confined to these formulas is consistent in Bacon's proof system.
 This does not settle the question, because Goodman's intended theory makes
 every closed logical term pure at every type.
 Conversely, any such model must falsify global \Ltwo\ or global \TU.  We have
@@ -134,8 +134,9 @@ intended model.
 
 The complete audit checks the original 96 principal results together with
 fifteen later \(K\)-, conjunction-, binary-truth-function, and bridge
-results.  A fresh build
-passes.  None of these proofs contains an admitted lemma, an untrusted proof step, or an
+results.  A separate 30-target audit checks the necessity, possibility,
+higher-order quantified, and corresponding bridge results.  Fresh builds
+pass.  None of these proofs contains an admitted lemma, an untrusted proof step, or an
 undischarged assumption beyond the assumptions stated in the theorem itself.
 The type restriction carried by the general cardinal theorems in T9 is part of
 their formally checked statement, not a further mathematical premise.
@@ -766,6 +767,97 @@ pp_binary_truth_fragment_is_goodman_consistent
 \end{verbatim}
 }
 
+\subsection{Adding necessity, possibility, and six quantified operators}
+
+The next two extensions add the closed necessity operator
+\(\lambda p.\Box p\), and then the closed possibility operator
+\(\lambda p.\Diamond p\).  They are treated successively so that the effect
+of each new pure unary operator is explicit.  In both extensions the
+application-closed pure stock validates \PP, the zeroary and unary instances
+of Recombination and Exhaustion, Modalized Functionality, unique
+proposition-level fundamentality, and the absence of fundamental entities at
+other types.
+
+We then add the following six higher-order quantified unary operators:
+\[
+\begin{array}{rcl}
+\text{Leibniz truth} &\equiv& \lambda p.\Box p,\\
+\text{Leibniz falsity} &\equiv& \lambda p.\Box\neg p,\\
+\text{negated Leibniz truth} &\equiv& \lambda p.\Diamond\neg p,\\
+\text{negated Leibniz falsity} &\equiv& \lambda p.\Diamond p,\\
+\text{universal application} &\equiv& \lambda p.\bot,\\
+\text{existential application} &\equiv& \lambda p.\top.
+\end{array}
+\tag{HQ}
+\]
+These are equivalences of denotation in the model, not merely informal
+glosses.  Four terms belong to world-relative equivalence classes already
+present.  Leibniz falsity and negated Leibniz truth require two further pure
+unary classes, necessary falsity and possible falsity.  Both directions of
+unary QLN are verified separately for these two classes.
+
+\begin{theorem}[The six quantified operators]
+There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
+purity of the six operators in \((\mathrm{HQ})\), together with the preceding
+Boolean and modal purity formulas, and all of the following:
+\begin{enumerate}
+\item \PP;
+\item every instance of closure of purity under application;
+\item the zeroary and unary instances of Recombination and Exhaustion;
+\item Modalized Functionality at arbitrary types; and
+\item unique fundamentality at proposition type and the absence of
+      fundamental entities at every other type.
+\end{enumerate}
+This collection is a subcollection of Goodman's principles and is consistent
+in Bacon's proof system.
+\end{theorem}
+
+More generally, let \(\mathsf{LP}_{MQ}\) contain the preceding Boolean purity
+formulas, purity of necessity and possibility, and the six formulas in
+\((\mathrm{HQ})\).  The bridge theorem establishes, for every \(U\),
+\[
+ U\subseteq T_G
+ \quad\text{and}\quad
+ U\cap\mathsf{LP}\subseteq\mathsf{LP}_{MQ}
+ \quad\Longrightarrow\quad
+ \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
+\tag{MQ}
+\]
+No finiteness assumption on \(U\) is required.  The formal QLN stock remains
+zeroary and unary.
+
+\paragraph{Isabelle verification note.}
+The model and consistency theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_necessity_fragment_PP_axioms_consistent
+pp_possibility_fragment_PP_axioms_consistent
+pp_t_quantified_fragment_PP_gvalid
+pp_quantified_fragment_PP_axioms_consistent
+pp_quantified_fragment_consistent
+\end{verbatim}
+}
+The exact denotation theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_t_HO_leibniz_truth_eqv_necessity
+pp_t_HO_leibniz_false_eqv_necessary_falsity
+pp_t_HO_not_leibniz_truth_eqv_possible_falsity
+pp_t_HO_not_leibniz_false_eqv_possibility
+pp_t_HO_forall_application_eqv_constant_falsity
+pp_t_HO_exists_application_eqv_constant_truth
+\end{verbatim}
+}
+The inclusion and bridge theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_quantified_fragment_PP_axioms_subset_fresh_goodman
+fresh_goodman_modal_quantified_only_subset
+fresh_goodman_modal_quantified_only_consistent
+pp_quantified_fragment_is_goodman_consistent
+\end{verbatim}
+}
+
 \subsection{Reduction of the positive program to one equation}
 
 We constructed a set-theoretic formalization of Bacon's substitution model and
@@ -933,9 +1025,9 @@ substitution model.  At the same time, the diagonal restrictions show why the
 most direct Cantorian objection to such an enumeration fails.  A separate
 positive result now handles every subcollection of Goodman's principles whose
 logical-purity instances are confined to identity, negation, constant truth,
-constant falsity, \(K\), conjunction, and the sixteen curried binary
-truth-functions.  The next extensions add necessity and possibility
-separately.
+constant falsity, \(K\), conjunction, the sixteen curried binary
+truth-functions, necessity, possibility, and the six higher-order quantified
+unary operators in \((\mathrm{HQ})\).
 
 \section{Remaining verification work on the notes}
 
@@ -955,9 +1047,10 @@ The following items should not be reported as verified:
       truth, and constant falsity.
 \item A model validating \PP\ when the logical-purity schema extends beyond
       identity, negation, constant truth, constant falsity, \(K\),
-      conjunction, and all curried binary truth-functions.  The next cases
-      are necessity and possibility; Goodman's full question requires all
-      closed logical terms at all types.
+      conjunction, all curried binary truth-functions, necessity,
+      possibility, and the six higher-order quantified unary operators in
+      \((\mathrm{HQ})\).  Goodman's full question requires all closed logical
+      terms at all types.
 \item The existence or impossibility of an enumeration respecting Bacon's
       substitution action and satisfying \((\mathrm{SE})\).
 \end{enumerate}
@@ -968,11 +1061,12 @@ We recommend preserving the following lines of attack.
 
 \begin{enumerate}
 \item \textbf{Continue adding logical purity.}  Identity, negation, constant
-      truth, constant falsity, \(K\), conjunction, and every curried binary
-      truth-function are now handled.  Add necessity and possibility in
-      separate stages while preserving closure of purity under application,
-      the verified zeroary and unary instances of Recombination and
-      Exhaustion, Modalized Functionality, and \PP.  If a stage fails,
+      truth, constant falsity, \(K\), conjunction, every curried binary
+      truth-function, necessity, possibility, and the six operators in
+      \((\mathrm{HQ})\) are now handled.  Continue with higher-order closed
+      logical terms beyond those six while preserving closure of purity under
+      application, the verified zeroary and unary instances of Recombination
+      and Exhaustion, Modalized Functionality, and \PP.  If a stage fails,
       distinguish failure of the particular tree model from a derivation of
       contradiction from Goodman's principles.  A complete result requires
       every closed logical term at every type.
@@ -1003,6 +1097,8 @@ The dedicated audit theory is
 \[
 \isa{reports/audit_goodman_complete/Audit_Goodman_Complete.thy}.
 \]
+The modal and quantified extension is audited separately in
+\url{reports/audit_modal_quantified/Audit_Goodman_Modal_Quantified.thy}.
 The final Claude--Codex adversarial transcript is
 \[
 \isa{reports/CONSENSUS_GOODMAN_FINAL_AUDIT_2026-07-27.md}.
@@ -1015,6 +1111,15 @@ each result.  A successful audit build is obtained from the project root with:
   -d fresh_attack -d fresh_attack_bridge \
   -D reports/audit_goodman_complete \
   Goodman_Complete_Audit_2026_07_27
+
+/opt/homebrew/bin/isabelle build -v \
+  -d . -d zf_truth_functions \
+  -d zf_modal_necessity -d zf_modal_possibility \
+  -d zf_higher_order_quantified \
+  -d fresh_attack -d fresh_attack_bridge \
+  -d zf_modal_quantified_bridge \
+  -D reports/audit_modal_quantified \
+  Goodman_Modal_Quantified_Audit_2026_07_28
 \end{verbatim}
 
 \bigskip
@@ -1026,9 +1131,10 @@ determinate claim in Goodman's notes, including two substantive repairs, and
 reduces the unrestricted consistency problem to a single explicit
 model-construction equation.  A HOL--ZF model also validates \PP\ and the
 displayed background together with purity of identity, negation, constant
-truth, constant falsity, \(K\), conjunction, and every curried binary
-truth-function, so every subcollection whose logical-purity instances are
-confined to those formulas is consistent.
+truth, constant falsity, \(K\), conjunction, every curried binary
+truth-function, necessity, possibility, and the six higher-order quantified
+unary operators in \((\mathrm{HQ})\), so every subcollection whose
+logical-purity instances are confined to those formulas is consistent.
 The present \(\mathsf{QLN}\) result is restricted to its zeroary and unary
 instances.  Goodman's question remains open because the intended theory
 requires purity of every closed logical term at every type.}

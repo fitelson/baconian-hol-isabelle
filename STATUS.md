@@ -1,5 +1,51 @@
 # PP Consistency Status
 
+> **Necessity, possibility, and the six higher-order quantified operators
+> added without contradiction, 2026-07-28.**
+> The HOL--ZF construction first adds the closed necessity operator and then
+> the closed possibility operator.  Each successive model validates PP,
+> every application-closure instance, unique proposition-level
+> fundamentality and no fundamentality at other types, zeroary and unary
+> Recombination and Exhaustion, and Modalized Functionality at arbitrary
+> types.
+>
+> The final extension makes the following six closed higher-order quantified
+> unary operators pure:
+>
+> \[
+> \begin{array}{rcl}
+> \text{Leibniz truth} &\equiv& \Box p,\\
+> \text{Leibniz falsity} &\equiv& \Box\neg p,\\
+> \text{negated Leibniz truth} &\equiv& \Diamond\neg p,\\
+> \text{negated Leibniz falsity} &\equiv& \Diamond p,\\
+> \text{universal application} &\equiv& \bot,\\
+> \text{existential application} &\equiv& \top.
+> \end{array}
+> \]
+>
+> The second and third terms require the additional pure unary classes of
+> necessary falsity and possible falsity.  Isabelle proves both directions
+> of unary QLN for those classes, closure of the complete enlarged stock
+> under application, and:
+>
+> ```isabelle
+> pp_quantified_fragment_PP_axioms_consistent:
+>   CEV_axiom_consistent []
+>     pp_quantified_fragment_PP_axioms
+>
+> fresh_goodman_modal_quantified_only_consistent:
+>   U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+>   U \<inter> pp_purity_schema
+>     \<subseteq> pp_modal_quantified_allowed_purity \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> A separate 30-target kernel audit verifies the principal modal, quantified,
+> and bridge theorems with no oracle dependencies, theorem hypotheses, or
+> flex-flex pairs.  This does not settle Goodman's full question: the model
+> covers only zeroary and unary QLN, and its logical-purity instances remain
+> a proper fragment of all closed logical terms at all types.
+
 > **All sixteen curried binary truth-functions added without contradiction,
 > 2026-07-28.**
 > `zf_truth_functions/Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model.thy`

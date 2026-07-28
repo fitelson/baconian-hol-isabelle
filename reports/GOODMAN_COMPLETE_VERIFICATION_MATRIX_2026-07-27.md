@@ -16,8 +16,10 @@ This matrix distinguishes four statuses:
 
 The dedicated session `Goodman_Complete_Audit_2026_07_27` audits these 96
 principal theorem objects together with fifteen later \(K\)-, conjunction-,
-binary-truth-function-fragment, and bridge results.  A fresh build passes.
-Every
+binary-truth-function-fragment, and bridge results.  The separate session
+`Goodman_Modal_Quantified_Audit_2026_07_28` audits 30 necessity, possibility,
+higher-order quantified, and corresponding bridge results.  Fresh builds
+pass.  Every
 audited proof is checked
 without admitted proof steps or undischarged logical assumptions beyond the
 premises stated in its theorem.  The general T9 cardinal theorems retain only
@@ -83,6 +85,16 @@ The following are not missing proof scripts for settled claims:
    commutes with taking views, the positive program is reduced to the
    self-enumeration equation saying that the unary operators denoted by
    closed expressions built using `E` are exactly `{E n | n in Nat}`.
+   Separately, a HOL--ZF model now proves consistency for every subcollection
+   of Goodman's principles whose logical-purity instances are restricted to
+   the verified Boolean stock, necessity, possibility, and the six
+   higher-order quantified unary operators.  The six operators denote,
+   respectively, necessity, necessary falsity, possible falsity, possibility,
+   constant falsity, and constant truth.  Necessary falsity and possible
+   falsity require two additional pure unary classes, for which both
+   directions of unary QLN have been verified.  This remains a fragment
+   theorem: its QLN stock is zeroary and unary, and it does not cover every
+   closed logical term at every type.
 2. Global semantic L2 for Bacon's complete definable stock remains open.  L2
    is verified only for identity, necessity, possibility, constant truth, and
    constant falsity, together with a precise
