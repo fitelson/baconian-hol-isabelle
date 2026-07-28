@@ -172,4 +172,5 @@ theories
   Bacon_PP_ZF_Fresh_Identity_Negation_Fragment_Model
   Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model
   Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model
+  Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model
   Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model

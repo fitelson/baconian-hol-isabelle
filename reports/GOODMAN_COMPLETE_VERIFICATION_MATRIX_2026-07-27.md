@@ -15,8 +15,10 @@ This matrix distinguishes four statuses:
 - **Open or underspecified**: there is no determinate verified theorem.
 
 The dedicated session `Goodman_Complete_Audit_2026_07_27` audits these 96
-principal theorem objects together with five later \(K\)-fragment and bridge
-results.  A fresh build passes.  Every audited proof is checked
+principal theorem objects together with fifteen later \(K\)-, conjunction-,
+binary-truth-function-fragment, and bridge results.  A fresh build passes.
+Every
+audited proof is checked
 without admitted proof steps or undischarged logical assumptions beyond the
 premises stated in its theorem.  The general T9 cardinal theorems retain only
 their stated restriction on the types to which they apply.

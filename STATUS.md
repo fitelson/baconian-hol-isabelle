@@ -1,5 +1,82 @@
 # PP Consistency Status
 
+> **All sixteen curried binary truth-functions added without contradiction,
+> 2026-07-28.**
+> `zf_truth_functions/Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model.thy`
+> gives a single construction parameterized by
+> \(F:\mathbf 2\times\mathbf 2\to\mathbf 2\).  For each pure first input,
+> the resulting unary slice is world-relatively equivalent to one of
+> constant truth, identity, negation, or constant falsity.  Hence application
+> closure adds no new proposition or unary pure class.
+>
+> Isabelle proves global validity of all sixteen truth-function purity
+> instances, PP, every application-closure instance, unique
+> proposition-level fundamentality and no fundamentality at other types,
+> zeroary and unary Recombination and Exhaustion, and Modalized Functionality
+> at arbitrary types.  The principal results are:
+>
+> ```isabelle
+> pp_t_binary_truth_fragment_PP_gvalid:
+>   BinaryTruthFragment.MovingTreeConstants.TreeHenkin.gvalid_set
+>     pp_binary_truth_fragment_PP_axioms
+>
+> pp_binary_truth_fragment_PP_axioms_consistent:
+>   CEV_axiom_consistent []
+>     pp_binary_truth_fragment_PP_axioms
+>
+> pp_binary_truth_fragment_consistent:
+>   U \<subseteq> pp_binary_truth_fragment_PP_axioms \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> The fresh bridge proves
+> `pp_binary_truth_fragment_PP_axioms_subset_fresh_goodman` and
+> `fresh_goodman_binary_truth_only_consistent`.  The latter applies to every
+> subcollection of `fresh_goodman_axioms` whose logical-purity instances lie
+> in `pp_binary_truth_allowed_purity`; there is no finiteness restriction.
+>
+> This is not a consistency result for the full logical-purity schema.  The
+> next controlled extensions add necessity and possibility separately and
+> test PP, both unary QLN directions, application closure, fundamentality,
+> and Modalized Functionality in each enlarged interpretation.
+
+> **Curried conjunction added without contradiction, 2026-07-28.**
+> `Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model.thy` extends the
+> constant-builder interpretation by making
+> \(\mathsf{And}=\lambda p.\lambda q.(p\wedge q)\) pure.  For every pure
+> proposition \(p\), application closure adds no new unary class:
+> \(\mathsf{And}\,\top\) is equivalent to identity and
+> \(\mathsf{And}\,\bot\) is equivalent to constant falsity.
+>
+> Isabelle proves global validity of PP, all six displayed logical-purity
+> instances, every application-closure instance, unique proposition-level
+> fundamentality and no fundamentality at other types, zeroary and unary
+> Recombination and Exhaustion, and Modalized Functionality at arbitrary
+> types.  The principal theorem and unrestricted subset corollary are:
+>
+> ```isabelle
+> pp_conjunction_fragment_PP_axioms_consistent:
+>   CEV_axiom_consistent []
+>     pp_conjunction_fragment_PP_axioms
+>
+> pp_conjunction_fragment_consistent:
+>   U \<subseteq> pp_conjunction_fragment_PP_axioms \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> The bridge proves
+> `pp_conjunction_fragment_PP_axioms_subset_fresh_goodman` and
+> `fresh_goodman_conjunction_only_consistent`.  Hence every subcollection
+> `U` of `fresh_goodman_axioms` is consistent when its logical-purity
+> instances are confined to identity, negation, constant truth, constant
+> falsity, \(K\), and conjunction.  No finiteness restriction is imposed on
+> `U`.
+>
+> This does not settle Goodman's question.  The formal QLN stock here is
+> zeroary and unary, and the full logical-purity schema contains every
+> higher-order closed logical term.  The next construction is a uniform
+> result for curried truth-functional operators.
+
 > **The constant builder \(K\) added without contradiction, 2026-07-28.**
 > `Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model.thy` extends the
 > preceding interpretation by making the closed constant builder
@@ -41,9 +118,8 @@
 >
 > No finiteness restriction is imposed on `U`.  This does not settle
 > Goodman's question, because the full logical-purity schema contains every
-> higher-order closed logical term.  The next construction is curried
-> conjunction, followed by a uniform result for curried truth-functional
-> operators.
+> higher-order closed logical term.  The conjunction extension recorded
+> above supersedes the stated next step.
 
 > **Identity, negation, constant truth, and constant falsity added without
 > contradiction, 2026-07-28.**
@@ -91,10 +167,11 @@
 > ```
 >
 > This is not full consistency: it covers four logical-purity instances, not
-> every closed term formed from the logical vocabulary.  The next
-> construction should make the constant builder `K` pure, then add curried
-> conjunction, and then prove a uniform result for curried truth-functional
-> operators.  The principal remaining obstacle is the full class of
+> every closed term formed from the logical vocabulary.  Subsequent verified
+> extensions add \(K\), conjunction, and all sixteen curried binary
+> truth-functions.  The next targets are necessity and possibility,
+> treated separately.  The principal remaining obstacle
+> is the full class of
 > higher-order closed logical terms and the self-referential requirement
 > imposed by Purity of Pure.
 
@@ -183,7 +260,8 @@
 > `reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`, with
 > self-contained Forbes/Lucida source in the adjacent `.tex` file.
 > The dedicated Isabelle session audits the original 96 principal theorem
-> objects plus five \(K\)-fragment and bridge results.  It passes with zero
+> objects plus fifteen later \(K\)-, conjunction-,
+> binary-truth-function-fragment, and bridge results.  It passes with zero
 > oracles, zero undischarged logical hypotheses, and zero flex-flex pairs.
 > T9's polymorphic cardinal results carry one ordinary
 > type-sort hypothesis, reported separately.

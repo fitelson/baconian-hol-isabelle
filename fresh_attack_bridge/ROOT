@@ -1,5 +1,5 @@
 session Goodman_Fresh_ZF_Bridge =
-    Higher_Order_Metaphysics_PP_ZF_Model +
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions +
   description "
     Bridge from the independently developed fresh-attack formulation to the
     explicit HOL-ZF tree model.  This session identifies the fresh statement

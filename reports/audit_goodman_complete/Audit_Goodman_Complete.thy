@@ -223,7 +223,31 @@ val targets = [
   ("Goodman five-purity-instance consistency",
     @{thm fresh_goodman_constant_builder_only_consistent}),
   ("K-fragment exact Goodman consistency",
-    @{thm pp_constant_builder_fragment_is_goodman_consistent})
+    @{thm pp_constant_builder_fragment_is_goodman_consistent}),
+
+  (* Verified conjunction-fragment model and fresh-stock bridge. *)
+  ("conjunction-fragment global validity",
+    @{thm pp_t_conjunction_fragment_PP_gvalid}),
+  ("conjunction-fragment consistency",
+    @{thm pp_conjunction_fragment_PP_axioms_consistent}),
+  ("conjunction-fragment inclusion in Goodman stock",
+    @{thm pp_conjunction_fragment_PP_axioms_subset_fresh_goodman}),
+  ("Goodman six-purity-instance consistency",
+    @{thm fresh_goodman_conjunction_only_consistent}),
+  ("conjunction-fragment exact Goodman consistency",
+    @{thm pp_conjunction_fragment_is_goodman_consistent}),
+
+  (* Uniform binary truth-function model and fresh-stock bridge. *)
+  ("binary truth-function fragment global validity",
+    @{thm pp_t_binary_truth_fragment_PP_gvalid}),
+  ("binary truth-function fragment consistency",
+    @{thm pp_binary_truth_fragment_PP_axioms_consistent}),
+  ("binary truth-function fragment inclusion in Goodman stock",
+    @{thm pp_binary_truth_fragment_PP_axioms_subset_fresh_goodman}),
+  ("Goodman binary-truth-purity consistency",
+    @{thm fresh_goodman_binary_truth_only_consistent}),
+  ("binary truth-function exact Goodman consistency",
+    @{thm pp_binary_truth_fragment_is_goodman_consistent})
 ]
 
 val results = map require_clean targets

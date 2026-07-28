@@ -5,7 +5,8 @@
 The controlling ledger is
 `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.  Its associated
 Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits the original
-96 principal theorem objects plus five \(K\)-fragment and bridge results, and
+96 principal theorem objects plus fifteen later \(K\)-, conjunction-,
+binary-truth-function-fragment, and bridge results, and
 passes with zero oracles, zero undischarged logical
 hypotheses, and zero flex-flex pairs.  T9's single sort hypothesis is ordinary
 polymorphism and is reported separately.
@@ -1831,11 +1832,10 @@ The last result has no finiteness restriction.  It proves consistency only
 for subcollections whose logical-purity instances are among those four.  It
 does not prove consistency of Goodman's full theory.
 
-The next controlled construction is ordered as follows:
-
-1. make the constant builder `K` itself pure;
-2. add curried conjunction;
-3. prove a uniform closure result for curried truth-functional operators.
+The first two controlled extensions are now complete: the constant builder
+`K` and curried conjunction are pure in successive verified models.  The
+current target is a uniform closure result for curried truth-functional
+operators.
 
 The remaining obstacle is not these elementary truth functions.  It is the
 full logical-purity schema for all higher-order closed logical terms,
@@ -1900,5 +1900,141 @@ are among \(K\), identity, negation, constant truth, and constant falsity.  It
 does not settle Goodman's question, since it does not cover all higher-order
 closed logical terms or Purity of Pure.
 
-The next controlled construction is curried conjunction.  After that, prove
-one uniform result for the curried truth-functional operators.
+The conjunction extension below supersedes this stated next step.
+
+---
+
+## 18. Fifth logical-purity extension: curried conjunction (2026-07-28)
+
+`zf_model/Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model.thy` imports the
+constant-builder fragment and adds the closed logical term
+\[
+ \mathsf{And}=\lambda p{:}t.\lambda q{:}t.\,(p\wedge q).
+\]
+The semantic proof is application-closed without enlarging the proposition
+or unary pure stocks.  At every world,
+\(\mathsf{And}\,\top\) is equivalent to identity and
+\(\mathsf{And}\,\bot\) is equivalent to constant falsity.  The only new
+pure class is therefore the conjunction class at
+`Prop -> (Prop -> Prop)`.
+
+The model globally validates PP, every application-closure instance, unique
+proposition-level fundamentality, no fundamentality at every other type,
+zeroary and unary Recombination and Exhaustion, and Modalized Functionality.
+The principal theorems are:
+
+```isabelle
+pp_t_conjunction_fragment_PP_gvalid:
+  ConjunctionFragment.MovingTreeConstants.TreeHenkin.gvalid_set
+    pp_conjunction_fragment_PP_axioms
+
+pp_conjunction_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_conjunction_fragment_PP_axioms
+
+pp_conjunction_fragment_consistent:
+  U \<subseteq> pp_conjunction_fragment_PP_axioms \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+The fresh bridge proves:
+
+```isabelle
+pp_conjunction_fragment_PP_axioms_subset_fresh_goodman:
+  pp_conjunction_fragment_PP_axioms
+    \<subseteq> fresh_goodman_axioms
+
+fresh_goodman_conjunction_only_consistent:
+  U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+  U \<inter> pp_purity_schema \<subseteq>
+    {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+     pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+     pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+     pp_pure pp_unary_ty (pp_constant_operator ObjFalse),
+     pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+       pp_constant_builder,
+     pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+       pp_conjunction_builder} \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+There is no finiteness restriction on `U`.  This is a six-purity-instance
+fragment theorem, not consistency of the full logical-purity schema.  The
+formal QLN stock remains zeroary and unary; no binary QLN claim is made.
+
+This stated next step has now been completed by the uniform binary
+truth-function extension below.
+
+---
+
+## 19. Uniform binary truth-function extension (2026-07-28)
+
+The child session
+`Higher_Order_Metaphysics_PP_ZF_Truth_Functions` contains
+`zf_truth_functions/Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model.thy`.
+For every Boolean table \(F:\mathbf 2\times\mathbf 2\to\mathbf 2\), it defines
+a closed curried object-language term
+\[
+  B_F=\lambda p{:}t.\lambda q{:}t.\,F(p,q)
+\]
+using only the existing Boolean logical vocabulary, together with its exact
+HOL--ZF denotation.
+
+The central closure theorem proves that, after fixing a pure proposition
+\(p\), the unary slice \(B_Fp\) is world-relatively equivalent to one of the
+four already pure unary operators:
+\[
+  C_{\top},\qquad I,\qquad N,\qquad C_{\bot}.
+\]
+Thus the extension adds the sixteen builder classes at
+`Prop -> (Prop -> Prop)` but adds no proposition or unary pure class.
+
+The model verifies:
+
+```isabelle
+pp_t_binary_truth_fragment_PP_gvalid:
+  BinaryTruthFragment.MovingTreeConstants.TreeHenkin.gvalid_set
+    pp_binary_truth_fragment_PP_axioms
+
+pp_binary_truth_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_binary_truth_fragment_PP_axioms
+
+pp_binary_truth_fragment_consistent:
+  U \<subseteq> pp_binary_truth_fragment_PP_axioms \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+This includes all sixteen truth-function purity instances, PP, every
+application-closure instance, unique proposition-level fundamentality, no
+fundamentality at other types, zeroary and unary Recombination and Exhaustion,
+and Modalized Functionality at arbitrary types.
+
+The fresh bridge proves:
+
+```isabelle
+pp_binary_truth_fragment_PP_axioms_subset_fresh_goodman:
+  pp_binary_truth_fragment_PP_axioms
+    \<subseteq> fresh_goodman_axioms
+
+fresh_goodman_binary_truth_only_consistent:
+  U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+  U \<inter> pp_purity_schema
+    \<subseteq> pp_binary_truth_allowed_purity \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+There is no finiteness restriction.  The allowed purity stock consists of
+the six previously displayed formulas together with the uniform family
+`pp_truth_function_purity_axioms`.  The formal QLN stock remains zeroary and
+unary; no binary QLN theorem is asserted.
+
+The next controlled extension is modal rather than another Boolean
+truth-function.  Add
+\(\lambda p.\Box p\) first and
+\(\lambda p.\Diamond p\) second, in separate child theories.  For each, derive
+the application-closed pure stock and test PP, both unary QLN directions,
+Modalized Functionality, and fundamentality.  A failure in the present tree
+model is not by itself a negative answer to Goodman: it must be classified as
+either a seed/model obstruction or a model-independent derivation of
+contradiction.

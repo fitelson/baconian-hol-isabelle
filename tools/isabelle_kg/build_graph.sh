@@ -16,12 +16,15 @@ mkdir -p "$CLASSES_DIR"
 
 build_sessions() {
   isabelle build "$@" -D "$PROJECT_ROOT" -D "$PROJECT_ROOT/fresh_attack" \
+    -D "$PROJECT_ROOT/zf_truth_functions" \
     -D "$PROJECT_ROOT/fresh_attack_bridge" \
     -o export_theory=true
 }
 
 force_export_sessions() {
-  isabelle build -f -d "$PROJECT_ROOT" -d "$PROJECT_ROOT/fresh_attack" \
+  isabelle build -f -d "$PROJECT_ROOT" \
+    -d "$PROJECT_ROOT/zf_truth_functions" \
+    -d "$PROJECT_ROOT/fresh_attack" \
     -d "$PROJECT_ROOT/fresh_attack_bridge" \
     -o export_theory=true \
     Higher_Order_Metaphysics \
@@ -29,6 +32,7 @@ force_export_sessions() {
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
     Goodman_Fresh_Attack \
     Goodman_Fresh_ZF_Bridge
 }
@@ -57,6 +61,7 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
+    Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
     Goodman_Fresh_Attack \
     Goodman_Fresh_ZF_Bridge
 }
@@ -77,6 +82,10 @@ required_dependencies = {
     "pp_constant_builder_fragment_PP_axioms_consistent",
     "theorem:Bacon_PP_Fresh_ZF_Fragment_Bridge."
     "fresh_goodman_constant_builder_only_consistent",
+    "theorem:Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model."
+    "pp_binary_truth_fragment_PP_axioms_consistent",
+    "theorem:Bacon_PP_Fresh_ZF_Fragment_Bridge."
+    "fresh_goodman_binary_truth_only_consistent",
 }
 sources = {
     edge["source"]

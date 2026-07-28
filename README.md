@@ -58,8 +58,9 @@ qualifications stated in:
 - [`reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf);
 - [`reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`](reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md).
 
-The dedicated audit checks the original 96 principal theorem objects plus five
-new \(K\)-fragment and bridge results.  In particular, it
+The dedicated audit checks the original 96 principal theorem objects plus
+fifteen later \(K\)-, conjunction-, binary-truth-function-fragment, and bridge
+results.  In particular, it
 records the modal gap in T3, repairs the countability argument in M5, proves
 the T6 contradictions and T9 counting result at their stated levels, and
 separates what is proved in Bacon's appendix model from what remains
@@ -124,7 +125,8 @@ is CEV-axiom-consistent, and hence so is every finite such fragment.  Build the
 bridge with:
 
 ```sh
-isabelle build -v -d . -d fresh_attack -D fresh_attack_bridge
+isabelle build -v -d . -d zf_truth_functions -d fresh_attack \
+  -D fresh_attack_bridge
 ```
 
 This does not settle Goodman's question, because the intended background
@@ -196,11 +198,61 @@ The unrestricted bridge theorem
 `fresh_goodman_constant_builder_only_consistent` covers every subcollection
 of the fresh Goodman principles whose logical-purity instances are restricted
 to \(K\) and the preceding four unary operators.  This is not a proof of
-consistency for Goodman's full theory.  The next construction is curried
-conjunction, followed by a uniform treatment of the curried truth-functional
-operators.  The remaining obstacle is the full class of higher-order closed
-logical terms, including the self-referential condition imposed by Purity of
-Pure.
+consistency for Goodman's full theory.
+
+Curried conjunction
+\(\mathsf{And}=\lambda p.\lambda q.(p\mathbin{\wedge}q)\) has now been added
+as well.  Application closure forces no new unary classes:
+\(\mathsf{And}\,\top\) is equivalent to identity, while
+\(\mathsf{And}\,\bot\) is equivalent to constant falsity.  Thus the pure
+proposition and unary stocks are unchanged.  Isabelle again verifies PP,
+every application-closure instance, unique proposition-level fundamentality,
+no fundamentality at other types, zeroary and unary Recombination and
+Exhaustion, and Modalized Functionality at arbitrary types.  Its principal
+theorem is:
+
+```isabelle
+pp_conjunction_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_conjunction_fragment_PP_axioms
+```
+
+The unrestricted bridge theorem
+`fresh_goodman_conjunction_only_consistent` covers every subcollection of
+the fresh Goodman principles whose logical-purity instances are restricted
+to conjunction, \(K\), and the preceding four unary operators.  This is not
+a proof of consistency for Goodman's full theory.
+
+All sixteen curried binary truth-functions have now been handled uniformly.
+For a Boolean truth table \(F\), the closed term
+\(\lambda p.\lambda q.F(p,q)\) is interpreted by the corresponding
+world-by-world truth-function.  Fixing a pure first input makes every such
+operator equivalent to exactly one of constant truth, identity, negation, or
+constant falsity.  Consequently the proposition and unary pure stocks remain
+unchanged, and adjoining the sixteen builder classes preserves PP, every
+application-closure instance, unique proposition-level fundamentality, no
+fundamentality at other types, zeroary and unary Recombination and Exhaustion,
+and Modalized Functionality.  The principal theorem is:
+
+```isabelle
+pp_binary_truth_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_binary_truth_fragment_PP_axioms
+```
+
+The bridge theorem `fresh_goodman_binary_truth_only_consistent` has no
+finiteness restriction.  It covers every subcollection of Goodman's stock
+whose logical-purity instances are among the six previously displayed
+formulas together with the uniform family
+`pp_truth_function_purity_axioms`.
+
+This remains a fragment theorem.  The next controlled extension adds the
+closed modal operators \(\lambda p.\Box p\) and
+\(\lambda p.\Diamond p\), separately.  These are the first operators in this
+sequence whose unary denotations are not among the four Boolean unary
+classes.  The remaining obstacle is still the full class of higher-order
+closed logical terms, including the self-referential condition imposed by
+Purity of Pure.
 
 ## Finite-core search
 

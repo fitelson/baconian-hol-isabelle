@@ -1,0 +1,9 @@
+session Higher_Order_Metaphysics_PP_ZF_Truth_Functions =
+    Higher_Order_Metaphysics_PP_ZF_Model +
+  description "
+    Uniform HOL-ZF fragment model for all sixteen curried binary
+    truth-functions.
+  "
+  options [timeout = 60]
+theories
+  Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model

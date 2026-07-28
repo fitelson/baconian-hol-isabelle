@@ -58,7 +58,7 @@ The repository should be green before any new work.
 
 This is the precise parameter-freezing obstruction.
 
-- The current HOL-ZF model makes the closed constant builder
+- The constant-builder HOL-ZF model makes the closed constant builder
   \(K=\lambda p.\lambda q.p\) pure, together with the four preceding unary
   logical operators: identity, negation, constant truth, and constant
   falsity.  Applying \(K\) to a pure true or false proposition yields the
@@ -92,6 +92,60 @@ This is the precise parameter-freezing obstruction.
   unary QLN clauses present in this formal background; it does not establish
   a binary QLN clause.  This is not a consistency theorem for the full
   logical-purity schema.
+
+- The conjunction model extends this result by making curried conjunction
+  \(\mathsf{And}=\lambda p.\lambda q.(p\wedge q)\) pure.  Application closure
+  forces no new unary class:
+  \(\mathsf{And}\,\top\) is equivalent to identity and
+  \(\mathsf{And}\,\bot\) is equivalent to constant falsity.  Isabelle proves:
+
+  ```isabelle
+  pp_conjunction_fragment_PP_axioms_consistent:
+    CEV_axiom_consistent []
+      pp_conjunction_fragment_PP_axioms
+
+  fresh_goodman_conjunction_only_consistent:
+    U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+    U \<inter> pp_purity_schema \<subseteq>
+      {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+       pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+       pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+       pp_pure pp_unary_ty (pp_constant_operator ObjFalse),
+       pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+         pp_constant_builder,
+       pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+         pp_conjunction_builder} \<Longrightarrow>
+    CEV_axiom_consistent [] U
+  ```
+
+  Again there is no finiteness restriction, and only the zeroary and unary
+  QLN clauses are claimed.
+
+- The uniform binary truth-function model subsumes the Boolean part of the
+  preceding construction.  For every
+  \(F:\mathbf 2\times\mathbf 2\to\mathbf 2\), it makes the closed curried
+  operator \(\lambda p.\lambda q.F(p,q)\) pure.  Every partial application to
+  a pure proposition is equivalent to constant truth, identity, negation, or
+  constant falsity, so no new proposition or unary pure class is forced.
+  Isabelle proves:
+
+  ```isabelle
+  pp_binary_truth_fragment_PP_axioms_consistent:
+    CEV_axiom_consistent []
+      pp_binary_truth_fragment_PP_axioms
+
+  fresh_goodman_binary_truth_only_consistent:
+    U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+    U \<inter> pp_purity_schema
+      \<subseteq> pp_binary_truth_allowed_purity \<Longrightarrow>
+    CEV_axiom_consistent [] U
+  ```
+
+  The allowed purity stock consists of the six previously displayed
+  instances together with all sixteen members of
+  `pp_truth_function_purity_axioms`.  There is no finiteness restriction.
+  This remains a zeroary/unary QLN fragment theorem, not a theorem for the
+  full logical-purity schema.
 
 ## Do not regress these corrections
 
@@ -168,15 +222,19 @@ there is Recombination (`pp_full_stock_has_no_recombination_witness`).
 Continue the controlled logical-purity extensions in increasing type and
 term complexity:
 
-1. add curried conjunction and compute the classes forced by application;
-2. prove one uniform theorem for the curried truth-functional operators.
+1. add the closed necessity operator \(\lambda p.\Box p\);
+2. add the closed possibility operator \(\lambda p.\Diamond p\) separately;
+3. if both extensions survive, absorb the six already evaluated
+   higher-order quantified unary operators, whose denotations collapse to
+   necessity, possibility, their negated variants, truth, or falsity;
+4. continue upward through the remaining higher-order closed logical terms.
 
 At each stage retain the same obligations: PP, both directions of the
 zeroary and unary QLN clauses, application closure, unique
 proposition-level fundamentality, no fundamentality at other types, and
-Modalized Functionality.  These steps test whether the successful treatment
-of \(K\) and the four elementary unary operators extends uniformly across
-the Boolean part of the logical vocabulary.
+Modalized Functionality.  If a modal extension fails, distinguish failure of
+the present moving-seed interpretation from a model-independent derivation of
+contradiction.  Only the latter answers Goodman's question negatively.
 
 Even success at both stages would not answer the full question.  The
 remaining obstacle is logical purity for every higher-order closed logical
