@@ -24,8 +24,8 @@ writes:
 - `isabelle-kg/graph.json` — the queryable exact graph;
 - `isabelle-kg/graph.graphml` — a directed GraphML export for Gephi or yEd.
 
-The graph includes the foundational, PP, frontier, finite-model, HOL-ZF, and
-independent `Goodman_Fresh_Attack` sessions.
+The graph includes the foundational, PP, frontier, finite-model, HOL-ZF,
+independent `Goodman_Fresh_Attack`, and fresh-to-HOL-ZF bridge sessions.
 
 Generated output and compiled classes are intentionally git-ignored.  The
 graph is reproducible from the checked theories.  The build validates unique

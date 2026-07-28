@@ -1,0 +1,13 @@
+/usr/local/bin/vampire \
+  --mode portfolio \
+  --schedule casc_2025 \
+  --cores 8 \
+  --time_limit 1h \
+  --intent unsat \
+  --input_syntax tptp \
+  --proof tptp \
+  --proof_extra free \
+  --output_axiom_names on \
+  --print_proofs_to_file \
+    fresh_attack/goodman_pp_refutation_finite.proof.txt \
+  fresh_attack/goodman_pp_refutation_finite.thf.in

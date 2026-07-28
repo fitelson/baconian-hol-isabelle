@@ -1,0 +1,189 @@
+%------------------------------------------------------------------------------
+% Goodman: corrected many-sorted first-order refutation target for Theory + PP
+%------------------------------------------------------------------------------
+%
+% Purpose:
+%   Ask Vampire whether this finite, explicitly typed fragment of Goodman's
+%   background theory together with PP entails a contradiction.
+%
+% Correction relative to goodman_pp_refutation_finite.tff.in:
+%   Application is unworlded.  An application term app_p(X,P) or app_o(H,X)
+%   denotes one proposition object.  Its truth value may vary by world through
+%   holds(W,...), but the proposition denoted by the application does not vary
+%   by world.  This matches the applicative structure of Bacon's semantics and
+%   blocks the freedom exploited by Vampire's earlier 2 x 3 x 5 x 2 model.
+%
+% Status:
+%   This remains a finite proof-search approximation, not a complete encoding
+%   of the schematic theory.  It represents only the sorts and instances
+%   displayed below.  It does not encode the entire higher-order logical base,
+%   every closed logical term, every type instance of Purity and application
+%   closure, or the full substitution-action semantics.
+%
+%   A Vampire refutation is a candidate proof that must be translated into the
+%   Isabelle object language.  A finite model must likewise be certified in
+%   Isabelle and does not by itself settle Goodman's full consistency question.
+%
+% Object sorts represented:
+%   world   points at which propositions are evaluated
+%   prop    proposition objects
+%   op1     unary propositional operators, represented opaquely
+%   op2     predicates of unary propositional operators, represented opaquely
+%------------------------------------------------------------------------------
+
+tff(world_type,type,world:$tType).
+tff(prop_type,type,prop:$tType).
+tff(op1_type,type,op1:$tType).
+tff(op2_type,type,op2:$tType).
+
+tff(holds_type,type,holds:(world * prop)>$o).
+tff(app_p_type,type,app_p:(op1 * prop)>prop).
+tff(app_o_type,type,app_o:(op2 * op1)>prop).
+
+tff(is_pure_p_type,type,is_pure_p:(world * prop)>$o).
+tff(is_pure_o_type,type,is_pure_o:(world * op1)>$o).
+tff(is_fun_p_type,type,is_fun_p:(world * prop)>$o).
+tff(is_fun_o_type,type,is_fun_o:(world * op1)>$o).
+tff(is_fun_oo_type,type,is_fun_oo:(world * op2)>$o).
+
+tff(pure_p_type,type,pure_p:op1).
+tff(pure_o_type,type,pure_o:op2).
+tff(fun_p_type,type,fun_p:op1).
+tff(fun_o_type,type,fun_o:op2).
+
+tff(top_p_type,type,top_p:prop).
+tff(bot_p_type,type,bot_p:prop).
+tff(id_o_type,type,id_o:op1).
+tff(not_o_type,type,not_o:op1).
+tff(box_o_type,type,box_o:op1).
+
+% Pure and Fun are represented by their classifier objects.
+tff(pure_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      ( is_pure_p(W,P)
+    <=> holds(W,app_p(pure_p,P)) )).
+
+tff(pure_op_definition,axiom,
+    ! [W:world,X:op1] :
+      ( is_pure_o(W,X)
+    <=> holds(W,app_o(pure_o,X)) )).
+
+tff(fun_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      ( is_fun_p(W,P)
+    <=> holds(W,app_p(fun_p,P)) )).
+
+tff(fun_op_definition,axiom,
+    ! [W:world,X:op1] :
+      ( is_fun_o(W,X)
+    <=> holds(W,app_o(fun_o,X)) )).
+
+% A small stock of closed logical objects and their interpretations.
+tff(top_truth,axiom,
+    ! [W:world] : holds(W,top_p)).
+
+tff(bottom_falsity,axiom,
+    ! [W:world] : ~ holds(W,bot_p)).
+
+tff(identity_application,axiom,
+    ! [P:prop] : (app_p(id_o,P) = P)).
+
+tff(negation_truth,axiom,
+    ! [W:world,P:prop] :
+      ( holds(W,app_p(not_o,P))
+    <=> ~ holds(W,P) )).
+
+% Box is interpreted by truth at every represented world.
+tff(box_truth,axiom,
+    ! [W:world,P:prop] :
+      ( holds(W,app_p(box_o,P))
+    <=> ! [V:world] : holds(V,P) )).
+
+% Selected instances of the purity-of-logical-vocabulary schema.
+tff(pure_top,axiom,
+    ! [W:world] : is_pure_p(W,top_p)).
+
+tff(pure_bottom,axiom,
+    ! [W:world] : is_pure_p(W,bot_p)).
+
+tff(pure_identity,axiom,
+    ! [W:world] : is_pure_o(W,id_o)).
+
+tff(pure_negation,axiom,
+    ! [W:world] : is_pure_o(W,not_o)).
+
+tff(pure_box,axiom,
+    ! [W:world] : is_pure_o(W,box_o)).
+
+% Application closure at prop -> prop.
+tff(pure_application_prop,axiom,
+    ! [W:world,X:op1,P:prop] :
+      ( (is_pure_o(W,X) & is_pure_p(W,P))
+     => is_pure_p(W,app_p(X,P)) )).
+
+% Exactly one fundamental proposition at each represented world.
+tff(unique_fundamental_proposition,axiom,
+    ! [W:world] :
+      ? [P:prop] :
+        ( is_fun_p(W,P)
+        & ! [Q:prop] : (is_fun_p(W,Q) => Q = P) )).
+
+% No fundamental entities at the represented non-propositional sorts.
+tff(no_fundamental_op1,axiom,
+    ! [W:world,X:op1] : ~ is_fun_o(W,X)).
+
+tff(no_fundamental_op2,axiom,
+    ! [W:world,H:op2] : ~ is_fun_oo(W,H)).
+
+% Zeroary QLN: Recombination and Exhaustion.
+tff(zeroary_recombination,axiom,
+    ! [W:world,P:prop] :
+      ( (is_pure_p(W,P)
+         & ! [V:world] : holds(V,P))
+     => holds(W,P) )).
+
+tff(zeroary_exhaustion,axiom,
+    ! [W:world,P:prop] :
+      ( (is_pure_p(W,P)
+         & holds(W,P))
+     => ! [V:world] : holds(V,P) )).
+
+% Unary QLN, split into Recombination and Exhaustion.
+tff(unary_recombination,axiom,
+    ! [W:world,X:op1,P:prop] :
+      ( (is_pure_o(W,X)
+         & is_fun_p(W,P)
+         & ! [V:world] : holds(V,app_p(X,P)))
+     => ! [Q:prop] : holds(W,app_p(X,Q)) )).
+
+tff(unary_exhaustion,axiom,
+    ! [W:world,X:op1,P:prop] :
+      ( (is_pure_o(W,X)
+         & is_fun_p(W,P)
+         & ! [Q:prop] : holds(W,app_p(X,Q)))
+     => ! [V:world] : holds(V,app_p(X,P)) )).
+
+% Modalized Functionality at prop -> prop.  Because application and equality
+% are unworlded in this finite reification, the displayed world quantifiers
+% in the modal antecedent are redundant but retained to show its intended
+% necessarily-coextensive form.
+tff(modalized_functionality_op1,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      ( (! [V:world,P:prop] :
+           (app_p(X,P) = app_p(Y,P)))
+     => X = Y )).
+
+% Modalized Functionality at op1 -> prop.
+tff(modalized_functionality_op2,axiom,
+    ! [W:world,H:op2,K:op2] :
+      ( (! [V:world,X:op1] :
+           (app_o(H,X) = app_o(K,X)))
+     => H = K )).
+
+% Goodman's PP assumption: the purity predicate for propositions is itself a
+% pure unary propositional operator.
+tff(goodman_PP,axiom,
+    ! [W:world] : is_pure_o(W,pure_p)).
+
+% Refutation target: do the preceding axioms entail a contradiction?
+tff(goodman_inconsistency_target,conjecture,$false).

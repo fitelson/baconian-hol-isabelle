@@ -1,5 +1,136 @@
 # PP Consistency Status
 
+> **Identity, negation, constant truth, and constant falsity added without
+> contradiction, 2026-07-28.**
+> `Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model.thy` extends the
+> preceding HOL-ZF interpretation by making the two closed constant operators
+> pure.  The application-closed stock has seven world-relative equivalence
+> classes: truth and falsity at `Prop`; identity, negation, constant truth,
+> and constant falsity at `Prop -> Prop`; and the predicate classifying those
+> four unary operators at `(Prop -> Prop) -> Prop`.
+>
+> The constant-truth and constant-falsity cases of unary QLN are proved
+> separately.  Constant truth makes the universal and necessary conclusions
+> immediate; constant falsity makes the corresponding antecedents false.
+> The identity and negation cases retain the contingent fundamental
+> proposition used in the preceding model.
+>
+> Isabelle proves global validity of PP, the four displayed logical-purity
+> instances, every application-closure instance, unique proposition-level
+> fundamentality and no fundamentality at other types, zeroary and unary
+> Recombination and Exhaustion, and Modalized Functionality at arbitrary
+> types.  The principal theorem and its unrestricted subset corollary are:
+>
+> ```isabelle
+> pp_logical_constants_fragment_PP_axioms_consistent:
+>   CEV_axiom_consistent []
+>     pp_logical_constants_fragment_PP_axioms
+>
+> pp_logical_constants_fragment_consistent:
+>   U \<subseteq> pp_logical_constants_fragment_PP_axioms \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> The fresh-stock bridge proves
+> `pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman` and:
+>
+> ```isabelle
+> fresh_goodman_logical_constants_only_consistent:
+>   U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+>   U \<inter> pp_purity_schema \<subseteq>
+>     {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+>      pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+>      pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+>      pp_pure pp_unary_ty (pp_constant_operator ObjFalse)} \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> This is not full consistency: it covers four logical-purity instances, not
+> every closed term formed from the logical vocabulary.  The next
+> construction should make the constant builder `K` pure, then add curried
+> conjunction, and then prove a uniform result for curried truth-functional
+> operators.  The principal remaining obstacle is the full class of
+> higher-order closed logical terms and the self-referential requirement
+> imposed by Purity of Pure.
+
+> **Purity of negation added without contradiction, 2026-07-28.**
+> Isabelle now extends the identity-purity model by also making propositional
+> negation pure.  The application-closed stock has five world-relative
+> equivalence classes: truth and falsity at type `Prop`, identity and
+> negation at type `Prop -> Prop`, and the predicate classifying the
+> identity-negation pair at type `(Prop -> Prop) -> Prop`.
+>
+> The old necessarily false fundamental proposition cannot be retained:
+> negation sends it to necessary truth although negation is not true of every
+> proposition, so unary Recombination fails.  The repaired interpretation
+> instead uses, at each world, a fundamental proposition that is true on one
+> immediate branch and false on the other.  Both identity and negation then
+> send it to propositions that are not necessary.
+>
+> The resulting model globally validates PP, both logical-purity instances,
+> every application-closure instance, unique proposition-level
+> fundamentality and no fundamentality at other types, zeroary and unary
+> Recombination and Exhaustion, and Modalized Functionality at arbitrary
+> types.  The exact fresh-stock bridge proves
+>
+> ```isabelle
+> fresh_goodman_identity_negation_only_consistent:
+>   U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+>   U \<inter> pp_purity_schema \<subseteq>
+>     {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+>      pp_pure (Prop \<rightarrow>\<^sub>o Prop)
+>        pp_negation_operator} \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> Thus identity and negation purity together do not yield an inconsistent
+> core.  No finiteness assumption is required.
+
+> **First logical-purity instance added without contradiction, 2026-07-28.**
+> Isabelle now verifies an explicit extension of the sparse HOL-ZF tree model
+> in which the closed proposition identity operator is pure.  PP and closure
+> of purity under application enlarge the pure stock to three world-relative
+> equivalence classes: truth at type `Prop`, identity at type
+> `Prop -> Prop`, and the predicate that classifies the identity class at type
+> `(Prop -> Prop) -> Prop`.  These classes are closed under every possible
+> application between pure objects in the stock.
+>
+> The enlarged interpretation globally validates PP, every application-
+> closure instance, unique proposition-level fundamentality and no
+> fundamentality at other types, both zeroary and unary directions of QLN,
+> and Modalized Functionality at arbitrary types.  The bridge proves the
+> stronger exact-stock result
+>
+> ```isabelle
+> fresh_goodman_identity_only_consistent:
+>   U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+>   U \<inter> pp_purity_schema
+>     \<subseteq> {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id} \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> Thus every subcollection of Goodman's stock whose only logical-purity
+> instance is purity of proposition identity is consistent; no finiteness
+> assumption is needed.  This is real positive progress beyond the sparse
+> model, but it does not yet settle the full logical-purity schema.
+
+> **Sparse model isolates logical purity, 2026-07-28.**
+> Isabelle now verifies an explicit HOL-ZF tree model of PP together with
+> every application-closure instance, exactly one fundamental proposition and
+> no fundamentals at other types, zeroary and unary Recombination and
+> Exhaustion, and Modalized Functionality at arbitrary types.  The model has
+> no pure propositions and no pure unary proposition operators, but the
+> classifier of the empty unary stock is pure at the next type, so PP holds.
+> The bridge to the independently formulated fresh stock proves that every
+> subset containing no logical-purity instance is CEV-axiom-consistent; the
+> finite-fragment result is a corollary.  This does not answer Goodman because
+> his background includes logical purity.  It isolates logical purity as the
+> first omitted family.
+>
+> Checked by:
+> `isabelle build -v -d . -b Higher_Order_Metaphysics_PP_ZF_Model` and
+> `isabelle build -v -d . -d fresh_attack -D fresh_attack_bridge`.
+
 > **Complete Goodman-claims audit updated, 2026-07-27.**
 > The controlling ledger is
 > `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.
@@ -2034,14 +2165,10 @@ theories down from `frontier/` into `pp/` once they are settled.
 
 ## Hygiene
 
-- No active theory imports Caie material.
 - `ContextVectorEquivalence` is absent from the active logic.
 - No active theory contains `sorry`, `oops`, `admit`, or
   `quick_and_dirty`.
 - The complete active project builds with Isabelle2025-2.
-
-Earlier Caie and contextual-rule material is preserved under
-`quarantine/2026-07-24_pre_core_cleanup/`.
 
 ## Step 1 done: the axiom-extension soundness interface
 
@@ -2734,3 +2861,82 @@ the five-operator base. The next semantic attack should therefore enlarge the
 classified stock by closure under complement and composition, beginning with
 the modal Boolean fragment, and seek either a general normal-form separation
 argument or the first cross-input collision between inequivalent normal forms.
+
+## Fresh CEV extension and current semantic frontier (2026-07-27)
+
+The fresh attack has now completed the relative Lindenbaum and Henkin
+construction for CEV with added principles.  If a typed added stock with finite
+vocabulary is consistent, it has a clean Henkin extension and a canonical
+world.  Canonical validity is equivalent to derivability in CEV with that
+stock.  Goodman's principal stocks satisfy the finite-vocabulary hypothesis
+because their only nonlogical constants are `Pure` and `Fun`.
+
+The canonical term quotient is also verified through nonempty domains,
+constants, application, the closed truth lemma, Boolean and quantifier truth
+clauses, proposition-result beta equality, and open-substitution clauses for
+negation, implication, and both quantifiers.  This result is conditional on
+consistency.  It is not yet a model of the theory plus PP.  The remaining
+semantic obligation is representative-independent evaluation for quotient
+environments, followed by a multiworld interpretation in which the added
+principles are globally true.
+
+In the HOL-ZF development,
+`Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy` now verifies the complete
+rebuilt M5 model containing the repaired exotic pure operator.  Its least
+application-closed pure stock is countable, has a common proposition witnessing
+Recombination and Fun-prime separation, and satisfies that separation at every
+world.  It validates the Recombination background but does not yet satisfy PP.
+
+The L2 analysis has also been enlarged.  Every composition word generated by
+identity, negation, necessity, and possibility is distinction-preserving
+exactly when it is reversible.  Six genuinely higher-order quantified unary
+terms have been evaluated exactly; they collapse to necessity, necessity after
+negation, possibility after negation, possibility, truth, or falsity, and none
+supplies a nonreversible distinction-preserving operator.  Global L2 for the
+complete closed logical stock remains open.
+
+## Finite-core search with increased CEV+ coverage (2026-07-28)
+
+The finite-core campaign now holds structural type depth at 1 and logical
+term size at 4 while searching a substantially larger part of the exact CEV+
+derivation relation.
+
+The context-indexed engine works over the empty context and all six singleton
+contexts. It includes:
+
+1. the 1,432 displayed axioms in the central Recombination profile;
+2. bounded propositional tautologies and typed reflexivity;
+3. UI and targeted EG;
+4. compatible one-step beta and eta conversion;
+5. modus ponens and lazy Leibniz substitution;
+6. Generalization and Instantiation from singleton contexts;
+7. zeroary and unary Vector Equivalence; and
+8. all six Boolean identities and the five Classicist identities at each of
+   the six selected types.
+
+The generated input contains 10,377 seed judgments, 23,795 typed-term
+records, and 26,201 targeted EG edges. The trigger engine reached a genuine
+fixed point:
+
+```text
+derived judgments:       13,094,962
+term nodes:              19,993,531
+substitution entries:    46,891,177
+search time:                  12.4 s
+ObjFalse derived:             no
+```
+
+Thus the central Recombination stock has no contradiction in this enlarged
+bounded proof fragment. This is bounded non-derivability, not a model and not
+a consistency proof.
+
+`Bacon_PP_Fresh_Finite_Core_Search.thy` now supplies and verifies replay
+lemmas for propositional tautologies, EG, Leibniz substitution, beta, eta,
+Generalization, Instantiation, unary Vector Equivalence, and every
+Boolean/Classicist seed family. The `Goodman_Fresh_Attack` session builds.
+
+The remaining proof-search bounds are contexts and vector arities greater
+than one, EG templates outside the selected root vocabulary, and
+propositional tautologies above the displayed term bound. The context engine
+also needs proof-trace output before a future positive hit can cross the
+mandatory Isabelle replay boundary.

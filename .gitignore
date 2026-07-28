@@ -13,10 +13,18 @@
 graphify-out/
 isabelle-kg/
 tmp/
+finite_core_search/runs/
+finite_core_search/c_engine/finite_core_size4
+finite_core_search/c_engine/finite_core_context1
+__pycache__/
+*.py[cod]
 
 # Older generated reports retained locally but not part of the release.
 scaffold_report.pdf
 reports/
+
+# Local source material supplied for the Goodman project.
+PP_project_notes copy.pdf
 
 # Local consultation transcripts, prompts, and scratch sessions.
 CLAUDE_*

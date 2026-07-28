@@ -41,7 +41,7 @@ session Higher_Order_Metaphysics_PP_Frontier in "frontier" =
     instead of hanging a build.  Move theories down into the PP session once
     they are settled.
   "
-  options [timeout = 600]
+  options [timeout = 60]
 theories
   Bacon_PP_Axiom_Soundness
   Bacon_PP_Stock_Requirements
@@ -123,9 +123,11 @@ session Higher_Order_Metaphysics_PP_Models in "models" =
     bounded benchmark; no such certificate is a model of the full PP schemas
     unless a separate translation theorem says so.
   "
-  options [timeout = 60]
+  options [timeout = 600]
 theories
   Bacon_PP_Vampire_Depth1_Model
+  Bacon_PP_Vampire_Fresh_Finite_Model
+  Bacon_PP_Vampire_Unworlded_Finite_Model
 
 session Higher_Order_Metaphysics_PP_ZF_Model in "zf_model" =
     Higher_Order_Metaphysics_PP_Frontier +
@@ -161,3 +163,12 @@ theories
   Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder
   Bacon_PP_ZF_Tree_Stabilizer_Orbit
   Bacon_PP_ZF_Goodman_L2_Model
+  Bacon_PP_ZF_Goodman_L2_Global_Reduction
+  Bacon_PP_ZF_Goodman_L2_Composition_Fragment
+  Bacon_PP_ZF_Goodman_L2_Higher_Order_Quantifiers
+  Bacon_PP_ZF_Goodman_L2_Child_Xor
+  Bacon_PP_ZF_Fresh_Sparse_Fragment_Model
+  Bacon_PP_ZF_Fresh_Identity_Fragment_Model
+  Bacon_PP_ZF_Fresh_Identity_Negation_Fragment_Model
+  Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model
+  Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model

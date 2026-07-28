@@ -16,6 +16,7 @@ mkdir -p "$CLASSES_DIR"
 
 build_sessions() {
   isabelle build "$@" -D "$PROJECT_ROOT" -d "$PROJECT_ROOT/fresh_attack" \
+    -d "$PROJECT_ROOT/fresh_attack_bridge" \
     -o export_theory=true
 }
 
@@ -43,7 +44,8 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
-    Goodman_Fresh_Attack
+    Goodman_Fresh_Attack \
+    Goodman_Fresh_ZF_Bridge
 }
 
 semantic_graph_present() {

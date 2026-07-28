@@ -7,8 +7,7 @@ section \<open>Goodman's Purity of Pure consistency question\<close>
 text \<open>
   This theory isolates the question over the active Bacon--Dorr background:
   Baconian H, Classicism, propositional Equivalence, and theorem-level vector
-  Equivalence.  It assumes no contextual equivalence principle and contains
-  no Caie-specific material.
+  Equivalence.  It assumes no contextual equivalence principle.
 
   There is exactly one fundamental proposition and no fundamental entities
   at other types.  The target PP instance says that the purity predicate for

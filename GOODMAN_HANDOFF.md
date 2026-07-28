@@ -8,8 +8,8 @@ Settle Jeremy Goodman's question:
 > of a fundamental proposition, when Purity of Fun is not assumed?
 
 Work only with the Bacon--Dorr background, Classicism, theorem-level CE/CEV,
-and the PP/QLN package. Caie and `ContextVectorEquivalence` are not part of
-this problem.
+and the PP/QLN package. `ContextVectorEquivalence` is not part of this
+problem.
 
 ## Start here
 
@@ -57,6 +57,37 @@ The repository should be green before any new work.
   ```
 
 This is the precise parameter-freezing obstruction.
+
+- The current HOL-ZF model makes four closed unary logical operators pure:
+  identity, negation, constant truth, and constant falsity.  PP and
+  application closure require seven world-relative equivalence classes:
+  truth and falsity; the four unary operators; and the predicate classifying
+  those four unary operators.  The theory proves global PP, zeroary and unary
+  Recombination and Exhaustion, unique proposition-level fundamentality, no
+  fundamentality at other types, application closure, and Modalized
+  Functionality.  The exact consistency theorem is:
+
+  ```isabelle
+  pp_logical_constants_fragment_PP_axioms_consistent:
+    CEV_axiom_consistent []
+      pp_logical_constants_fragment_PP_axioms
+  ```
+
+- The bridge to the fresh formulation proves:
+
+  ```isabelle
+  fresh_goodman_logical_constants_only_consistent:
+    U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+    U \<inter> pp_purity_schema \<subseteq>
+      {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+       pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+       pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+       pp_pure pp_unary_ty (pp_constant_operator ObjFalse)} \<Longrightarrow>
+    CEV_axiom_consistent [] U
+  ```
+
+  There is no finiteness restriction.  This is not a consistency theorem for
+  the full logical-purity schema.
 
 ## Do not regress these corrections
 
@@ -130,27 +161,24 @@ there is Recombination (`pp_full_stock_has_no_recombination_witness`).
 
 ## Recommended next attack
 
-Symmetry arguments are exhausted, so pursue the model route: construct a
-countable, orbit-generic, self-classifying Henkin stock. The generic-witness
-theorem already gives QLN for *any* countable stock, so the entire difficulty
-is self-classification, and the residual gap is a dependency rather than a
-cardinality obstruction:
+Continue the controlled logical-purity extensions in increasing type and
+term complexity:
 
-```text
-have:  for every Stock, there is an r with QLN(Stock, r)
-want:  there is an r with QLN(Stock(r), r)
-```
+1. make the closed constant builder `K` pure, rather than merely its
+   constant-truth and constant-falsity values;
+2. add curried conjunction and compute the classes forced by application;
+3. prove one uniform theorem for the curried truth-functional operators.
 
-since the stock of Pure-free denotations depends on `r` through `Fun`. Build
-the stock and the witness simultaneously, with reserved classifiers, rather
-than by repeatedly adjoining the classifier of the current approximation. The
-paired-cone construction is the natural raw material, since it leaves
-continuum-many cone pairs free after any countable list of requirements.
+At each stage retain the same obligations: PP, both directions of QLN,
+application closure, unique proposition-level fundamentality, no
+fundamentality at other types, and Modalized Functionality.  These steps test
+whether the successful treatment of the four elementary unary operators
+extends uniformly across the Boolean part of the logical vocabulary.
 
-There is no Cantor-style no-go: the self-classification condition is that the
-domain at `sigma -> Prop` contain the classifier of the pure elements of
-`sigma`, which is not a set membering itself, and simple typing blocks the
-Russell self-application.
+Even success at all three stages would not answer the full question.  The
+remaining obstacle is logical purity for every higher-order closed logical
+term, including quantified operators, together with the self-referential
+condition imposed by Purity of Pure.
 
 ## Working protocol
 
