@@ -58,36 +58,40 @@ The repository should be green before any new work.
 
 This is the precise parameter-freezing obstruction.
 
-- The current HOL-ZF model makes four closed unary logical operators pure:
-  identity, negation, constant truth, and constant falsity.  PP and
-  application closure require seven world-relative equivalence classes:
-  truth and falsity; the four unary operators; and the predicate classifying
-  those four unary operators.  The theory proves global PP, zeroary and unary
-  Recombination and Exhaustion, unique proposition-level fundamentality, no
-  fundamentality at other types, application closure, and Modalized
-  Functionality.  The exact consistency theorem is:
+- The current HOL-ZF model makes the closed constant builder
+  \(K=\lambda p.\lambda q.p\) pure, together with the four preceding unary
+  logical operators: identity, negation, constant truth, and constant
+  falsity.  Applying \(K\) to a pure true or false proposition yields the
+  corresponding constant unary operator.  The theory proves global PP,
+  zeroary and unary Recombination and Exhaustion, unique proposition-level
+  fundamentality, no fundamentality at other types, application closure, and
+  Modalized Functionality.  The exact consistency theorem is:
 
   ```isabelle
-  pp_logical_constants_fragment_PP_axioms_consistent:
+  pp_constant_builder_fragment_PP_axioms_consistent:
     CEV_axiom_consistent []
-      pp_logical_constants_fragment_PP_axioms
+      pp_constant_builder_fragment_PP_axioms
   ```
 
 - The bridge to the fresh formulation proves:
 
   ```isabelle
-  fresh_goodman_logical_constants_only_consistent:
+  fresh_goodman_constant_builder_only_consistent:
     U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
     U \<inter> pp_purity_schema \<subseteq>
       {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
        pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
        pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
-       pp_pure pp_unary_ty (pp_constant_operator ObjFalse)} \<Longrightarrow>
+       pp_pure pp_unary_ty (pp_constant_operator ObjFalse),
+       pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+         pp_constant_builder} \<Longrightarrow>
     CEV_axiom_consistent [] U
   ```
 
-  There is no finiteness restriction.  This is not a consistency theorem for
-  the full logical-purity schema.
+  There is no finiteness restriction.  The model verifies the zeroary and
+  unary QLN clauses present in this formal background; it does not establish
+  a binary QLN clause.  This is not a consistency theorem for the full
+  logical-purity schema.
 
 ## Do not regress these corrections
 
@@ -164,18 +168,17 @@ there is Recombination (`pp_full_stock_has_no_recombination_witness`).
 Continue the controlled logical-purity extensions in increasing type and
 term complexity:
 
-1. make the closed constant builder `K` pure, rather than merely its
-   constant-truth and constant-falsity values;
-2. add curried conjunction and compute the classes forced by application;
-3. prove one uniform theorem for the curried truth-functional operators.
+1. add curried conjunction and compute the classes forced by application;
+2. prove one uniform theorem for the curried truth-functional operators.
 
-At each stage retain the same obligations: PP, both directions of QLN,
-application closure, unique proposition-level fundamentality, no
-fundamentality at other types, and Modalized Functionality.  These steps test
-whether the successful treatment of the four elementary unary operators
-extends uniformly across the Boolean part of the logical vocabulary.
+At each stage retain the same obligations: PP, both directions of the
+zeroary and unary QLN clauses, application closure, unique
+proposition-level fundamentality, no fundamentality at other types, and
+Modalized Functionality.  These steps test whether the successful treatment
+of \(K\) and the four elementary unary operators extends uniformly across
+the Boolean part of the logical vocabulary.
 
-Even success at all three stages would not answer the full question.  The
+Even success at both stages would not answer the full question.  The
 remaining obstacle is logical purity for every higher-order closed logical
 term, including quantified operators, together with the self-referential
 condition imposed by Purity of Pure.

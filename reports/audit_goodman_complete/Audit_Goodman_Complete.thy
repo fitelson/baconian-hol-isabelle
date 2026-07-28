@@ -23,6 +23,7 @@ theory Audit_Goodman_Complete
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M7
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Model
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Tree_CEV_Soundness
+    Goodman_Fresh_ZF_Bridge.Bacon_PP_Fresh_ZF_Fragment_Bridge
 begin
 
 section \<open>Kernel theorem-object audit\<close>
@@ -210,7 +211,19 @@ val targets = [
   ("CEV vector-Equivalence soundness",
     @{thm pp_t_constants.pp_t_zeta_sound}),
   ("fixed point answers Goodman",
-    @{thm pp_t_cone_natural_enumerator.pp_t_term_basis_fixed_point_answers_Goodman})
+    @{thm pp_t_cone_natural_enumerator.pp_t_term_basis_fixed_point_answers_Goodman}),
+
+  (* Verified K-fragment model and fresh-stock bridge. *)
+  ("K-fragment global validity",
+    @{thm pp_t_constant_builder_fragment_PP_gvalid}),
+  ("K-fragment consistency",
+    @{thm pp_constant_builder_fragment_PP_axioms_consistent}),
+  ("K-fragment inclusion in Goodman stock",
+    @{thm pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman}),
+  ("Goodman five-purity-instance consistency",
+    @{thm fresh_goodman_constant_builder_only_consistent}),
+  ("K-fragment exact Goodman consistency",
+    @{thm pp_constant_builder_fragment_is_goodman_consistent})
 ]
 
 val results = map require_clean targets

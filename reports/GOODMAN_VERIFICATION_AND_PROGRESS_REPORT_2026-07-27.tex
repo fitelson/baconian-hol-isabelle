@@ -103,12 +103,12 @@ enumeration must respect Bacon's substitution action, and its range must
 contain every unary operator definable using the enumeration itself.  All
 remaining soundness obligations for this reduction have been discharged.
 Separately, a HOL--ZF model validates \PP\ and the background principles
-listed below together with purity of identity, negation, constant truth, and
-constant falsity.  Consequently every subcollection of Goodman's principles
-whose logical-purity instances are confined to those four formulas is
-consistent in Bacon's proof system.  This does not settle the question,
-because Goodman's intended theory makes every closed logical term pure at
-every type.
+listed below together with purity of identity, negation, constant truth,
+constant falsity, and the constant-function builder \(K\).  Consequently
+every subcollection of Goodman's principles whose logical-purity instances
+are confined to those five formulas is consistent in Bacon's proof system.
+This does not settle the question, because Goodman's intended theory makes
+every closed logical term pure at every type.
 Conversely, any such model must falsify global \Ltwo\ or global \TU.  We have
 also verified every determinate object-language result in the
 notes, corrected a modal gap in T3, corrected a false countability argument in
@@ -130,8 +130,9 @@ appendix model is not thereby a derivation in the theory, and an Isabelle
 theorem with explicit premises does not show that those premises hold in the
 intended model.
 
-The complete audit checks 96 principal results.  A fresh build passes.  None
-of these proofs contains an admitted lemma, an untrusted proof step, or an
+The complete audit checks the original 96 principal results together with
+five later \(K\)-fragment and bridge results.  A fresh build passes.  None of
+these proofs contains an admitted lemma, an untrusted proof step, or an
 undischarged assumption beyond the assumptions stated in the theorem itself.
 The type restriction carried by the general cardinal theorems in T9 is part of
 their formally checked statement, not a further mathematical premise.
@@ -521,8 +522,9 @@ for every \(U\),
 No finiteness assumption on \(U\) is required.  This does not settle
 Goodman's question, because the logical-purity schema in the intended theory
 includes every closed logical term, including terms at higher types.  The
-next planned extensions add purity of \(K\), then purity of conjunction; a
-complete result requires all closed logical terms at all types.
+following subsection strengthens this result by adding purity of \(K\).  The
+next planned extension is purity of conjunction; a complete result requires
+all closed logical terms at all types.
 
 \paragraph{Isabelle verification note.}
 The model and consistency theorems are:
@@ -537,6 +539,79 @@ The inclusion in Goodman's principles and the general bridge theorem are:
 \begin{verbatim}
 pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman
 fresh_goodman_logical_constants_only_consistent
+\end{verbatim}
+}
+
+\subsection{Adding purity of \texorpdfstring{\(K\)}{K}}
+
+Let
+\[
+ K=\lambda p{:}t.\lambda q{:}t.\,p.
+\]
+Thus \(Kp\) is the constant unary operator with value \(p\).  In the preceding
+model, the pure propositions lie in the truth and falsity classes.  Hence
+closure of purity under application sends \(K\) applied to a pure proposition
+to one of the two constant unary classes already present in the four-operator
+stock.
+
+\begin{theorem}[The constant-function-builder fragment]
+There is a set-theoretic HOL--ZF tree model with Henkin domains that validates
+all of the following:
+\begin{enumerate}
+\item purity of identity, negation, \(C_{\top}\), \(C_{\bot}\), and \(K\);
+\item \PP;
+\item every instance of closure of purity under application;
+\item the zeroary and unary instances of Recombination and Exhaustion;
+\item Modalized Functionality at arbitrary types; and
+\item unique fundamentality at proposition type and the absence of
+      fundamental entities at every other type.
+\end{enumerate}
+The collection consisting of exactly these principles is a subcollection of
+Goodman's principles and is consistent in Bacon's proof system.
+\end{theorem}
+
+\noindent
+The qualification in item 4 is important: this model verifies only the
+zeroary and unary instances in the present \(\mathsf{QLN}\) stock.  It does
+not establish a binary instance or the unrestricted \(\mathsf{QLN}\) schema.
+
+Let
+\[
+ \mathsf{LP}_{K}=
+ \mathsf{LP}_{4}\cup\{\,\Pure(K)\,\}.
+\]
+The strengthened bridge theorem establishes, for every \(U\),
+\[
+ U\subseteq T_G
+ \quad\text{and}\quad
+ U\cap\mathsf{LP}\subseteq\mathsf{LP}_{K}
+ \quad\Longrightarrow\quad
+ \mathsf{Con}_{\mathrm{CEV}^{+}}(U).
+\tag{KIC}
+\]
+As in \((\mathrm{IC})\), no finiteness assumption on \(U\) is required.  This
+is a genuine extension of the four-operator result: the higher-type closed
+logical operator \(K:t\IC(t\IC t)\) is now itself pure, and its applications
+remain inside the verified pure stock.  Goodman's full question nevertheless
+remains open, since the intended logical-purity schema contains every closed
+logical term at every type.  The next model extension is conjunction, followed
+by a uniform treatment of curried truth-functions.
+
+\paragraph{Isabelle verification note.}
+The model, validity of the displayed axioms, and consistency theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_t_constant_builder_fragment_PP_gvalid
+pp_constant_builder_fragment_PP_axioms_consistent
+\end{verbatim}
+}
+The inclusion and general bridge theorems are:
+{\footnotesize
+\begin{verbatim}
+pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman
+fresh_goodman_constant_builder_only_subset
+fresh_goodman_constant_builder_only_consistent
+pp_constant_builder_fragment_is_goodman_consistent
 \end{verbatim}
 }
 
@@ -707,8 +782,8 @@ substitution model.  At the same time, the diagonal restrictions show why the
 most direct Cantorian objection to such an enumeration fails.  A separate
 positive result now handles every subcollection of Goodman's principles whose
 logical-purity instances are confined to identity, negation, constant truth,
-and constant falsity.  The next extension should add purity of \(K\), then
-purity of conjunction.
+constant falsity, and \(K\).  The next extension should add purity of
+conjunction, followed by a uniform treatment of curried truth-functions.
 
 \section{Remaining verification work on the notes}
 
@@ -727,9 +802,10 @@ The following items should not be reported as verified:
       currently verified only for identity, necessity, possibility, constant
       truth, and constant falsity.
 \item A model validating \PP\ when the logical-purity schema extends beyond
-      identity, negation, constant truth, and constant falsity.  The next
-      cases are \(K\) and conjunction; Goodman's full question requires all
-      closed logical terms at all types.
+      identity, negation, constant truth, constant falsity, and \(K\).
+      The next case is conjunction, followed by uniform curried
+      truth-functions; Goodman's full question requires all closed logical
+      terms at all types.
 \item The existence or impossibility of an enumeration respecting Bacon's
       substitution action and satisfying \((\mathrm{SE})\).
 \end{enumerate}
@@ -740,11 +816,12 @@ We recommend preserving the following lines of attack.
 
 \begin{enumerate}
 \item \textbf{Continue adding logical purity.}  Identity, negation, constant
-      truth, and constant falsity are now handled.  Add purity of \(K\), then
-      purity of conjunction, while preserving closure of purity under
-      application, Recombination, Exhaustion, Modalized Functionality, and
-      \PP.  A complete result requires every closed logical term at every
-      type.
+      truth, constant falsity, and \(K\) are now handled.  Add purity of
+      conjunction, then prove a uniform result for curried truth-functions,
+      while preserving closure of purity under application, the verified
+      zeroary and unary instances of Recombination and Exhaustion, Modalized
+      Functionality, and \PP.  A complete result requires every closed
+      logical term at every type.
 \item \textbf{Positive construction.}  Test whether a countable collection of
       pure operators can preserve a proposition separating its members while
       remaining closed under every operation definable in the language.
@@ -793,9 +870,10 @@ determinate claim in Goodman's notes, including two substantive repairs, and
 reduces the unrestricted consistency problem to a single explicit
 model-construction equation.  A HOL--ZF model also validates \PP\ and the
 displayed background together with purity of identity, negation, constant
-truth, and constant falsity, so every subcollection whose logical-purity
-instances are confined to those four formulas is consistent.  Goodman's
-question remains open because the intended theory requires purity of every
-closed logical term at every type.}
+truth, constant falsity, and \(K\), so every subcollection whose
+logical-purity instances are confined to those five formulas is consistent.
+The present \(\mathsf{QLN}\) result is restricted to its zeroary and unary
+instances.  Goodman's question remains open because the intended theory
+requires purity of every closed logical term at every type.}
 
 \end{document}

@@ -15,9 +15,22 @@ TOOL_CLASSPATH="$ISABELLE_SCALA_JAR:$ISABELLE_CLASSPATH:$CLASSES_DIR"
 mkdir -p "$CLASSES_DIR"
 
 build_sessions() {
-  isabelle build "$@" -D "$PROJECT_ROOT" -d "$PROJECT_ROOT/fresh_attack" \
-    -d "$PROJECT_ROOT/fresh_attack_bridge" \
+  isabelle build "$@" -D "$PROJECT_ROOT" -D "$PROJECT_ROOT/fresh_attack" \
+    -D "$PROJECT_ROOT/fresh_attack_bridge" \
     -o export_theory=true
+}
+
+force_export_sessions() {
+  isabelle build -f -d "$PROJECT_ROOT" -d "$PROJECT_ROOT/fresh_attack" \
+    -d "$PROJECT_ROOT/fresh_attack_bridge" \
+    -o export_theory=true \
+    Higher_Order_Metaphysics \
+    Higher_Order_Metaphysics_PP \
+    Higher_Order_Metaphysics_PP_Frontier \
+    Higher_Order_Metaphysics_PP_Models \
+    Higher_Order_Metaphysics_PP_ZF_Model \
+    Goodman_Fresh_Attack \
+    Goodman_Fresh_ZF_Bridge
 }
 
 compile_extractor() {
@@ -58,6 +71,20 @@ with open(sys.argv[1], encoding="utf-8") as stream:
 counts = graph.get("stats", {}).get("edge_kinds", {})
 if counts.get("DEPENDS_ON", 0) <= 0 or counts.get("USES_CONSTANT", 0) <= 0:
     raise SystemExit(1)
+
+required_dependencies = {
+    "theorem:Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model."
+    "pp_constant_builder_fragment_PP_axioms_consistent",
+    "theorem:Bacon_PP_Fresh_ZF_Fragment_Bridge."
+    "fresh_goodman_constant_builder_only_consistent",
+}
+sources = {
+    edge["source"]
+    for edge in graph.get("edges", [])
+    if edge.get("kind") == "DEPENDS_ON"
+}
+if not required_dependencies <= sources:
+    raise SystemExit(1)
 PY
 }
 
@@ -67,7 +94,7 @@ run_extractor
 
 if ! semantic_graph_present; then
   echo "Theory bodies were absent; forcing one export_theory rebuild." >&2
-  build_sessions -f
+  force_export_sessions
   run_extractor
   if ! semantic_graph_present; then
     echo "Semantic extraction failed after the forced rebuild." >&2

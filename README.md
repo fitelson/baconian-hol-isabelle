@@ -58,7 +58,8 @@ qualifications stated in:
 - [`reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf);
 - [`reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`](reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md).
 
-The dedicated audit checks 96 principal theorem objects.  In particular, it
+The dedicated audit checks the original 96 principal theorem objects plus five
+new \(K\)-fragment and bridge results.  In particular, it
 records the modal gap in T3, repairs the countability argument in M5, proves
 the T6 contradictions and T9 counting result at their stated levels, and
 separates what is proved in Bacon's appendix model from what remains
@@ -178,11 +179,28 @@ This has no finiteness restriction.  It is not a proof of consistency for
 Goodman's full theory, whose logical-purity schema includes all closed terms
 formed from the logical vocabulary.
 
-The next controlled construction should make the constant builder \(K\)
-itself pure, then add curried conjunction, and then treat the curried
-truth-functional operators uniformly.  The remaining obstacle is still the
-full stock of higher-order closed logical terms, including the
-self-referential condition imposed by Purity of Pure.
+The constant builder \(K=\lambda p.\lambda q.p\) has now also been added.
+The enlarged interpretation makes \(K\), identity, negation, constant truth,
+and constant falsity pure.  Isabelle verifies PP, every application-closure
+instance, unique proposition-level fundamentality, no fundamentality at other
+types, zeroary and unary Recombination and Exhaustion, and Modalized
+Functionality at arbitrary types.  Its principal theorem is:
+
+```isabelle
+pp_constant_builder_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_constant_builder_fragment_PP_axioms
+```
+
+The unrestricted bridge theorem
+`fresh_goodman_constant_builder_only_consistent` covers every subcollection
+of the fresh Goodman principles whose logical-purity instances are restricted
+to \(K\) and the preceding four unary operators.  This is not a proof of
+consistency for Goodman's full theory.  The next construction is curried
+conjunction, followed by a uniform treatment of the curried truth-functional
+operators.  The remaining obstacle is the full class of higher-order closed
+logical terms, including the self-referential condition imposed by Purity of
+Pure.
 
 ## Finite-core search
 

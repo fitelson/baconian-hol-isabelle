@@ -1,5 +1,50 @@
 # PP Consistency Status
 
+> **The constant builder \(K\) added without contradiction, 2026-07-28.**
+> `Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model.thy` extends the
+> preceding interpretation by making the closed constant builder
+> \(K=\lambda p.\lambda q.p\) pure, in addition to identity, negation,
+> constant truth, and constant falsity.  Application of \(K\) to a pure
+> proposition yields one of the two already pure constant unary operators.
+>
+> Isabelle proves global validity of PP, all five displayed logical-purity
+> instances, every application-closure instance, unique proposition-level
+> fundamentality and no fundamentality at other types, zeroary and unary
+> Recombination and Exhaustion, and Modalized Functionality at arbitrary
+> types.  The principal theorem and its unrestricted subset corollary are:
+>
+> ```isabelle
+> pp_constant_builder_fragment_PP_axioms_consistent:
+>   CEV_axiom_consistent []
+>     pp_constant_builder_fragment_PP_axioms
+>
+> pp_constant_builder_fragment_consistent:
+>   U \<subseteq> pp_constant_builder_fragment_PP_axioms \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> The bridge proves
+> `pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman` and:
+>
+> ```isabelle
+> fresh_goodman_constant_builder_only_consistent:
+>   U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+>   U \<inter> pp_purity_schema \<subseteq>
+>     {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+>      pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+>      pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+>      pp_pure pp_unary_ty (pp_constant_operator ObjFalse),
+>      pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+>        pp_constant_builder} \<Longrightarrow>
+>   CEV_axiom_consistent [] U
+> ```
+>
+> No finiteness restriction is imposed on `U`.  This does not settle
+> Goodman's question, because the full logical-purity schema contains every
+> higher-order closed logical term.  The next construction is curried
+> conjunction, followed by a uniform result for curried truth-functional
+> operators.
+
 > **Identity, negation, constant truth, and constant falsity added without
 > contradiction, 2026-07-28.**
 > `Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model.thy` extends the
@@ -137,9 +182,10 @@
 > The reader-facing report is
 > `reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf`, with
 > self-contained Forbes/Lucida source in the adjacent `.tex` file.
-> The dedicated Isabelle session audits 96 principal theorem objects and
-> passes with zero oracles, zero undischarged logical hypotheses, and zero
-> flex-flex pairs.  T9's polymorphic cardinal results carry one ordinary
+> The dedicated Isabelle session audits the original 96 principal theorem
+> objects plus five \(K\)-fragment and bridge results.  It passes with zero
+> oracles, zero undischarged logical hypotheses, and zero flex-flex pairs.
+> T9's polymorphic cardinal results carry one ordinary
 > type-sort hypothesis, reported separately.
 >
 > New checked results derive T9's PC injection and kind-fibre injection from

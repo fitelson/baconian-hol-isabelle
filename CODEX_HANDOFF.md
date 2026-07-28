@@ -4,8 +4,9 @@
 
 The controlling ledger is
 `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.  Its associated
-Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits 96 principal
-theorem objects and passes with zero oracles, zero undischarged logical
+Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits the original
+96 principal theorem objects plus five \(K\)-fragment and bridge results, and
+passes with zero oracles, zero undischarged logical
 hypotheses, and zero flex-flex pairs.  T9's single sort hypothesis is ordinary
 polymorphism and is reported separately.
 
@@ -1839,3 +1840,65 @@ The next controlled construction is ordered as follows:
 The remaining obstacle is not these elementary truth functions.  It is the
 full logical-purity schema for all higher-order closed logical terms,
 especially the self-referential requirement imposed by Purity of Pure.
+
+---
+
+## 17. Fourth logical-purity extension: the constant builder \(K\) (2026-07-28)
+
+`zf_model/Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model.thy` adds purity
+of the closed constant builder
+\(K=\lambda p.\lambda q.p\), at type
+`Prop -> (Prop -> Prop)`, to the preceding four purity instances.  Its
+application to a pure true or false proposition yields the corresponding
+constant-truth or constant-falsity unary operator already present in the pure
+stock.  Isabelle proves that the enlarged stock remains closed under every
+possible application of pure objects.
+
+The model globally validates PP, unique proposition-level fundamentality, the
+absence of fundamentals at every other type, zeroary and unary Recombination
+and Exhaustion, every application-closure instance, and Modalized
+Functionality at arbitrary types.  The formal background at this stage
+contains only the zeroary and unary QLN clauses; no binary QLN theorem is
+claimed.  The exact HOL-ZF theorems are:
+
+```isabelle
+pp_t_constant_builder_fragment_PP_gvalid:
+  ConstantBuilderFragment.MovingTreeConstants.TreeHenkin.gvalid_set
+    pp_constant_builder_fragment_PP_axioms
+
+pp_constant_builder_fragment_PP_axioms_consistent:
+  CEV_axiom_consistent []
+    pp_constant_builder_fragment_PP_axioms
+
+pp_constant_builder_fragment_consistent:
+  U \<subseteq> pp_constant_builder_fragment_PP_axioms \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+`fresh_attack_bridge/Bacon_PP_Fresh_ZF_Fragment_Bridge.thy` proves:
+
+```isabelle
+pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman:
+  pp_constant_builder_fragment_PP_axioms
+    \<subseteq> fresh_goodman_axioms
+
+fresh_goodman_constant_builder_only_consistent:
+  U \<subseteq> fresh_goodman_axioms \<Longrightarrow>
+  U \<inter> pp_purity_schema \<subseteq>
+    {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+     pp_pure (Prop \<rightarrow>\<^sub>o Prop) pp_negation_operator,
+     pp_pure pp_unary_ty (pp_constant_operator ObjTrue),
+     pp_pure pp_unary_ty (pp_constant_operator ObjFalse),
+     pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+       pp_constant_builder} \<Longrightarrow>
+  CEV_axiom_consistent [] U
+```
+
+This consistency theorem has no finiteness restriction.  It applies to every
+subcollection of the fresh Goodman principles whose logical-purity instances
+are among \(K\), identity, negation, constant truth, and constant falsity.  It
+does not settle Goodman's question, since it does not cover all higher-order
+closed logical terms or Purity of Pure.
+
+The next controlled construction is curried conjunction.  After that, prove
+one uniform result for the curried truth-functional operators.

@@ -4,9 +4,9 @@ session Goodman_Fresh_ZF_Bridge =
     Bridge from the independently developed fresh-attack formulation to the
     explicit HOL-ZF tree model.  This session identifies the fresh statement
     of Modalized Functionality with the established formulation and records
-    the exact class of finite fragments verified by the sparse model.
+    the exact subcollections verified by the explicit fragment models.
   "
-  options [timeout = 120]
+  options [timeout = 60]
   sessions
     Goodman_Fresh_Attack
 theories

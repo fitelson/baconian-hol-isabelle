@@ -1,6 +1,6 @@
 theory Bacon_PP_Fresh_ZF_Fragment_Bridge
   imports
-    "Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Fresh_Logical_Constants_Fragment_Model"
+    "Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model"
     "Goodman_Fresh_Attack.Bacon_PP_Fresh_Finite_Fragment"
 begin
 
@@ -435,6 +435,111 @@ corollary
   using
     pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman
     pp_logical_constants_fragment_PP_axioms_consistent
+  by blast
+
+section \<open>Adding the constant-function builder\<close>
+
+lemma
+    pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman:
+  "pp_constant_builder_fragment_PP_axioms
+    \<subseteq> fresh_goodman_axioms"
+  unfolding pp_constant_builder_fragment_PP_axioms_def
+  using
+    pp_logical_constants_fragment_PP_axioms_subset_fresh_goodman
+    pp_constant_builder_purity_axiom
+  unfolding fresh_goodman_axioms_def
+    fresh_goodman_background_axioms_def
+    pp_full_QLN_background_axioms_def
+    pp_recombination_background_axioms_def
+    pp_background_axioms_def
+  by blast
+
+theorem fresh_goodman_constant_builder_only_subset:
+  assumes subset: "U \<subseteq> fresh_goodman_axioms"
+    and purity:
+      "U \<inter> pp_purity_schema
+        \<subseteq>
+          {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+           pp_pure (Prop \<rightarrow>\<^sub>o Prop)
+             pp_negation_operator,
+           pp_pure pp_unary_ty
+             (pp_constant_operator ObjTrue),
+           pp_pure pp_unary_ty
+             (pp_constant_operator ObjFalse),
+           pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+             pp_constant_builder}"
+  shows
+    "U \<subseteq> pp_constant_builder_fragment_PP_axioms"
+proof
+  fix A
+  assume A: "A \<in> U"
+  show "A \<in> pp_constant_builder_fragment_PP_axioms"
+  proof (cases "A \<in> pp_purity_schema")
+    case True
+    then have
+        "A = pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id
+        \<or>
+        A = pp_pure (Prop \<rightarrow>\<^sub>o Prop)
+          pp_negation_operator
+        \<or>
+        A = pp_pure pp_unary_ty
+          (pp_constant_operator ObjTrue)
+        \<or>
+        A = pp_pure pp_unary_ty
+          (pp_constant_operator ObjFalse)
+        \<or>
+        A = pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+          pp_constant_builder"
+      using A purity by blast
+    then show ?thesis
+      unfolding pp_constant_builder_fragment_PP_axioms_def
+        pp_logical_constants_fragment_PP_axioms_def
+        pp_identity_negation_fragment_PP_axioms_def
+      by blast
+  next
+    case False
+    have "A \<in> fresh_goodman_axioms - pp_purity_schema"
+      using A subset False by blast
+    then have "A \<in> pp_fresh_sparse_PP_axioms"
+      using fresh_goodman_without_logical_purity_subset_sparse
+      by blast
+    then show ?thesis
+      unfolding pp_constant_builder_fragment_PP_axioms_def
+        pp_logical_constants_fragment_PP_axioms_def
+        pp_identity_negation_fragment_PP_axioms_def
+      by simp
+  qed
+qed
+
+theorem fresh_goodman_constant_builder_only_consistent:
+  assumes subset: "U \<subseteq> fresh_goodman_axioms"
+    and purity:
+      "U \<inter> pp_purity_schema
+        \<subseteq>
+          {pp_pure (Prop \<rightarrow>\<^sub>o Prop) prop_id,
+           pp_pure (Prop \<rightarrow>\<^sub>o Prop)
+             pp_negation_operator,
+           pp_pure pp_unary_ty
+             (pp_constant_operator ObjTrue),
+           pp_pure pp_unary_ty
+             (pp_constant_operator ObjFalse),
+           pp_pure (Prop \<rightarrow>\<^sub>o pp_unary_ty)
+             pp_constant_builder}"
+  shows "CEV_axiom_consistent [] U"
+  using fresh_goodman_constant_builder_only_subset[
+    OF subset purity]
+  by (rule pp_constant_builder_fragment_consistent)
+
+corollary
+    pp_constant_builder_fragment_is_goodman_consistent:
+  "pp_constant_builder_fragment_PP_axioms
+      \<subseteq> fresh_goodman_axioms
+    \<and>
+    CEV_axiom_consistent []
+      pp_constant_builder_fragment_PP_axioms"
+  using
+    pp_constant_builder_fragment_PP_axioms_subset_fresh_goodman
+    pp_constant_builder_fragment_PP_axioms_consistent
   by blast
 
 end

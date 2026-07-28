@@ -26,3 +26,11 @@ This hand-rolled graph is the default project knowledge graph. Do not run
 Graphify automatically in this project. Use Graphify only when the user
 explicitly requests it or when the Isabelle-native graph cannot represent the
 required non-Isabelle relation, and state that reason first.
+
+## Isabelle build serialization
+
+Run every actual Isabelle build, forced rebuild, export, or graph extraction
+serially. Agents may inspect Isabelle sources in parallel, but no agent may
+start `isabelle build` while another build or export is active. Before starting
+a build, coordinate with the other agents and confirm that the shared Isabelle
+session database is idle.
