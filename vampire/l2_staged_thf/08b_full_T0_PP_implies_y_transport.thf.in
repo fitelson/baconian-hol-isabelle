@@ -1,0 +1,8 @@
+% Weaker alternate hard target with the full finite T0 stock:
+% Does T0 + PP + exists fun' force Y-relative reversible transport between
+% fun' propositions?
+
+include('00_full_t0_pp_base.thf.in').
+
+thf(full_t0_pp_implies_y_transport,conjecture,
+    ! [W:world] : (y_transport @ W)).

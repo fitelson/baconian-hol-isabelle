@@ -1,0 +1,151 @@
+% Full finite TFF representation of T0 + PP + exists fun'.
+%
+% The selective include deliberately omits:
+%
+%   not_L2
+%   pp_funprime_implies_L2_target
+%
+% Thus no denial of L2 and no $false conjecture is imported.
+
+include('../goodman_pp_funprime_not_l2_finite.in',
+       [world_type,
+        prop_type,
+        op1_type,
+        op2_type,
+        holds_type,
+        accessible_type,
+        app_type,
+        app_o_type,
+        compose_type,
+        pure_prop_at_type,
+        pure_op_at_type,
+        pure_prop_classifier_type,
+        pure_op_classifier_type,
+        identity_type,
+        negation_type,
+        constant_truth_type,
+        constant_falsity_type,
+        necessity_type,
+        possibility_type,
+        goodman_liar_type,
+        truth_type,
+        falsity_type,
+        pure_prop_definition,
+        pure_op_definition,
+        truth_is_true,
+        falsity_is_false,
+        accessibility_reflexive,
+        accessibility_transitive,
+        identity_application,
+        constant_truth_application,
+        constant_falsity_application,
+        negation_truth_condition,
+        negation_truth_object,
+        negation_falsity_object,
+        composition_application,
+        negation_involution,
+        necessity_truth_condition,
+        possibility_application,
+        necessity_truth_object,
+        necessity_falsity_object,
+        necessity_idempotence,
+        possibility_idempotence,
+        pure_truth,
+        pure_falsity,
+        pure_identity,
+        pure_negation,
+        pure_constant_truth,
+        pure_constant_falsity,
+        pure_necessity,
+        pure_possibility,
+        pure_application,
+        pure_composition,
+        modalized_functionality,
+        goodman_PP,
+        fun_prime_type,
+        fun_prime_definition,
+        exists_fun_prime,
+        goodman_liar_matrix,
+        pure_goodman_liar,
+        reversible_type,
+        group_member_type,
+        same_kind_type,
+        reversible_definition,
+        group_member_definition,
+        same_kind_definition]).
+
+% X and Y have the same composition-agreement profile iff every two locally
+% pure A,B agree after X exactly when they agree after Y.
+tff(same_agreements_type,type,
+    same_agreements:(world * op1 * op1)>$o).
+
+tff(same_agreements_definition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (same_agreements(W,X,Y)
+       <=>
+       ! [A:op1,B:op1] :
+         ((pure_op_at(W,A) & pure_op_at(W,B))
+          =>
+          ((compose(A,X) = compose(B,X))
+           <=>
+           (compose(A,Y) = compose(B,Y)))))).
+
+tff(composition_classification_type,type,
+    composition_classification:world>$o).
+
+tff(composition_classification_definition,axiom,
+    ! [W:world] :
+      (composition_classification(W)
+       <=>
+       ! [X:op1,Y:op1] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & same_agreements(W,X,Y))
+          =>
+          same_kind(W,X,Y)))).
+
+% Weak L2, with binder order X,Y,p,q.
+tff(weak_L2_type,type,weak_L2:world>$o).
+
+tff(weak_L2_definition,axiom,
+    ! [W:world] :
+      (weak_L2(W)
+       <=>
+       ! [X:op1,Y:op1,P:prop,Q:prop] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & fun_prime(W,P)
+           & fun_prime(W,Q)
+           & app(X,P) = app(Y,Q))
+          =>
+          same_kind(W,X,Y)))).
+
+% Strong alternate route: every two fun' propositions are in one G-orbit.
+tff(fun_prime_orbit_type,type,fun_prime_orbit:world>$o).
+
+tff(fun_prime_orbit_definition,axiom,
+    ! [W:world] :
+      (fun_prime_orbit(W)
+       <=>
+       ! [P:prop,Q:prop] :
+         ((fun_prime(W,P) & fun_prime(W,Q))
+          =>
+          ? [Z:op1] :
+            (group_member(W,Z) & Q = app(Z,P))))).
+
+% Weaker alternate route: Y cannot distinguish q from some reversible image
+% of p.
+tff(y_transport_type,type,y_transport:world>$o).
+
+tff(y_transport_definition,axiom,
+    ! [W:world] :
+      (y_transport(W)
+       <=>
+       ! [Y:op1,P:prop,Q:prop] :
+         ((pure_op_at(W,Y)
+           & fun_prime(W,P)
+           & fun_prime(W,Q))
+          =>
+          ? [Z:op1] :
+            (group_member(W,Z)
+             & app(Y,Q) = app(Y,app(Z,P)))))).

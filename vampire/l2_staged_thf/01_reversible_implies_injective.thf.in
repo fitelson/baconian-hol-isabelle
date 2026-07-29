@@ -1,0 +1,9 @@
+% Sanity lemma: every operator with a two-sided inverse is injective.
+
+include('00_algebraic_base.thf.in').
+
+thf(reversible_implies_injective,conjecture,
+    ! [W:world,Z:prop>prop,P:prop,Q:prop] :
+      (((reversible @ W @ Z) & ((Z @ P) = (Z @ Q)))
+       =>
+       (P = Q))).

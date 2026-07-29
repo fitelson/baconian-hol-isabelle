@@ -1,0 +1,14 @@
+% Checked Isabelle reduction: a collision on two fun' inputs forces the same
+% composition-agreement profile.
+
+include('00_algebraic_base.thf.in').
+
+thf(collision_implies_agreements,conjecture,
+    ! [W:world,X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (fun_prime @ W @ Q)
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_agreements @ W @ X @ Y))).

@@ -1,0 +1,26 @@
+% Symmetry wrapper for the successful one-way transport lemma.
+
+include('00_algebraic_base.thf.in').
+
+thf(one_way_agreement_transport_lemma,axiom,
+    ! [W:world,A:prop>prop,B:prop>prop,
+       X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op_at @ W @ A)
+        & (pure_op_at @ W @ B)
+        & (pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ Q)
+        & ((X @ P) = (Y @ Q))
+        & ((compose @ A @ X) = (compose @ B @ X)))
+       =>
+       ((compose @ A @ Y) = (compose @ B @ Y)))).
+
+thf(collision_implies_agreements,conjecture,
+    ! [W:world,X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (fun_prime @ W @ Q)
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_agreements @ W @ X @ Y))).

@@ -1,0 +1,51 @@
+% Combined endpoint of the successful staged searches.
+%
+% Only conjectures already proved in earlier files are admitted below:
+%
+%   02b_collision_implies_agreements.thf.in
+%   05a_explicit_orbit_witness_implies_kind.thf.in
+%   07a_explicit_y_transport_witness_implies_kind.thf.in
+%
+% The three remaining PP-to-premise conjectures are not admitted.
+
+include('00_algebraic_base.thf.in').
+
+thf(collision_implies_agreements_lemma,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (fun_prime @ W @ Q)
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_agreements @ W @ X @ Y))).
+
+thf(explicit_orbit_witness_implies_kind_lemma,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop,Z:prop>prop,
+       P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (group_member @ W @ Z)
+        & (Q = (Z @ P))
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ W @ X @ Y))).
+
+thf(explicit_y_transport_witness_implies_kind_lemma,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop,Z:prop>prop,
+       P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (group_member @ W @ Z)
+        & ((Y @ Q) = (Y @ (Z @ P)))
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ W @ X @ Y))).
+
+thf(successful_L2_reductions,conjecture,
+    ! [W:world] :
+      (((composition_classification @ W) => (weak_L2 @ W))
+       & ((fun_prime_orbit @ W) => (weak_L2 @ W))
+       & ((y_transport @ W) => (weak_L2 @ W)))).

@@ -1,0 +1,155 @@
+% Shared higher-order algebraic vocabulary for staged L2 proof search.
+% This file contains no conjecture and may be included by the target files.
+
+thf(world_type,type,(world:$tType)).
+thf(prop_type,type,(prop:$tType)).
+
+thf(pure_op_at_type,type,(pure_op_at:world>(prop>prop)>$o)).
+thf(compose_type,type,
+    (compose:(prop>prop)>(prop>prop)>(prop>prop))).
+thf(identity_type,type,(identity:prop>prop)).
+
+thf(composition_definition,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      ((compose @ X @ Y)
+       =
+       (^ [P:prop] : (X @ (Y @ P))))).
+
+% Redundant application normal form, included to keep the staged proof
+% obligations from depending on higher-order lambda unfolding heuristics.
+thf(composition_application,axiom,
+    ! [X:prop>prop,Y:prop>prop,P:prop] :
+      (((compose @ X @ Y) @ P) = (X @ (Y @ P)))).
+
+thf(identity_application,axiom,
+    ! [P:prop] : ((identity @ P) = P)).
+
+thf(pure_identity,axiom,
+    ! [W:world] : (pure_op_at @ W @ identity)).
+
+thf(pure_composition,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop] :
+      (((pure_op_at @ W @ X) & (pure_op_at @ W @ Y))
+       =>
+       (pure_op_at @ W @ (compose @ X @ Y)))).
+
+% fun'(p): evaluation at p is injective on the locally pure unary operators.
+thf(fun_prime_type,type,(fun_prime:world>prop>$o)).
+
+thf(fun_prime_definition,axiom,
+    ! [W:world,P:prop] :
+      ((fun_prime @ W @ P)
+       <=>
+       ! [X:prop>prop,Y:prop>prop] :
+         (((pure_op_at @ W @ X)
+           & (pure_op_at @ W @ Y)
+           & ((X @ P) = (Y @ P)))
+          =>
+          (X = Y)))).
+
+% Reversibility, the group G, and sameness of kind.
+thf(reversible_type,type,
+    (reversible:world>(prop>prop)>$o)).
+thf(group_member_type,type,
+    (group_member:world>(prop>prop)>$o)).
+thf(same_kind_type,type,
+    (same_kind:world>(prop>prop)>(prop>prop)>$o)).
+
+thf(reversible_definition,axiom,
+    ! [W:world,Z:prop>prop] :
+      ((reversible @ W @ Z)
+       <=>
+       ? [R:prop>prop] :
+         ((pure_op_at @ W @ R)
+          & ((compose @ Z @ R) = identity)
+          & ((compose @ R @ Z) = identity)))).
+
+thf(group_member_definition,axiom,
+    ! [W:world,Z:prop>prop] :
+      ((group_member @ W @ Z)
+       <=>
+       ((pure_op_at @ W @ Z) & (reversible @ W @ Z)))).
+
+thf(same_kind_definition,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop] :
+      ((same_kind @ W @ X @ Y)
+       <=>
+       ? [Z:prop>prop] :
+         ((group_member @ W @ Z)
+          & (X = (compose @ Y @ Z))))).
+
+% X and Y have the same composition-agreement profile iff every two locally
+% pure A,B agree after X exactly when they agree after Y.
+thf(same_agreements_type,type,
+    (same_agreements:world>(prop>prop)>(prop>prop)>$o)).
+
+thf(same_agreements_definition,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop] :
+      ((same_agreements @ W @ X @ Y)
+       <=>
+       ! [A:prop>prop,B:prop>prop] :
+         (((pure_op_at @ W @ A) & (pure_op_at @ W @ B))
+          =>
+          (((compose @ A @ X) = (compose @ B @ X))
+           <=>
+           ((compose @ A @ Y) = (compose @ B @ Y)))))).
+
+thf(composition_classification_type,type,
+    (composition_classification:world>$o)).
+
+thf(composition_classification_definition,axiom,
+    ! [W:world] :
+      ((composition_classification @ W)
+       <=>
+       ! [X:prop>prop,Y:prop>prop] :
+         (((pure_op_at @ W @ X)
+           & (pure_op_at @ W @ Y)
+           & (same_agreements @ W @ X @ Y))
+          =>
+          (same_kind @ W @ X @ Y)))).
+
+% Weak L2, with binder order X,Y,p,q.
+thf(weak_L2_type,type,(weak_L2:world>$o)).
+
+thf(weak_L2_definition,axiom,
+    ! [W:world] :
+      ((weak_L2 @ W)
+       <=>
+       ! [X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+         (((pure_op_at @ W @ X)
+           & (pure_op_at @ W @ Y)
+           & (fun_prime @ W @ P)
+           & (fun_prime @ W @ Q)
+           & ((X @ P) = (Y @ Q)))
+          =>
+          (same_kind @ W @ X @ Y)))).
+
+% Strong alternate route: every two fun' propositions are in one G-orbit.
+thf(fun_prime_orbit_type,type,(fun_prime_orbit:world>$o)).
+
+thf(fun_prime_orbit_definition,axiom,
+    ! [W:world] :
+      ((fun_prime_orbit @ W)
+       <=>
+       ! [P:prop,Q:prop] :
+         (((fun_prime @ W @ P) & (fun_prime @ W @ Q))
+          =>
+          ? [Z:prop>prop] :
+            ((group_member @ W @ Z) & (Q = (Z @ P)))))).
+
+% Weaker alternate route: Y cannot distinguish q from some reversible image
+% of p.  This is sufficient for weak L2 but weaker than orbit reachability.
+thf(y_transport_type,type,(y_transport:world>$o)).
+
+thf(y_transport_definition,axiom,
+    ! [W:world] :
+      ((y_transport @ W)
+       <=>
+       ! [Y:prop>prop,P:prop,Q:prop] :
+         (((pure_op_at @ W @ Y)
+           & (fun_prime @ W @ P)
+           & (fun_prime @ W @ Q))
+          =>
+          ? [Z:prop>prop] :
+            ((group_member @ W @ Z)
+             & ((Y @ Q) = (Y @ (Z @ P))))))).

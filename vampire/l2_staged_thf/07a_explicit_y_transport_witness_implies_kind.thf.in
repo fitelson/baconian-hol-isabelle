@@ -1,0 +1,16 @@
+% An explicit reversible Z with Y(q)=Y(Z(p)) is sufficient to turn a
+% collision X(p)=Y(q) into sameness of kind.
+
+include('00_algebraic_base.thf.in').
+
+thf(explicit_y_transport_witness_implies_kind,conjecture,
+    ! [W:world,X:prop>prop,Y:prop>prop,Z:prop>prop,
+       P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (group_member @ W @ Z)
+        & ((Y @ Q) = (Y @ (Z @ P)))
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ W @ X @ Y))).

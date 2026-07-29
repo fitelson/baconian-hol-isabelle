@@ -1,0 +1,8 @@
+% Weaker alternate bridge: Y-relative reversible transport is sufficient for
+% weak L2.
+
+include('00_algebraic_base.thf.in').
+
+thf(y_transport_implies_L2,conjecture,
+    ! [W:world] :
+      ((y_transport @ W) => (weak_L2 @ W))).

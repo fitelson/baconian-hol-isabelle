@@ -1,0 +1,7 @@
+% Does the complete finite TFF representation of
+% T0 + PP + exists fun' force composition classification?
+
+include('00_full_t0_pp_base.tff.in').
+
+tff(full_t0_pp_implies_composition_classification,conjecture,
+    ! [W:world] : composition_classification(W)).

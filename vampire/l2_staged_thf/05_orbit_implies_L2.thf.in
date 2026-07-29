@@ -1,0 +1,8 @@
+% Strong alternate bridge: reversible-orbit reachability of fun' propositions
+% implies weak L2.
+
+include('00_algebraic_base.thf.in').
+
+thf(fun_prime_orbit_implies_L2,conjecture,
+    ! [W:world] :
+      ((fun_prime_orbit @ W) => (weak_L2 @ W))).

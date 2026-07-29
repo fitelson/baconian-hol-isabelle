@@ -1,0 +1,52 @@
+% Minimal PP/D extension of the shared L2 algebraic vocabulary.
+
+include('00_algebraic_base.thf.in').
+
+thf(holds_type,type,(holds:world>prop>$o)).
+thf(pure_prop_at_type,type,(pure_prop_at:world>prop>$o)).
+
+thf(pure_prop_classifier_type,type,(pure_prop_classifier:prop>prop)).
+thf(pure_op_classifier_type,type,
+    (pure_op_classifier:(prop>prop)>prop)).
+thf(goodman_liar_type,type,(goodman_liar:prop>prop)).
+
+thf(pure_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      ((pure_prop_at @ W @ P)
+       <=>
+       (holds @ W @ (pure_prop_classifier @ P)))).
+
+thf(pure_op_definition,axiom,
+    ! [W:world,X:prop>prop] :
+      ((pure_op_at @ W @ X)
+       <=>
+       (holds @ W @ (pure_op_classifier @ X)))).
+
+thf(pure_application,axiom,
+    ! [W:world,X:prop>prop,P:prop] :
+      (((pure_op_at @ W @ X) & (pure_prop_at @ W @ P))
+       =>
+       (pure_prop_at @ W @ (X @ P)))).
+
+% PP at the unary-operator type.
+thf(goodman_PP,axiom,
+    ! [W:world] : (pure_op_at @ W @ pure_prop_classifier)).
+
+% The repaired background supplies a fun' proposition at every world.
+thf(exists_fun_prime,axiom,
+    ! [W:world] : ? [P:prop] : (fun_prime @ W @ P)).
+
+% Goodman's T6 diagonal D and its verified purity consequence.
+thf(goodman_liar_matrix,axiom,
+    ! [W:world,P:prop] :
+      ((holds @ W @ (goodman_liar @ P))
+       <=>
+       ! [X:prop>prop,Q:prop] :
+         (((pure_op_at @ W @ X)
+           & (fun_prime @ W @ Q)
+           & (P = (X @ Q)))
+          =>
+          ~ (holds @ W @ (X @ P))))).
+
+thf(pure_goodman_liar,axiom,
+    ! [W:world] : (pure_op_at @ W @ goodman_liar)).

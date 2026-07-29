@@ -1,0 +1,8 @@
+% Strong alternate hard target with the full finite T0 stock:
+% Does T0 + PP + exists fun' put every two fun' propositions in the same
+% reversible orbit?
+
+include('00_full_t0_pp_base.thf.in').
+
+thf(full_t0_pp_implies_fun_prime_orbit,conjecture,
+    ! [W:world] : (fun_prime_orbit @ W)).

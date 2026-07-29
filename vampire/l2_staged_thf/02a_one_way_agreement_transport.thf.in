@@ -1,0 +1,19 @@
+% One direction of the collision-agreement theorem.
+%
+% If A o X = B o X and X(p)=Y(q), then fun'(q) cancels the resulting
+% equality between A o Y and B o Y.
+
+include('00_algebraic_base.thf.in').
+
+thf(one_way_agreement_transport,conjecture,
+    ! [W:world,A:prop>prop,B:prop>prop,
+       X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op_at @ W @ A)
+        & (pure_op_at @ W @ B)
+        & (pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ Q)
+        & ((X @ P) = (Y @ Q))
+        & ((compose @ A @ X) = (compose @ B @ X)))
+       =>
+       ((compose @ A @ Y) = (compose @ B @ Y)))).

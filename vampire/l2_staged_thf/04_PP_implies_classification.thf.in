@@ -1,0 +1,8 @@
+% Primary hard target:
+% Does the minimal represented PP/D background force the classification
+% principle sufficient for weak L2?
+
+include('00_pp_base.thf.in').
+
+thf(pp_implies_composition_classification,conjecture,
+    ! [W:world] : (composition_classification @ W)).

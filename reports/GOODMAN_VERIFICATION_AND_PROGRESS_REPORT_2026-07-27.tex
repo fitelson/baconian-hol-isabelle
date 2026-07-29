@@ -80,7 +80,7 @@
 \vspace{4pt}
 {\large A machine-checked report on Goodman's project notes\par}
 \vspace{8pt}
-{\normalsize 27 July 2026; updated 28 July 2026}
+{\normalsize 27 July 2026; updated 29 July 2026}
 \end{center}
 
 \bigskip
@@ -281,6 +281,53 @@ two escape routes forced by T6---persists throughout the relevant
 enlargements of Bacon's semantic setting.  It also shows that a negative
 solution cannot treat \Ltwo\ as automatic merely because purity includes all
 closed logical denotations or because \PP\ is added on the same tree frame.
+
+\subsection{Automated proof search for L2 from PP}
+
+We also used Vampire to test whether a finite representation of
+\(T_0+\PP+\exists\funp\) yields weak \Ltwo.  The first experiment presented
+the entire represented stock together with the denial of \Ltwo\ as one
+higher-order refutation problem.  It returned no proof after one hour.
+
+We then divided the proposed derivation into separate intermediate claims.
+Suppose that \(X\) and \(Y\) are pure, \(p\) and \(q\) are \(\funp\), and
+\(Xp=Yq\).  Vampire proves that \(X\) and \(Y\) then agree on all equations
+obtained by composition on the left by pure operators:
+\[
+ \forall A\,B\,
+ \bigl(
+   \Pure(A)\AND\Pure(B)
+   \ \Longrightarrow\
+   (A\circ X=B\circ X\ \IFF\ A\circ Y=B\circ Y)
+ \bigr).
+\tag{*}
+\]
+It also proves each of the following conditional routes to \Ltwo:
+\begin{enumerate}
+\item if pure \(X\) and \(Y\) satisfying \((*)\) must satisfy
+      \(X\approx Y\), then \Ltwo;
+\item if every two \(\funp\) propositions \(p,q\) satisfy
+      \(q=Zp\) for some \(Z\in G\), then \Ltwo;
+\item even the weaker condition that, for every pure \(Y\) and every two
+      \(\funp\) propositions \(p,q\), there is some \(Z\in G\) such that
+      \(Yq=Y(Zp)\), implies \Ltwo.
+\end{enumerate}
+
+\noindent
+The remaining question is whether \(T_0+\PP+\exists\funp\) proves any one of
+these three sufficient conditions.  We tested each condition separately,
+first with genuine higher-order function types and then in a multisorted
+first-order representation in which unary operators are reified as objects.
+With a 60-second, six-core search for each conjecture, all six runs timed out.
+None returned either a proof or a countermodel.
+
+These experiments establish no nonderivability result.  Their positive value
+is diagnostic: Vampire rapidly proves the algebraic steps from each proposed
+intermediate condition to \Ltwo, but it does not presently obtain any of
+those conditions from \PP.  Thus the automated search isolates the same
+mathematical gap as the formal analysis: a negative argument along this route
+requires a substantive new consequence of \PP, rather than merely a longer
+search through the already identified composition and cancellation steps.
 
 \section{Audit of the object-language theorems}
 
@@ -743,7 +790,10 @@ Goodman's notes.
       enlargements on Bacon's tree frame.  A positive derivation, together
       with \TU, \WI, \Inv, or the strong-\Ltwo+\RS\ route, would yield the
       corresponding T6 contradiction and would also explain why no such tree
-      enlargement can validate \PP.
+      enlargement can validate \PP.  The bounded Vampire experiments show
+      that further work should concentrate on deriving one of the three
+      sufficient conditions isolated above, rather than repeating the
+      monolithic refutation search.
 \item \textbf{Keep model claims and proof-theoretic claims separate.}
       In particular, do not promote the conditional M4/M6 stock theorems to
       claims about Bacon's appendix model until their stock premises are

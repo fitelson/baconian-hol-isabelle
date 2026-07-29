@@ -1,0 +1,8 @@
+% Weaker alternate hard target:
+% Does the minimal represented PP/D background force Y-relative reversible
+% transport between fun' propositions?
+
+include('00_pp_base.thf.in').
+
+thf(pp_implies_y_transport,conjecture,
+    ! [W:world] : (y_transport @ W)).

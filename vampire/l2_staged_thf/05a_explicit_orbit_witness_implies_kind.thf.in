@@ -1,0 +1,16 @@
+% An explicit reversible Z carrying p to q converts a collision X(p)=Y(q)
+% into X = Y o Z by fun'(p), and hence witnesses sameness of kind.
+
+include('00_algebraic_base.thf.in').
+
+thf(explicit_orbit_witness_implies_kind,conjecture,
+    ! [W:world,X:prop>prop,Y:prop>prop,Z:prop>prop,
+       P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (group_member @ W @ Z)
+        & (Q = (Z @ P))
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ W @ X @ Y))).

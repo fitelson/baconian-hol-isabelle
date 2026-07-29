@@ -1,0 +1,19 @@
+% Existential wrapper for the explicit Y-relative transport lemma.
+
+include('00_algebraic_base.thf.in').
+
+thf(explicit_y_transport_witness_implies_kind_lemma,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop,Z:prop>prop,
+       P:prop,Q:prop] :
+      (((pure_op_at @ W @ X)
+        & (pure_op_at @ W @ Y)
+        & (fun_prime @ W @ P)
+        & (group_member @ W @ Z)
+        & ((Y @ Q) = (Y @ (Z @ P)))
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ W @ X @ Y))).
+
+thf(y_transport_implies_L2,conjecture,
+    ! [W:world] :
+      ((y_transport @ W) => (weak_L2 @ W))).

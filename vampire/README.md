@@ -85,3 +85,21 @@ vampire --mode casc --intent sat --time_limit 30 \
 ```
 
 The global project convention is that TPTP inputs use the `.in` extension.
+
+## Staged L2 experiments
+
+The `l2_staged_thf/` suite divides the proposed derivation of L2 from
+\(T_0+\mathrm{PP}+\exists\mathsf{fun}'\) into independently testable
+higher-order claims.  Vampire proves the algebraic bridges from collisions
+on `fun'` propositions to agreement under left composition, and from each of
+three proposed structural conditions to L2.  It does not prove any of those
+three conditions from the represented PP background in the recorded bounded
+searches.  The final combined target admits only lemmas proved in earlier
+split targets.
+
+The `l2_staged_tff/` suite tests the same three remaining conditions after
+reifying unary operators into a multisorted first-order sort.  The initial
+60-second, six-core runs time out in both representations.  These are
+proof-search failures, not nonderivability results.  The README and results
+ledger in each subdirectory record the exact dependency discipline and
+outcomes.

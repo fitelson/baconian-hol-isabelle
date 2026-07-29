@@ -1,0 +1,10 @@
+% First half of reversible-implies-injective: an explicitly supplied left
+% inverse makes Z injective.
+
+include('00_algebraic_base.thf.in').
+
+thf(explicit_left_inverse_implies_injective,conjecture,
+    ! [Z:prop>prop,R:prop>prop,P:prop,Q:prop] :
+      ((((compose @ R @ Z) = identity) & ((Z @ P) = (Z @ Q)))
+       =>
+       (P = Q))).

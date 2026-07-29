@@ -1,0 +1,8 @@
+% Strong alternate hard target:
+% Does the minimal represented PP/D background put every two fun'
+% propositions in the same reversible orbit?
+
+include('00_pp_base.thf.in').
+
+thf(pp_implies_fun_prime_orbit,conjecture,
+    ! [W:world] : (fun_prime_orbit @ W)).

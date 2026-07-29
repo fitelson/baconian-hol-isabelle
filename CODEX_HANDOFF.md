@@ -25,6 +25,34 @@ Goodman's consistency question because the model independently fails PP.
 Sections below that call global L2 open are chronological records of an
 earlier frontier and are superseded by this checkpoint.
 
+## 0. New live checkpoint: staged Vampire analysis of L2 from PP
+
+The proposed derivation of weak L2 from
+\(T_0+\mathrm{PP}+\exists\mathsf{fun}'\) is now divided into separate THF
+obligations.  Vampire proves:
+
+1. a collision \(X(p)=Y(q)\) on `fun'` propositions forces \(X\) and \(Y\)
+   to agree on every equation obtained by composition on the left by pure
+   operators;
+2. if that agreement determines sameness of kind, then weak L2;
+3. if every two `fun'` propositions lie in one reversible orbit, then weak
+   L2; and
+4. the weaker \(Y\)-relative reversible transport condition also implies
+   weak L2.
+
+The final combined target admits only lemmas proved in the preceding split
+targets.  The remaining PP-to-premise conjectures are not admitted.
+
+The hard step remains unresolved.  Sixty-second, six-core searches did not
+derive any of the three sufficient conditions from the represented
+\(T_0+\mathrm{PP}+\exists\mathsf{fun}'\) background, either with genuine
+higher-order function types or with operators reified into a multisorted
+first-order sort.  The earlier monolithic higher-order search also returned
+no proof after one hour.  None of these timeouts is a nonderivability result
+or a countermodel.  Further work on this route should seek a substantive
+PP-specific reason for one of the three conditions rather than repeat the
+monolithic search.
+
 ## 0. New live checkpoint: verified-model cutoff and failure of the
 \(J+D\) stabilization
 
@@ -127,10 +155,11 @@ Six significant additions are now checked:
 Every determinate claim in the notes is now proved, refuted and repaired, or
 stated with the qualification on which it is true.  Do not turn this into a
 blanket PASS for every sentence.  T3 has the documented modal gap; T7b and the
-wide-Fun discussion in M4 are underspecified; the proposed general M5
-collision argument and the fully instantiated rebuilt M5 model remain open.
-The main consistency question remains open.  Global semantic L2 is refuted by
-the child-XOR theorem recorded in the current checkpoint above.
+wide-Fun discussion in M4 are underspecified.  The proposed unrestricted M5
+collision generalization is refuted, and the rebuilt M5 model for Bacon's
+Recombination background is complete.  The main consistency question remains
+open.  Global semantic L2 is refuted by the child-XOR theorem recorded in the
+current checkpoint above.
 
 The earlier adversarial audit is
 `reports/CONSENSUS_GOODMAN_FINAL_AUDIT_2026-07-27.md`.  Its three precision

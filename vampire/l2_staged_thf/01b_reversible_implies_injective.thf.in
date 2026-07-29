@@ -1,0 +1,15 @@
+% Existential-elimination wrapper for the explicit-left-inverse lemma.
+
+include('00_algebraic_base.thf.in').
+
+thf(explicit_left_inverse_implies_injective_lemma,axiom,
+    ! [Z:prop>prop,R:prop>prop,P:prop,Q:prop] :
+      ((((compose @ R @ Z) = identity) & ((Z @ P) = (Z @ Q)))
+       =>
+       (P = Q))).
+
+thf(reversible_implies_injective,conjecture,
+    ! [W:world,Z:prop>prop,P:prop,Q:prop] :
+      (((reversible @ W @ Z) & ((Z @ P) = (Z @ Q)))
+       =>
+       (P = Q))).

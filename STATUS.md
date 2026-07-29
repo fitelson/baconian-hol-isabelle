@@ -1,5 +1,23 @@
 # PP Consistency Status
 
+> **Checkpoint: staged Vampire analysis of L2 from PP, 2026-07-29.**
+> The proposed derivation of weak L2 from
+> \(T_0+\mathrm{PP}+\exists\mathsf{fun}'\) has been divided into separate THF
+> obligations.  Vampire proves the collision-to-composition-agreement bridge
+> and proves that each of three proposed structural conditions is sufficient
+> for L2: composition agreement determines kind, all `fun'` propositions lie
+> in one reversible orbit, or the weaker \(Y\)-relative transport condition.
+> A final combined target admits only these successfully proved lemmas.
+>
+> The unresolved step is deriving any one of the three conditions from the
+> represented PP background.  Sixty-second, six-core searches time out for
+> all three conditions both with genuine higher-order function types and
+> with operators reified into a multisorted first-order sort.  The earlier
+> monolithic higher-order search also returned no proof after one hour.
+> These are proof-search failures only: none proves nonderivability or
+> supplies a countermodel.  The Goodman report now records the experiments
+> and their exact qualification.
+
 > **Checkpoint: report re-audit and completed M5 rebuilding,
 > 2026-07-28.**
 > The Goodman report and verification matrix now record the completed M5
@@ -19,9 +37,10 @@
 > including the complete M5 result, the five parts of the M1 footnote-60
 > analysis, and the L2 counterexample.  The report's M5 rebuilding task and
 > Goodman's first L2-calibration task are therefore closed.  T7b, the
-> multiple-fundamental wide-Fun discussion, the existential generalization of
-> the M5 collision method, and Goodman's main consistency question remain
-> open or underspecified.
+> multiple-fundamental wide-Fun discussion, and Goodman's main consistency
+> question remain open or underspecified.  The unrestricted existential
+> generalization of the M5 collision method is refuted: every operator with
+> an existentially supplied two-sided inverse is injective.
 
 > **Checkpoint: three-layer repository and exact L2 refutation,
 > 2026-07-28.**
