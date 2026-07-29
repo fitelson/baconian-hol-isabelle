@@ -126,11 +126,19 @@ The fragment sessions localize successive additions:
 | `higher_order_quantified/` | `Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified` |
 | `fun_prime/` | `Higher_Order_Metaphysics_PP_ZF_Fun_Prime` |
 | `t6_diagonal/` | `Higher_Order_Metaphysics_PP_ZF_T6_Diagonal` |
-| `modal_depth_two/` | `Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two` |
 
 These sessions isolate failures and preserve short rebuild times.  A fragment
 is not described as a model of Goodman's full theory unless its complete
 schema and closure obligations have been proved.
+
+The retired modal-depth-two fragment had been reserved for adding the genuine
+alternations \(\Box\Diamond\) and \(\Diamond\Box\), reducing the repetitions
+\(\Box\Box\) and \(\Diamond\Diamond\), closing the enlarged pure stock under
+application, and retesting PP, both unary directions of QLN, Modalized
+Functionality, and unique fundamentality.  It stopped before any stock or
+model theorem was implemented.  Its useful modal-word syntax and
+normalization lemmas remain in `higher_order_quantified/`; no verified model
+result was removed.
 
 ### `bridges/`
 
@@ -143,13 +151,15 @@ axiom stocks and the HOL-ZF fragment models.
 All active project sessions are declared in the root `ROOT` file.  Separate
 `ROOT` files remain only for dated audit sessions, generated finite-core
 replays, scratch material, and the optional Classicism prefix.  Consequently
-the entire maintained development is discoverable with one command:
+the entire maintained development, including the Goodman claim audit, is
+checked with one command:
 
 ```sh
-isabelle build -j 1 -D .
+./check_isabelle.sh
 ```
 
-No additional `-d` options for Goodman subdirectories are required.
+The script selects both the root sessions and the separately rooted maintained
+audit, with a single serial Isabelle build plan.
 
 ## Reader-facing status
 

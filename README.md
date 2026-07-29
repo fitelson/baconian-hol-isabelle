@@ -77,8 +77,11 @@ fails Purity of Pure at the unary-operator type.
 Isabelle builds must be run serially:
 
 ```sh
-isabelle build -j 1 -D .
+./check_isabelle.sh
 ```
+
+This single serial build plan includes every root session and the maintained
+Goodman theorem-object audit.
 
 Focused builds use the central session graph:
 
@@ -90,7 +93,7 @@ isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_Frontier
 isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_ZF_Model
 ```
 
-The complete Goodman audit is:
+The audit alone can still be run as a focused check:
 
 ```sh
 isabelle build -j 1 -d . \

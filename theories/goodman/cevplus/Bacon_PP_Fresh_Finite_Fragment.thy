@@ -146,6 +146,13 @@ definition fresh_modalized_functionality_schema :: "oterm set" where
   "fresh_modalized_functionality_schema =
     {A. \<exists>\<sigma> \<tau>. A = fresh_modalized_functionality \<sigma> \<tau>}"
 
+text \<open>
+  This is the arbitrary-result-type schema.  Its instances are assumed in the
+  fresh CEV+ package below and directly checked in the HOL-ZF models.  Bare CEV
+  is presently known to derive the corresponding schema only when
+  \<open>\<tau> = Prop\<close>.
+\<close>
+
 lemma fresh_modalized_functionality_schema_typed:
   assumes "A \<in> fresh_modalized_functionality_schema"
   shows "[] \<turnstile> A : Prop"

@@ -103,9 +103,16 @@ is true.  In particular, the formalization identifies and repairs a modal gap
 in T3 and a false countability argument in M5; verifies the four T6
 contradiction routes and the T9 cardinal dichotomy from their explicit
 premises; completes the rebuilt M5 model containing the displayed exotic
-operator; and isolates the assumptions still needed for several of the
-remaining model-theoretic claims.  It also proves that Recombination together with
-zeroary Exhaustion and unique proposition-level fundamentality supplies the
+operator; and completes the denotational step in Bacon's footnote-59
+argument.  In Bacon's exact tree semantics, the displayed footnote-59 term
+denotes the required diagonal, with identity interpreted at the appropriate
+higher types.  Consequently no interpretation in that semantic framework
+can validate \PP\ together with the \PP-free M1 background and \QSS.  This
+rules out completion of the present tree-model program, although it does not
+prove that the abstract theory has no other Henkin model.
+
+The formalization also proves that Recombination together with zeroary
+Exhaustion and unique proposition-level fundamentality supplies the
 \(\funp\) witness used in T6.  Hence T6 has the following exact semantic
 consequence: any model of the repaired background theory plus \PP\ must
 falsify global \Ltwo\ or global \TU.  That consequence sharply constrains a
@@ -134,11 +141,20 @@ theorem with explicit premises does not show that those premises hold in the
 intended model.
 
 The complete audit checks the theorem objects supporting the claims summarized
-below.  Fresh builds pass.  None of these proofs contains an admitted lemma,
+below.  It presently checks 136 theorem objects, and fresh builds pass.  None
+of these proofs contains an admitted lemma,
 an untrusted proof step, or an undischarged assumption beyond the assumptions
 stated in the theorem itself.  The type restriction carried by the general
 cardinal theorems in T9 is part of their formally checked statement, not a
 further mathematical premise.
+
+The semantic evaluation used below interprets identity at proposition type,
+the type of unary operators, and the next classifier type in their respective
+domains.  In particular, identity between unary operators is pointwise
+identity over the proposition domain; it is not obtained by first treating
+higher-type values as propositions.  This correction to an auxiliary
+evaluator preserves all earlier verified results and is essential to the
+exact M1 calculation.
 
 \section{Background definitions and two important distinctions}
 
@@ -159,12 +175,33 @@ Weak \Ltwo\ says that if \(X\) and \(Y\) are pure, \(p\) and \(q\) are
 
 Two distinctions uncovered by the formalization are central.
 
+\paragraph{The scope of QLN.}
+Goodman's general formulation requires the fundamental arguments of a QLN
+instance to be pairwise distinct.  The present problem stipulates exactly one
+fundamental entity, which is a proposition.  Hence every instance of arity at
+least two is vacuous.  The zeroary and unary instances are therefore the
+complete substantive QLN package for this problem; no higher-arity instance
+has been silently omitted.
+
 \paragraph{Recombination versus Exhaustion.}
 Unary Recombination proves a pointwise modal identity principle.  It does not,
 by itself, permit necessitating the universal closure required by the usual
 \QSS\ derivation.  Zeroary Exhaustion supplies exactly that missing step.  With
 unique proposition-level fundamentality, the repaired package derives the
 existence of a \(\funp\) proposition.
+
+\paragraph{The scope of Modalized Functionality.}
+Bacon--Dorr's Intensionality argument, as formalized in CEV, proves
+Modalized Functionality for operators whose result type is proposition:
+\[
+ X,Y:\sigma\to t.
+\]
+The argument type \(\sigma\) is arbitrary.  The broader two-type formula for
+\(X,Y:\sigma\to\tau\), with arbitrary result type \(\tau\), remains a
+separate schema and a direct model obligation.  The T2--T8 arguments
+formalized here use the proposition-valued instances and are unaffected by
+this distinction.  What is not justified is the earlier suggestion that the
+entire arbitrary-result schema is already redundant over bare CEV.
 
 \paragraph{Conditional model-theoretic results.}
 A formally verified theorem may still have explicit premises concerning
@@ -440,20 +477,28 @@ object language remains separate.\\
 \textbf{Item} & \textbf{Status} & \textbf{Result}\\
 \midrule
 \endhead
-M1 & Exact identification; exclusion conditional &
+M1 & Exact denotation and tree-semantic exclusion &
 At proposition type, the pure propositions in Bacon's model are exactly the two
 invariant propositions, and the operator testing for membership in that class
-is the noncontingency operator.  The exact footnote-59 liar is typed, beta-reduced, and proved
-pure from \PP\ plus Purity of Fun; given \QSS, this yields a
-contradiction.  At the
-next type, the infinitary join exists in the full function domain and has
-exactly the pure unary operators as its extension.  It interprets
-\(\Pure\) at that type.  \PP\ holds there exactly when this operator is
-itself in the next pure stock.  The current formalization does not prove
-directly that it is absent from the next pure stock in Bacon's appendix
-construction.  It proves that absence only from the additional PP-diagonal and
-\QSS\ assumptions.  Completeness of the function domain therefore supplies
-the join, but does not by itself settle its purity.\\
+is the noncontingency operator.  The exact footnote-59 liar is typed,
+beta-reduced, and proved pure from \PP, Purity of Fun, and application
+closure.  Isabelle now also computes its denotation in Bacon's exact tree
+semantics.  It is precisely Goodman's displayed diagonal, with proposition
+and operator identity interpreted by the appropriate local equivalence
+relations.  The object-language formula \QSS\ is evaluated in the same
+semantics, and the resulting diagonal argument is proved without an assumed
+semantic diagonal premise.
+
+It follows that, whenever Bacon's tree semantics validates the \PP-free M1
+background and \QSS, it cannot validate \PP.  Thus the present tree-model
+program cannot be completed into the desired model.  At the next type, the
+infinitary join still exists in the full function domain and has exactly the
+pure unary operators as its extension; \PP\ holds there exactly when that
+classifier is itself in the next pure stock.  Completeness of the function
+domain supplies the classifier, but the exact footnote-59 theorem shows that
+it cannot be pure while the other M1 assumptions and \QSS\ are retained.
+This is a result about Bacon's tree semantics, not yet a model-independent
+inconsistency theorem for every CEV+ Henkin model.\\
 
 M2 & Verified &
 Goodman's construction \(T\mapsto G_T\) is a bijection between arbitrary sets
@@ -614,6 +659,41 @@ The audit was not merely defensive.  The formalization has produced several
 theorems not stated in the original notes.  These results materially clarify
 the logical relations among Goodman's central claims.
 
+\subsection{The exact footnote-59 obstruction}
+
+\begin{theorem}[M1 in Bacon's exact tree semantics]
+Interpret \(\Fun\) by the unique distinguished fundamental proposition at
+each world of Bacon's tree semantics.  If an admissible interpretation of
+\(\Pure\) validates the constant-free purity schema, application closure,
+Purity of Fun, and \QSS, then it does not validate \PP.
+\end{theorem}
+
+\noindent
+The proof has three machine-checked parts.  First, Bacon's closed
+footnote-59 term is evaluated and shown to denote the operator \(D\) such
+that
+\[
+ Dp
+ \quad\IFF\quad
+ \forall X\,q\,
+ \bigl(
+   \Pure(X)\AND\Fun(q)\AND p=Xq
+   \ \IC\ \NOT Xp
+ \bigr).
+\]
+Second, object-language \QSS\ is evaluated using the same type-correct
+identity relation as the rest of the semantics.  Third, \QSS\ identifies
+each relevant pure operator \(X\) with \(D\), yielding the diagonal
+contradiction.  Thus the theorem does not assume a separate semantic
+diagonal premise.
+
+This materially changes the status of the model construction.  The verified
+fragments remain correct, but no enlargement within Bacon's exact tree
+semantics can reach the complete target while retaining the stated M1
+background and \QSS.  A positive answer therefore requires a different
+Henkin interpretation.  A negative answer would follow if this argument
+could be generalized to every admissible CEV+ Henkin model.
+
 \subsection{Recombination, Exhaustion, and the existence of a
 \texorpdfstring{\(\funp\)}{fun-prime} proposition}
 
@@ -728,14 +808,16 @@ interpreted at every relevant type.  T6 shows that such a model must falsify
 \(\approx\)-classes that agree on suitable \(\funp\) propositions, or a pure
 reversible operator that is neither uniformly truth-preserving nor uniformly
 truth-flipping.  Bacon's substitution-structure models do not already supply
-the desired example: M1 locates their first obstruction to \PP, while M2 shows
-that identifying purity with invariance is incompatible with \QSS.  The
+the desired example.  The exact footnote-59 theorem now rules out the entire
+current tree-semantic framework whenever the PP-free M1 background and
+\QSS\ are retained; M2 independently shows that identifying purity with
+invariance is incompatible with \QSS.  The
 operator \(Z\) shows that the operators denoted by Bacon's closed logical
 terms already take the \(\neg\Ltwo\) branch.  The enlargement theorem shows
 that every composition-closed enlargement of those operators that admits a
 \(\funp\) proposition does so as well.  The missing step is not preservation
-of this escape route but construction of an enlarged interpretation that
-also validates \PP\ and the remaining background theory.
+of this escape route but construction of a genuinely different Henkin
+interpretation that also validates \PP\ and the remaining background theory.
 
 \paragraph{Negative route.}
 The most direct negative route is the one already isolated in Goodman's
@@ -749,13 +831,19 @@ Any negative proof deriving \Ltwo\ from \PP\ must therefore use features not
 present in these tree interpretations; alternatively, it would show that no
 such \PP\ enlargement exists.
 
+There is now a second, more direct negative route.  The exact footnote-59
+theorem rules out \PP\ in Bacon's tree semantics whenever the PP-free M1
+background and \QSS\ hold.  If that type-correct diagonal argument can be
+lifted from the tree construction to arbitrary CEV+ Henkin models, it yields
+a model-independent negative answer without first deriving \Ltwo.
+
 \paragraph{Relative plausibility.}
 The formal work does not establish that either answer is more likely.  It
 shows exactly what each answer must overcome.  A positive model must depart
-from Bacon's familiar substitution structures in one of the ways forced by
-the T6 disjunction.  A negative proof must promote one of Goodman's
-model-sensitive principles, especially \Ltwo\ or \TU, to a consequence of the
-background theory itself.
+from Bacon's exact tree semantics and must take one of the escape routes
+forced by the T6 disjunction.  A negative proof may either generalize the
+exact M1 obstruction or promote one of Goodman's model-sensitive principles,
+especially \Ltwo\ or \TU, to a consequence of the background theory itself.
 
 \section{Remaining verification work on the notes}
 
@@ -774,6 +862,12 @@ The following tasks arise directly from the unresolved or qualified claims in
 Goodman's notes.
 
 \begin{enumerate}
+\item \textbf{Generalize the exact M1 obstruction.}
+      Abstract the type-correct footnote-59 proof from Bacon's tree semantics
+      to an arbitrary CEV+ Henkin model.  The object-language purity proof and
+      the exact diagonal calculation are now available; the remaining task
+      is to determine which general semantic assumptions they require.
+      Success would answer Goodman's question negatively.
 \item \textbf{Obtain determinate formulations.}
       Obtain an exact T7b statement, an exact formulation of the wide-Fun
       discussion before encoding them.
@@ -824,13 +918,15 @@ handoff files identify the source theory corresponding to each result.
 \noindent
 The appropriate overall verdict is therefore:
 \emph{the formalization verifies, corrects, or precisely qualifies every
-determinate claim in Goodman's notes, including two substantive repairs.  It
-also completes the rebuilding step in M5, proves that the unrestricted
-existential generalization of the M5 collision method is false, refutes L2 in
-Bacon's appendix model and every relevant composition-closed enlargement,
-and proves the exact T6 semantic consequence and several strengthening
-results directly relevant to the notes.  The remaining underspecified and
-model-dependent claims are explicitly identified.  Goodman's consistency
-question itself remains open.}
+determinate claim in Goodman's notes.  It completes the rebuilding step in
+M5, proves that the unrestricted existential generalization of the M5
+collision method is false, refutes L2 in Bacon's appendix model and every
+relevant composition-closed enlargement, proves the exact T6 semantic
+consequence, and completes Bacon's footnote-59 denotation argument in the
+exact tree semantics.  The last result rules out the current tree-model
+program, but it does not yet establish model-independent inconsistency.  The
+scopes of QLN and Modalized Functionality are now stated exactly, and the
+remaining underspecified and model-dependent claims are explicitly
+identified.  Goodman's consistency question itself remains open.}
 
 \end{document}

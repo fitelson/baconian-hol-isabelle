@@ -1,5 +1,31 @@
 # PP Consistency Status
 
+> **Checkpoint: scope and maintenance repair, 2026-07-29.**
+> Higher-type equality in the bounded semantic bridge is now type-directed:
+> proposition equality, unary-operator equality, and classifier equality are
+> evaluated in their respective Henkin domains.  The stable `pp_full_QLN_*`
+> names are explicitly characterized as the complete zeroary-and-unary
+> package appropriate to the exactly-one-fundamental setting.  Modalized
+> Functionality is split into the proposition-valued schema derived in bare
+> CEV and the arbitrary-result schema retained as a CEV+ and model
+> obligation.
+>
+> The M1 footnote-59 bridge is now end to end in the exact HOL-ZF semantics.
+> Isabelle computes the denotation of Bacon's closed liar term and QSS using
+> type-indexed PER identity, proves the resulting diagonal contradiction, and
+> concludes that PP is not globally valid in any moving-seed interpretation
+> validating the PP-free M1 background and QSS.  No abstract semantic
+> diagonal premise remains.
+>
+> The empty modal-depth-two model wrapper and its session have been retired.
+> It had been reserved for the genuine \(\Box\Diamond\) and
+> \(\Diamond\Box\) alternations, application closure, and retesting PP, unary
+> QLN, Modalized Functionality, and unique fundamentality, but no fragment
+> model theorem was ever implemented.  The substantive modal-word theory is
+> retained in the higher-order-quantified session.  The maintained Goodman
+> theorem-object audit now checks 136 targets and is selected by
+> `check_isabelle.sh`.
+
 > **Checkpoint: staged Vampire analysis of L2 from PP, 2026-07-29.**
 > The proposed derivation of weak L2 from
 > \(T_0+\mathrm{PP}+\exists\mathsf{fun}'\) has been divided into separate THF

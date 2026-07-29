@@ -18,6 +18,7 @@ theory Audit_Goodman_Complete
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M7_Invariant_Reachability
     Higher_Order_Metaphysics_PP.Bacon_PP_Heredity_Semantics
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Bacon_10_1
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M1_Fn59
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M1_Fn60
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Rebuild
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model
@@ -59,6 +60,16 @@ fun require_clean (name, thm) =
   end
 
 val targets = [
+  (* Scope and semantic-bridge maintenance. *)
+  ("higher bridge unary equality",
+    @{thm pp_v_equal_unary_root_iff}),
+  ("higher bridge classifier equality",
+    @{thm pp_v_equal_classifier_root_iff}),
+  ("zeroary-unary QLN package exact scope",
+    @{thm pp_full_QLN_background_axioms_exact_scope}),
+  ("proposition-valued Modalized Functionality schema",
+    @{thm CEV_proves_proposition_valued_modalized_functionality_schema}),
+
   (* Object-language suite. *)
   ("T1 pure propositions", @{thm CEV_Goodman_T1_pure_propositions_extreme}),
   ("T1 biconditional classification",
@@ -131,6 +142,14 @@ val targets = [
   ("M1 footnote-59 liar purity", @{thm pp_M1_fn59_liar_pure}),
   ("M1 footnote-59 contradiction",
     @{thm pp_M1_fn59_unique_fun_diagonal_contradiction_sem}),
+  ("M1 footnote-59 exact denotation",
+    @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_liar_denotation}),
+  ("M1 QSS exact denotation",
+    @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_QSS_denotation}),
+  ("M1 footnote-59 PER contradiction",
+    @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_diagonal_contradiction}),
+  ("M1 footnote-59 PP failure bridge",
+    @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_PP_failure}),
   ("M1 footnote-60 identity join",
     @{thm pp_M1_fn60_identity_join_exact_extension}),
   ("M1 footnote-60 exact diagnosis",

@@ -2,7 +2,7 @@ theory Bacon_PP_Modalized_Functionality_Derived
   imports Bacon_PP_Intensionality Bacon_PP_Modalized_Functionality
 begin
 
-section \<open>Modalized Functionality is a theorem of CEV\<close>
+section \<open>Proposition-valued Modalized Functionality is a theorem of CEV\<close>
 
 text \<open>
   The proposition-valued unary instance of Modalized Functionality follows
@@ -289,7 +289,7 @@ proof -
     by (rule CEV_imp_trans)
 qed
 
-subsection \<open>The closed Modalized Functionality schema\<close>
+subsection \<open>The closed proposition-valued Modalized Functionality schema\<close>
 
 lemma CEV_generalize_theorem:
   assumes A_type: "\<sigma> # \<Gamma> \<turnstile> A : Prop"
@@ -348,11 +348,18 @@ proof -
         numeral_2_eq_2)
 qed
 
+theorem CEV_proves_proposition_valued_modalized_functionality_schema:
+  assumes "A \<in>
+    pp_proposition_valued_modalized_functionality_schema"
+  shows "[] \<turnstile>\<^sub>CEV A"
+  using assms CEV_proves_pp_modalized_functionality_Prop
+  unfolding pp_proposition_valued_modalized_functionality_schema_def
+  by blast
+
 text \<open>
-  Thus the proposition-valued unary member of the previously recorded target
-  schema is derivable in bare \<open>CEV\<close>.  A separate context-weakening and
-  conservativity argument is still required before redundancy of adding this
-  closed theorem as a \<open>CEV\<^sup>+\<close> axiom is formally established.
+  Thus every proposition-valued member of the schema is derivable in bare
+  \<open>CEV\<close>.  This theorem does not extend the result type from \<open>Prop\<close> to an
+  arbitrary object-language type.
 \<close>
 
 end

@@ -113,6 +113,12 @@ datatype finite_core_profile =
   | Full_QLN
   | Full_QLN_Modalized_Functionality
 
+text \<open>
+  The two constructor names containing \<open>Full_QLN\<close> are retained for stable
+  search manifests.  In this exactly-one-fundamental setting they denote the
+  complete zeroary-and-unary package, not a generic all-arity encoding.
+\<close>
+
 fun finite_core_profile_axioms :: "finite_core_profile \<Rightarrow> oterm set" where
   "finite_core_profile_axioms Recombination_Only =
     pp_recombination_PP_axioms"

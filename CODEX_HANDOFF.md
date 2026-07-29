@@ -9,8 +9,9 @@ The source tree now has three explicit layers:
 3. `theories/goodman/`, session `Goodman_CEVplus`, with all Goodman proof,
    model, canonical, and bridge sessions beneath it.
 
-All active project sessions are declared in the root `ROOT`.  The full serial
-build command is `isabelle build -j 1 -D .`.  The authoritative map is
+All active theory sessions are declared in the root `ROOT`; the separately
+rooted maintained claim audit is also part of `./check_isabelle.sh`.  That
+script is the authoritative full serial check.  The repository map is
 `docs/REPOSITORY_STRUCTURE.md`.
 
 Goodman's semantic L2 calibration is complete.  The closed logical operator
@@ -108,7 +109,7 @@ principles.
 
 The controlling ledger is
 `reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md`.  Its associated
-Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits 128 theorem
+Isabelle session, `Goodman_Complete_Audit_2026_07_27`, audits 136 theorem
 objects supporting the current report and matrix, including the completed
 M5 rebuilt model and the refutation of L2, and
 passes with zero oracles, zero undischarged logical

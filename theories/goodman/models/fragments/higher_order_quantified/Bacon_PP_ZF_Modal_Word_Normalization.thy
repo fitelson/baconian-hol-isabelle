@@ -1,6 +1,6 @@
 theory Bacon_PP_ZF_Modal_Word_Normalization
   imports
-    "Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified.Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model"
+    Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model
 begin
 
 section \<open>Closed unary modal words\<close>
@@ -12,8 +12,8 @@ text \<open>
   \(\lambda p.\Box\Diamond p\), while the same word with parameter
   \<open>True\<close> denotes \(\lambda p.\Box\Diamond\neg p\).
 
-  This representation is deliberately independent of the depth-two model
-  below.  Later normal-form arguments may recurse over arbitrary words.
+  This representation is independent of any depth-two fragment model.
+  Later normal-form arguments may recurse over arbitrary words.
 \<close>
 
 datatype pp_modal_letter = PPBox | PPDiamond
@@ -347,10 +347,8 @@ lemma pp_modal_depth_two_alternation_cases:
 
 text \<open>
   The following syntactic classification isolates the only length-two words
-  that are not immediate repetitions.  The semantic normalization of the two
-  repetitions to depth one is proved in the fragment theory, where it can be
-  stated relative to the already interpreted necessity and possibility
-  classes.
+  that are not immediate repetitions.  It is a syntactic classification only:
+  the retired depth-two fragment never supplied a semantic repetition theorem.
 \<close>
 
 lemma pp_modal_word_length_two_cases:

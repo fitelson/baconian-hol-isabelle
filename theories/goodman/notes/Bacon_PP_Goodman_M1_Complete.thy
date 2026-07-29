@@ -424,13 +424,13 @@ corollary pp_M1_fn59_unique_fun_diagonal_contradiction_sem:
   by (rule pp_M1_fn59_unique_fun_diagonal_contradiction)
 
 text \<open>
-  This discharges the bridge left open in \<open>Bacon_PP_Goodman_M1\<close>.
-  The footnote-59 diagonal is an explicit well-typed term; abstracting its
-  occurrences of \<open>Pure\<close> and \<open>Fun\<close> yields a closed constant-free builder;
-  PP, Purity of Fun, and two applications of application closure certify the
-  liar itself as pure.  Unique proposition-level fundamentality reduces its
-  quantified \<open>Fun\<close> clause to the QSS diagonal; the resulting contradiction
-  is \<open>pp_M1_fn59_unique_fun_diagonal_contradiction\<close>.
+  This completes the object-language half of the bridge left open in
+  \<open>Bacon_PP_Goodman_M1\<close>.  The footnote-59 diagonal is an explicit well-typed
+  term; abstracting its occurrences of \<open>Pure\<close> and \<open>Fun\<close> yields a closed
+  constant-free builder; PP, Purity of Fun, and two applications of
+  application closure certify the liar itself as pure.  The exact HOL-ZF
+  denotation calculation and its PER-respecting QSS contradiction are proved
+  in \<open>Bacon_PP_ZF_Goodman_M1_Fn59\<close>.
 \<close>
 
 end

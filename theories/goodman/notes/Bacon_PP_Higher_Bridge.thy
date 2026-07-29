@@ -126,6 +126,40 @@ fun unVP :: "pp_v \<Rightarrow> pp_sem_prop" where
   "unVP (VP X) = X"
 | "unVP _ = {}"
 
+text \<open>
+  Equality must inspect values at their object-language type.  In particular,
+  equality at a function type is local extensional equality over the
+  corresponding Henkin domain; it is not proposition equality after coercing
+  non-propositional values to \<open>{}\<close>.
+\<close>
+
+fun pp_v_equal ::
+    "pp_sem_prop set \<Rightarrow> (pp_sem_prop \<Rightarrow> pp_sem_prop) set \<Rightarrow>
+      otype \<Rightarrow> pp_v \<Rightarrow> pp_v \<Rightarrow> pp_sem_prop"
+  where
+  "pp_v_equal DP DF Prop (VP X) (VP Y) =
+    pp_operator_equal X Y"
+| "pp_v_equal DP DF (\<sigma> \<rightarrow>\<^sub>o \<tau>) (VF F) (VF H) =
+    (if \<sigma> = Prop \<and> \<tau> = Prop
+     then \<Inter> ((\<lambda>X. pp_operator_equal (F X) (H X)) ` DP)
+     else {})"
+| "pp_v_equal DP DF (\<sigma> \<rightarrow>\<^sub>o \<tau>) (VG F) (VG H) =
+    (if \<sigma> = (Prop \<rightarrow>\<^sub>o Prop) \<and> \<tau> = Prop
+     then \<Inter> ((\<lambda>X. pp_operator_equal (F X) (H X)) ` DF)
+     else {})"
+| "pp_v_equal DP DF ty v w = {}"
+
+lemma pp_v_equal_unary_root_iff:
+  "[] \<in> pp_v_equal DP DF (Prop \<rightarrow>\<^sub>o Prop) (VF F) (VF H)
+    \<longleftrightarrow> (\<forall>X \<in> DP. F X = H X)"
+  by (auto simp: pp_operator_equal_def pp_view_def set_eq_iff)
+
+lemma pp_v_equal_classifier_root_iff:
+  "[] \<in> pp_v_equal DP DF
+      ((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop) (VG F) (VG H)
+    \<longleftrightarrow> (\<forall>X \<in> DF. F X = H X)"
+  by (auto simp: pp_operator_equal_def pp_view_def set_eq_iff)
+
 subsection \<open>Good values\<close>
 
 definition pp_fok ::
@@ -151,6 +185,18 @@ lemma pp_v_ok_unVP:
   assumes "pp_v_ok G v"
   shows "unVP v \<in> pp_pclosure G"
   using assms pp_pclosure_empty by (cases v) auto
+
+lemma pp_v_equal_ok:
+  assumes v: "pp_v_ok G v"
+    and w: "pp_v_ok G w"
+    and DP: "\<And>X. X \<in> DP \<Longrightarrow> X \<in> pp_pclosure G"
+    and DF: "\<And>F. F \<in> DF \<Longrightarrow> pp_fok G F"
+  shows "pp_v_equal DP DF ty v w \<in> pp_pclosure G"
+  using v w DP DF
+  by (cases ty; cases v; cases w)
+    (auto simp: pp_fok_def pp_gok_def pp_pclosure_empty
+      split: otype.splits
+      intro!: p_Inter intro: pp_pclosure_operator_equal)
 
 text \<open>
   The purity operator is a good level-two value.  This is where the induction of
@@ -260,8 +306,9 @@ fun pp_veval ::
      VP (- unVP (pp_veval DP DF V r A env) \<union>
         unVP (pp_veval DP DF V r B env))"
 | "pp_veval DP DF V r (Eq ty A B) env =
-     VP (pp_operator_equal (unVP (pp_veval DP DF V r A env))
-        (unVP (pp_veval DP DF V r B env)))"
+     VP (pp_v_equal DP DF ty
+        (pp_veval DP DF V r A env)
+        (pp_veval DP DF V r B env))"
 | "pp_veval DP DF V r (Forall ty A) env =
      VP (if ty = Prop
          then \<Inter> ((\<lambda>X. unVP (pp_veval DP DF V r A (VP X # env))) ` DP)
@@ -317,8 +364,12 @@ next
     by (simp add: pp_pclosure_Un p_compl pp_v_ok_unVP)
 next
   case (Eq ty A B)
-  then show ?case
-    by (simp add: pp_pclosure_operator_equal pp_v_ok_unVP)
+  have okA: "pp_v_ok G (pp_veval DP DF V r A env)"
+    using Eq.prems by (rule Eq.hyps(1))
+  have okB: "pp_v_ok G (pp_veval DP DF V r B env)"
+    using Eq.prems by (rule Eq.hyps(2))
+  show ?case
+    using pp_v_equal_ok[OF okA okB DP DF] by simp
 next
   case (Lam ty A)
   show ?case by simp

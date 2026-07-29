@@ -137,10 +137,12 @@ lemma typed_pp_target_PP:
 subsection \<open>QLN split into its two directions\<close>
 
 text \<open>
-  With exactly one fundamental proposition, the only nonzero-arity QLN
-  instance needed here is unary.  The zeroary instances are stated
-  separately.  Recombination is the box-to-universal direction; Exhaustion is
-  its converse.
+  Goodman requires the fundamental arguments in an instance of QLN to be
+  pairwise distinct, and the present theory stipulates exactly one fundamental
+  entity, a proposition.  Hence every instance of arity at least two is
+  vacuous in the intended specialization.  The only substantive instances are
+  therefore zeroary and unary, and those are the instances formalized here.
+  Recombination is the box-to-universal direction; Exhaustion is its converse.
 \<close>
 
 definition pp_zeroary_recombination :: oterm where
@@ -273,6 +275,16 @@ definition pp_full_QLN_background_axioms :: "oterm set" where
   "pp_full_QLN_background_axioms =
     pp_recombination_background_axioms \<union> pp_exhaustion_axioms"
 
+text \<open>
+  The stable \<open>pp_full_QLN_\<close> names below mean both directions of the complete
+  zeroary-and-unary package just described.  They are not names for a separate
+  generic all-arity encoding.
+\<close>
+
+abbreviation pp_zeroary_unary_QLN_background_axioms :: "oterm set" where
+  "pp_zeroary_unary_QLN_background_axioms \<equiv>
+    pp_full_QLN_background_axioms"
+
 definition pp_recombination_PP_axioms :: "oterm set" where
   "pp_recombination_PP_axioms =
     insert pp_target_PP pp_recombination_background_axioms"
@@ -281,9 +293,25 @@ definition pp_full_QLN_PP_axioms :: "oterm set" where
   "pp_full_QLN_PP_axioms =
     insert pp_target_PP pp_full_QLN_background_axioms"
 
+abbreviation pp_zeroary_unary_QLN_PP_axioms :: "oterm set" where
+  "pp_zeroary_unary_QLN_PP_axioms \<equiv> pp_full_QLN_PP_axioms"
+
 definition pp_full_QLN_PP_persistence_axioms :: "oterm set" where
   "pp_full_QLN_PP_persistence_axioms =
     pp_full_QLN_PP_axioms \<union> pp_persistence_schema"
+
+abbreviation pp_zeroary_unary_QLN_PP_persistence_axioms :: "oterm set" where
+  "pp_zeroary_unary_QLN_PP_persistence_axioms \<equiv>
+    pp_full_QLN_PP_persistence_axioms"
+
+lemma pp_full_QLN_background_axioms_exact_scope:
+  "pp_full_QLN_background_axioms =
+    pp_background_axioms \<union>
+      {pp_zeroary_recombination, pp_unary_recombination,
+       pp_zeroary_exhaustion, pp_unary_exhaustion}"
+  unfolding pp_full_QLN_background_axioms_def
+    pp_recombination_background_axioms_def pp_exhaustion_axioms_def
+  by blast
 
 lemma pp_purity_schema_typed:
   assumes "A \<in> pp_purity_schema"

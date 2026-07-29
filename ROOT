@@ -176,6 +176,7 @@ theories
   Bacon_PP_ZF_Tree_Range_Term_Basis
   Bacon_PP_ZF_Repaired_Central_Stock
   Bacon_PP_ZF_Tree_CEV_Soundness
+  Bacon_PP_ZF_Goodman_M1_Fn59
   Bacon_PP_ZF_Tree_One_Step_Classifier_Stock
   Bacon_PP_ZF_Tree_One_Classifier_Contexts
   Bacon_PP_ZF_Tree_Ambient_Inverse
@@ -237,6 +238,7 @@ session Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified
   options [timeout = 60]
 theories
   Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model
+  Bacon_PP_ZF_Modal_Word_Normalization
 
 session Higher_Order_Metaphysics_PP_ZF_Fun_Prime
     in "theories/goodman/models/fragments/fun_prime" =
@@ -260,18 +262,6 @@ session Higher_Order_Metaphysics_PP_ZF_T6_Diagonal
 theories
   Bacon_PP_ZF_Fresh_T6_Diagonal_Fragment_Model
   Bacon_PP_ZF_Fresh_T6_Collisions
-
-session Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two
-    in "theories/goodman/models/fragments/modal_depth_two" =
-    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified +
-  description "
-    HOL-ZF moving-seed fragment for modal-depth-two alternations, based on a
-    reusable modal-word normalization language.
-  "
-  options [timeout = 60]
-theories
-  Bacon_PP_ZF_Modal_Word_Normalization
-  Bacon_PP_ZF_Fresh_Modal_Depth_Two_Fragment_Model
 
 session Goodman_CEVplus_Canonical in "theories/goodman/cevplus" =
     Goodman_CEVplus +

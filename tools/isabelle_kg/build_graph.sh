@@ -37,7 +37,6 @@ force_export_sessions() {
     Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
     Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
     Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
-    Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two \
     Goodman_CEVplus_Canonical \
     Goodman_CEVplus_ZF_Bridge \
     Goodman_CEVplus_Modal_Quantified_Bridge \
@@ -76,7 +75,6 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
     Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
     Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
-    Higher_Order_Metaphysics_PP_ZF_Modal_Depth_Two \
     Goodman_CEVplus_Canonical \
     Goodman_CEVplus_ZF_Bridge \
     Goodman_CEVplus_Modal_Quantified_Bridge \
