@@ -1,0 +1,291 @@
+%------------------------------------------------------------------------------
+% Goodman: finite THF probe for T0 + PP + exists fun' |- L2
+%------------------------------------------------------------------------------
+%
+% Refutation question:
+%
+%   Is the represented finite fragment of
+%
+%       T0 + PP + exists p fun'(p) + not L2
+%
+%   inconsistent?
+%
+% This is the genuine higher-order counterpart of
+%
+%   goodman_pp_funprime_not_l2_finite.in
+%
+% Propositions remain intensional objects of the abstract type prop, with
+% world-relative truth represented by holds.  Unary proposition operators,
+% however, have the genuine function type prop > prop, and classifiers of
+% unary operators have the genuine higher-order type (prop > prop) > prop.
+% Application is THF application, composition is defined by lambda
+% abstraction, and quantification over unary operators is higher-order.
+%
+% This is not merely the TFF file with "tff" replaced by "thf".  It adds the
+% extensional commitments carried by THF function types.  A Vampire proof
+% would therefore be evidence about this higher-order finite fragment, not
+% yet an Isabelle proof of the full schematic CEV+ theory.  Every used premise
+% would still have to be replayed in the Isabelle deep embedding.
+%
+% Suggested proof-search command:
+%
+%   vampire --mode portfolio --time_limit 3600 --cores 6 \
+%     vampire/goodman_pp_funprime_not_l2_finite.thf.in
+%
+% The final formula is conjecture $false.  Thus:
+%
+%   * Theorem/Unsatisfiable means that Vampire has derived L2 from this
+%     represented higher-order fragment.
+%
+%   * Satisfiable, CounterSatisfiable, saturation, or timeout does not refute
+%     derivability in the full schematic CEV+ theory.
+%------------------------------------------------------------------------------
+
+thf(world_type,type,(world:$tType)).
+thf(prop_type,type,(prop:$tType)).
+
+thf(holds_type,type,(holds:world>prop>$o)).
+thf(accessible_type,type,(accessible:world>world>$o)).
+
+thf(pure_prop_at_type,type,(pure_prop_at:world>prop>$o)).
+thf(pure_op_at_type,type,(pure_op_at:world>(prop>prop)>$o)).
+
+% The two relevant instances of the object-language Pure classifier.
+thf(pure_prop_classifier_type,type,(pure_prop_classifier:prop>prop)).
+thf(pure_op_classifier_type,type,
+    (pure_op_classifier:(prop>prop)>prop)).
+
+thf(compose_type,type,
+    (compose:(prop>prop)>(prop>prop)>(prop>prop))).
+
+thf(identity_type,type,(identity:prop>prop)).
+thf(negation_type,type,(negation:prop>prop)).
+thf(constant_truth_type,type,(constant_truth:prop>prop)).
+thf(constant_falsity_type,type,(constant_falsity:prop>prop)).
+thf(necessity_type,type,(necessity:prop>prop)).
+thf(possibility_type,type,(possibility:prop>prop)).
+thf(goodman_liar_type,type,(goodman_liar:prop>prop)).
+thf(truth_type,type,(truth:prop)).
+thf(falsity_type,type,(falsity:prop)).
+
+% Pure is represented by its classifier objects.
+thf(pure_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      ((pure_prop_at @ W @ P)
+       <=>
+       (holds @ W @ (pure_prop_classifier @ P)))).
+
+thf(pure_op_definition,axiom,
+    ! [W:world,X:prop>prop] :
+      ((pure_op_at @ W @ X)
+       <=>
+       (holds @ W @ (pure_op_classifier @ X)))).
+
+% A finite stock of closed logical terms and their interpretations.
+thf(truth_is_true,axiom,
+    ! [W:world] : (holds @ W @ truth)).
+
+thf(falsity_is_false,axiom,
+    ! [W:world] : ~ (holds @ W @ falsity)).
+
+% The modal background is S4.
+thf(accessibility_reflexive,axiom,
+    ! [W:world] : (accessible @ W @ W)).
+
+thf(accessibility_transitive,axiom,
+    ! [U:world,V:world,W:world] :
+      (((accessible @ U @ V) & (accessible @ V @ W))
+       =>
+       (accessible @ U @ W))).
+
+thf(identity_application,axiom,
+    ! [P:prop] : ((identity @ P) = P)).
+
+thf(constant_truth_application,axiom,
+    ! [P:prop] : ((constant_truth @ P) = truth)).
+
+thf(constant_falsity_application,axiom,
+    ! [P:prop] : ((constant_falsity @ P) = falsity)).
+
+thf(negation_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      ((holds @ W @ (negation @ P))
+       <=>
+       ~ (holds @ W @ P))).
+
+thf(negation_truth_object,axiom,
+    ((negation @ truth) = falsity)).
+
+thf(negation_falsity_object,axiom,
+    ((negation @ falsity) = truth)).
+
+% Composition is genuine higher-order composition.
+thf(composition_definition,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      ((compose @ X @ Y)
+       =
+       (^ [P:prop] : (X @ (Y @ P))))).
+
+thf(negation_involution,axiom,
+    ((compose @ negation @ negation) = identity)).
+
+% Bacon and Dorr define necessity by identity with truth.  This finite
+% approximation retains the same S4 truth condition used in the TFF probe.
+% Possibility is the closed logical operator lambda p. not Box(not p).
+thf(necessity_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      ((holds @ W @ (necessity @ P))
+       <=>
+       ! [V:world] :
+         ((accessible @ W @ V) => (holds @ V @ P)))).
+
+thf(possibility_application,axiom,
+    ! [P:prop] :
+      ((possibility @ P)
+       =
+       (negation @ (necessity @ (negation @ P))))).
+
+thf(necessity_truth_object,axiom,
+    ((necessity @ truth) = truth)).
+
+thf(necessity_falsity_object,axiom,
+    ((necessity @ falsity) = falsity)).
+
+thf(necessity_idempotence,axiom,
+    ((compose @ necessity @ necessity) = necessity)).
+
+thf(possibility_idempotence,axiom,
+    ((compose @ possibility @ possibility) = possibility)).
+
+% Selected instances of purity of closed logical vocabulary.
+thf(pure_truth,axiom,
+    ! [W:world] : (pure_prop_at @ W @ truth)).
+
+thf(pure_falsity,axiom,
+    ! [W:world] : (pure_prop_at @ W @ falsity)).
+
+thf(pure_identity,axiom,
+    ! [W:world] : (pure_op_at @ W @ identity)).
+
+thf(pure_negation,axiom,
+    ! [W:world] : (pure_op_at @ W @ negation)).
+
+thf(pure_constant_truth,axiom,
+    ! [W:world] : (pure_op_at @ W @ constant_truth)).
+
+thf(pure_constant_falsity,axiom,
+    ! [W:world] : (pure_op_at @ W @ constant_falsity)).
+
+thf(pure_necessity,axiom,
+    ! [W:world] : (pure_op_at @ W @ necessity)).
+
+thf(pure_possibility,axiom,
+    ! [W:world] : (pure_op_at @ W @ possibility)).
+
+% Application closure at proposition type.
+thf(pure_application,axiom,
+    ! [W:world,X:prop>prop,P:prop] :
+      (((pure_op_at @ W @ X) & (pure_prop_at @ W @ P))
+       =>
+       (pure_prop_at @ W @ (X @ P)))).
+
+% The composition builder is a closed logical term.
+thf(pure_composition,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop] :
+      (((pure_op_at @ W @ X) & (pure_op_at @ W @ Y))
+       =>
+       (pure_op_at @ W @ (compose @ X @ Y)))).
+
+% Modalized Functionality.  THF function equality is extensional; the named
+% axiom is retained to display the corresponding object-theoretic principle.
+thf(modalized_functionality,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      ((! [P:prop] : ((X @ P) = (Y @ P)))
+       =>
+       (X = Y))).
+
+% PP at the unary operator type:
+% Pure_(prop->prop)(Pure_prop) is globally true.
+thf(goodman_PP,axiom,
+    ! [W:world] : (pure_op_at @ W @ pure_prop_classifier)).
+
+% fun'(p): evaluation at p is injective on the locally pure unary operators.
+thf(fun_prime_type,type,(fun_prime:world>prop>$o)).
+
+thf(fun_prime_definition,axiom,
+    ! [W:world,P:prop] :
+      ((fun_prime @ W @ P)
+       <=>
+       ! [X:prop>prop,Y:prop>prop] :
+         (((pure_op_at @ W @ X)
+           & (pure_op_at @ W @ Y)
+           & ((X @ P) = (Y @ P)))
+          =>
+          (X = Y)))).
+
+% The closed object-language sentence exists p fun'(p) is globally true.
+thf(exists_fun_prime,axiom,
+    ! [W:world] : ? [P:prop] : (fun_prime @ W @ P)).
+
+% Goodman's T6 liar:
+%
+%   D(p) iff every representation p = X(q), with X pure and q fun',
+%   makes X(p) false.
+thf(goodman_liar_matrix,axiom,
+    ! [W:world,P:prop] :
+      ((holds @ W @ (goodman_liar @ P))
+       <=>
+       ! [X:prop>prop,Q:prop] :
+         (((pure_op_at @ W @ X)
+           & (fun_prime @ W @ Q)
+           & (P = (X @ Q)))
+          =>
+          ~ (holds @ W @ (X @ P))))).
+
+thf(pure_goodman_liar,axiom,
+    ! [W:world] : (pure_op_at @ W @ goodman_liar)).
+
+% Reversibility, group membership, and sameness of kind.
+thf(reversible_type,type,
+    (reversible:world>(prop>prop)>$o)).
+thf(group_member_type,type,
+    (group_member:world>(prop>prop)>$o)).
+thf(same_kind_type,type,
+    (same_kind:world>(prop>prop)>(prop>prop)>$o)).
+
+thf(reversible_definition,axiom,
+    ! [W:world,Z:prop>prop] :
+      ((reversible @ W @ Z)
+       <=>
+       ? [R:prop>prop] :
+         ((pure_op_at @ W @ R)
+          & ((compose @ Z @ R) = identity)
+          & ((compose @ R @ Z) = identity)))).
+
+thf(group_member_definition,axiom,
+    ! [W:world,Z:prop>prop] :
+      ((group_member @ W @ Z)
+       <=>
+       ((pure_op_at @ W @ Z) & (reversible @ W @ Z)))).
+
+thf(same_kind_definition,axiom,
+    ! [W:world,X:prop>prop,Y:prop>prop] :
+      ((same_kind @ W @ X @ Y)
+       <=>
+       ? [Z:prop>prop] :
+         ((group_member @ W @ Z)
+          & (X = (compose @ Y @ Z))))).
+
+% Denial of global weak L2.
+thf(not_L2,axiom,
+    ? [W:world,X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      ((pure_op_at @ W @ X)
+       & (pure_op_at @ W @ Y)
+       & (fun_prime @ W @ P)
+       & (fun_prime @ W @ Q)
+       & ((X @ P) = (Y @ Q))
+       & ~ (same_kind @ W @ X @ Y))).
+
+% Refutation target.  The denial of L2 is already an axiom above, so a proof
+% of $false is exactly a proof that this represented fragment entails L2.
+thf(pp_funprime_implies_L2_target,conjecture,$false).

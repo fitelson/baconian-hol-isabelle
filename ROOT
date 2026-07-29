@@ -118,6 +118,7 @@ theories
   Bacon_PP_Goodman_Proliferation
   Bacon_PP_Goodman_T6_Inv
   Bacon_PP_Goodman_T6_TU
+  Bacon_PP_Goodman_M5_Existential_Invertibles
   Bacon_PP_Goodman_T6_WI
   Bacon_PP_Goodman_T6_WI_Master
   Bacon_PP_Goodman_T6_RS_Encoding
@@ -186,6 +187,7 @@ theories
   Bacon_PP_ZF_Goodman_L2_Composition_Fragment
   Bacon_PP_ZF_Goodman_L2_Higher_Order_Quantifiers
   Bacon_PP_ZF_Goodman_L2_Child_Xor
+  Bacon_PP_ZF_Goodman_L2_Stock_Expansion
   Bacon_PP_ZF_Fresh_Sparse_Fragment_Model
   Bacon_PP_ZF_Fresh_Identity_Fragment_Model
   Bacon_PP_ZF_Fresh_Identity_Negation_Fragment_Model

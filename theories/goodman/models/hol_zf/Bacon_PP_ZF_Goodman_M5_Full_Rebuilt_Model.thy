@@ -1643,6 +1643,35 @@ theorem pp_t_M5_full_rebuilt_exotic_certificate:
     pp_t_M5_exotic_not_biconditional
   by blast
 
+theorem pp_t_M5_existential_nonuniform_invertible_collision_free:
+  "\<exists>F.
+    bij F
+    \<and> \<not> pp_t_M5_truth_preserving F
+    \<and> \<not> pp_t_M5_truth_flipping F
+    \<and> (\<forall>P Q. F P = F Q \<longrightarrow> P = Q)"
+proof (intro exI[of _ pp_t_M5_exotic] conjI)
+  show "bij pp_t_M5_exotic"
+    by (rule pp_t_M5_exotic_bijective)
+  show "\<not> pp_t_M5_truth_preserving pp_t_M5_exotic"
+    using pp_t_M5_exotic_not_truth_uniform by blast
+  show "\<not> pp_t_M5_truth_flipping pp_t_M5_exotic"
+    using pp_t_M5_exotic_not_truth_uniform by blast
+  show "\<forall>P Q.
+      pp_t_M5_exotic P = pp_t_M5_exotic Q \<longrightarrow> P = Q"
+    using pp_t_M5_exotic_bijective
+    unfolding bij_def inj_def by blast
+qed
+
+text \<open>
+  This existential certificate is a counterexample to the unrestricted
+  proposed generalization of the collision method.  A non-truth-uniform
+  invertible need not have a collision: the displayed M5 operator is such an
+  invertible and is injective.  A PP-specific collision argument would
+  therefore have to use some further condition imposed on the existential
+  witness by PP, rather than existential reversibility or failure of
+  truth-uniformity alone.
+\<close>
+
 theorem pp_t_M5_full_rebuilt_model:
   "(\<forall>w.
       pp_t_basis_stock pp_t_M5_rebuilt_basis

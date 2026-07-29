@@ -1,0 +1,290 @@
+%------------------------------------------------------------------------------
+% Goodman: finite TFF probe for T0 + PP + exists fun' |- L2
+%------------------------------------------------------------------------------
+%
+% Refutation question:
+%
+%   Is the represented finite fragment of
+%
+%       T0 + PP + exists p fun'(p) + not L2
+%
+%   inconsistent?
+%
+% Run, for example:
+%
+%   vampire --mode casc --time_limit 3600 \
+%     vampire/goodman_pp_funprime_not_l2_finite.in
+%
+% The final formula is conjecture $false.  Thus:
+%
+%   * Theorem/Unsatisfiable means that Vampire has derived L2 from this
+%     represented fragment.  The used axioms must then be replayed in the
+%     Isabelle deep embedding before the result is accepted.
+%
+%   * Satisfiable, CounterSatisfiable, saturation, or timeout does not refute
+%     derivability in the full schematic CEV+ theory.  This file represents
+%     only the displayed sorts and instances of the purity and
+%     application-closure schemata.
+%
+% This is the corrected unworlded-applicative translation: app(X,P) denotes
+% one proposition object, whose truth and purity may vary by world.
+%
+% Weak L2 is used.  Binder order is X,Y,p,q, exactly as in pp_L2.  Sameness
+% of kind means:
+%
+%   X approximately Y iff some pure reversible Z has X = Y o Z.
+%
+% Revision note:
+%   An initial run found a six-element-per-sort model in which negation was
+%   not reversible.  A second run, after adding the Boolean object identities
+%   for negation, found a model omitting the closed constant-truth and
+%   constant-falsity operators.  A third run, after adding those constants,
+%   found a model omitting necessity and possibility.  The present file
+%   includes both modal operators over an explicit reflexive, transitive
+%   accessibility relation.  A fourth run interpreted both modal operators as
+%   identity, which is permitted by S4, but omitted the central PP consequence
+%   that Goodman's liar D is pure.  The present file includes D and its exact
+%   defining matrix.  None of the first three models, and not the unconstrained
+%   fourth interpretation, answers the present strengthened probe.
+%------------------------------------------------------------------------------
+
+tff(world_type,type,world:$tType).
+tff(prop_type,type,prop:$tType).
+tff(op1_type,type,op1:$tType).
+tff(op2_type,type,op2:$tType).
+
+tff(holds_type,type,holds:(world * prop)>$o).
+tff(accessible_type,type,accessible:(world * world)>$o).
+tff(app_type,type,app:(op1 * prop)>prop).
+tff(app_o_type,type,app_o:(op2 * op1)>prop).
+tff(compose_type,type,compose:(op1 * op1)>op1).
+
+tff(pure_prop_at_type,type,pure_prop_at:(world * prop)>$o).
+tff(pure_op_at_type,type,pure_op_at:(world * op1)>$o).
+
+% The two relevant instances of the object-language Pure classifier.
+tff(pure_prop_classifier_type,type,pure_prop_classifier:op1).
+tff(pure_op_classifier_type,type,pure_op_classifier:op2).
+
+tff(identity_type,type,identity:op1).
+tff(negation_type,type,negation:op1).
+tff(constant_truth_type,type,constant_truth:op1).
+tff(constant_falsity_type,type,constant_falsity:op1).
+tff(necessity_type,type,necessity:op1).
+tff(possibility_type,type,possibility:op1).
+tff(goodman_liar_type,type,goodman_liar:op1).
+tff(truth_type,type,truth:prop).
+tff(falsity_type,type,falsity:prop).
+
+% Pure is represented by its classifier objects.
+tff(pure_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      (pure_prop_at(W,P)
+       <=> holds(W,app(pure_prop_classifier,P)))).
+
+tff(pure_op_definition,axiom,
+    ! [W:world,X:op1] :
+      (pure_op_at(W,X)
+       <=> holds(W,app_o(pure_op_classifier,X)))).
+
+% A finite stock of closed logical terms and their interpretations.
+tff(truth_is_true,axiom,
+    ! [W:world] : holds(W,truth)).
+
+tff(falsity_is_false,axiom,
+    ! [W:world] : ~ holds(W,falsity)).
+
+% The modal background is S4.
+tff(accessibility_reflexive,axiom,
+    ! [W:world] : accessible(W,W)).
+
+tff(accessibility_transitive,axiom,
+    ! [U:world,V:world,W:world] :
+      ((accessible(U,V) & accessible(V,W)) => accessible(U,W))).
+
+tff(identity_application,axiom,
+    ! [P:prop] : app(identity,P) = P).
+
+tff(constant_truth_application,axiom,
+    ! [P:prop] : app(constant_truth,P) = truth).
+
+tff(constant_falsity_application,axiom,
+    ! [P:prop] : app(constant_falsity,P) = falsity).
+
+tff(negation_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(negation,P)) <=> ~ holds(W,P))).
+
+tff(negation_truth_object,axiom,
+    app(negation,truth) = falsity).
+
+tff(negation_falsity_object,axiom,
+    app(negation,falsity) = truth).
+
+tff(composition_application,axiom,
+    ! [X:op1,Y:op1,P:prop] :
+      app(compose(X,Y),P) = app(X,app(Y,P))).
+
+% These are object identities, not merely truth-value equivalences.  They are
+% independently derivable in Bacon's Boolean identity theory and are essential
+% here: without them a first-order model can spuriously make negation
+% nonreversible.
+tff(negation_involution,axiom,
+    compose(negation,negation) = identity).
+
+% Bacon and Dorr define necessity by identity with truth.  In the present
+% finite Kripke reification, its verified S4 truth condition is represented
+% using the accessibility relation.  Possibility is the closed logical
+% operator lambda p. not Box(not p), with that object identity imposed
+% explicitly.
+tff(necessity_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(necessity,P))
+       <=>
+       ! [V:world] : (accessible(W,V) => holds(V,P)))).
+
+tff(possibility_application,axiom,
+    ! [P:prop] :
+      app(possibility,P) =
+        app(negation,app(necessity,app(negation,P)))).
+
+tff(necessity_truth_object,axiom,
+    app(necessity,truth) = truth).
+
+tff(necessity_falsity_object,axiom,
+    app(necessity,falsity) = falsity).
+
+tff(necessity_idempotence,axiom,
+    compose(necessity,necessity) = necessity).
+
+tff(possibility_idempotence,axiom,
+    compose(possibility,possibility) = possibility).
+
+% Selected instances of purity of closed logical vocabulary.
+tff(pure_truth,axiom,
+    ! [W:world] : pure_prop_at(W,truth)).
+
+tff(pure_falsity,axiom,
+    ! [W:world] : pure_prop_at(W,falsity)).
+
+tff(pure_identity,axiom,
+    ! [W:world] : pure_op_at(W,identity)).
+
+tff(pure_negation,axiom,
+    ! [W:world] : pure_op_at(W,negation)).
+
+tff(pure_constant_truth,axiom,
+    ! [W:world] : pure_op_at(W,constant_truth)).
+
+tff(pure_constant_falsity,axiom,
+    ! [W:world] : pure_op_at(W,constant_falsity)).
+
+tff(pure_necessity,axiom,
+    ! [W:world] : pure_op_at(W,necessity)).
+
+tff(pure_possibility,axiom,
+    ! [W:world] : pure_op_at(W,possibility)).
+
+% Application closure at proposition type.
+tff(pure_application,axiom,
+    ! [W:world,X:op1,P:prop] :
+      ((pure_op_at(W,X) & pure_prop_at(W,P))
+       => pure_prop_at(W,app(X,P)))).
+
+% The composition builder is a closed logical term.  This is the corresponding
+% finite consequence of the purity schema and application closure.
+tff(pure_composition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      ((pure_op_at(W,X) & pure_op_at(W,Y))
+       => pure_op_at(W,compose(X,Y)))).
+
+% Modalized Functionality at the unary proposition-operator type.
+tff(modalized_functionality,axiom,
+    ! [X:op1,Y:op1] :
+      ((! [W:world,P:prop] : app(X,P) = app(Y,P))
+       => X = Y)).
+
+% PP at the unary operator type:
+% Pure_(prop->prop)(Pure_prop) is globally true.
+tff(goodman_PP,axiom,
+    ! [W:world] : pure_op_at(W,pure_prop_classifier)).
+
+% fun'(p): evaluation at p is injective on the locally pure unary operators.
+tff(fun_prime_type,type,fun_prime:(world * prop)>$o).
+
+tff(fun_prime_definition,axiom,
+    ! [W:world,P:prop] :
+      (fun_prime(W,P)
+       <=>
+       ! [X:op1,Y:op1] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & app(X,P) = app(Y,P))
+          => X = Y))).
+
+% The closed object-language sentence exists p fun'(p) is globally true.
+tff(exists_fun_prime,axiom,
+    ! [W:world] : ? [P:prop] : fun_prime(W,P)).
+
+% Goodman's T6 liar:
+%
+%   D(p) iff every representation p = X(q), with X pure and q fun',
+%   makes X(p) false.
+%
+% Isabelle proves Pure(D) from the purity schema, application closure, and PP.
+% We include that verified consequence explicitly because the higher-type
+% abstraction builder is not represented as its own sort in this TFF file.
+tff(goodman_liar_matrix,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(goodman_liar,P))
+       <=>
+       ! [X:op1,Q:prop] :
+         ((pure_op_at(W,X)
+           & fun_prime(W,Q)
+           & P = app(X,Q))
+          => ~ holds(W,app(X,P))))).
+
+tff(pure_goodman_liar,axiom,
+    ! [W:world] : pure_op_at(W,goodman_liar)).
+
+% Reversibility, group membership, and sameness of kind.
+tff(reversible_type,type,reversible:(world * op1)>$o).
+tff(group_member_type,type,group_member:(world * op1)>$o).
+tff(same_kind_type,type,same_kind:(world * op1 * op1)>$o).
+
+tff(reversible_definition,axiom,
+    ! [W:world,Z:op1] :
+      (reversible(W,Z)
+       <=>
+       ? [R:op1] :
+         (pure_op_at(W,R)
+          & compose(Z,R) = identity
+          & compose(R,Z) = identity))).
+
+tff(group_member_definition,axiom,
+    ! [W:world,Z:op1] :
+      (group_member(W,Z)
+       <=> (pure_op_at(W,Z) & reversible(W,Z)))).
+
+tff(same_kind_definition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (same_kind(W,X,Y)
+       <=>
+       ? [Z:op1] :
+         (group_member(W,Z)
+          & X = compose(Y,Z)))).
+
+% Denial of global weak L2, Skolemized only by Vampire if useful.
+tff(not_L2,axiom,
+    ? [W:world,X:op1,Y:op1,P:prop,Q:prop] :
+      (pure_op_at(W,X)
+       & pure_op_at(W,Y)
+       & fun_prime(W,P)
+       & fun_prime(W,Q)
+       & app(X,P) = app(Y,Q)
+       & ~ same_kind(W,X,Y))).
+
+% Refutation target.  Do not replace this with L2 itself: the denial of L2 is
+% already an axiom above, so a proof of $false is exactly a proof that the
+% represented T0 + PP + exists fun' fragment entails L2.
+tff(pp_funprime_implies_L2_target,conjecture,$false).

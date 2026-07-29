@@ -112,10 +112,13 @@ falsify global \Ltwo\ or global \TU.  That consequence sharply constrains a
 positive answer, but it does not decide whether such a model exists.  We have
 also settled Goodman's proposed calibration of \Ltwo\ in Bacon's appendix
 model: a closed logical operator \(Z\) refutes \Ltwo\ when the pure unary
-operators are the denotations of closed terms containing only logical
-vocabulary.  This is a substantive result about
-the notes, although Bacon's model still fails \PP\ and therefore does not
-answer the consistency question.
+operators include the denotations of closed terms containing only logical
+vocabulary, are closed under composition, and admit a \(\funp\) proposition.
+Thus the counterexample persists through every enlargement satisfying those
+conditions, including any prospective \PP\ enlargement on Bacon's tree frame
+that validates the repaired background theory.  This is a substantive result
+about the notes, although it does not construct the missing interpretation of
+\(\Pure\) and therefore does not answer the consistency question.
 
 \section{Formal setting and verification standard}
 
@@ -209,12 +212,12 @@ proposition-level fundamentality.  Isabelle also verifies the uses of \Ltwo\
 in T7--T9, including uniqueness of kind in T8 and the conditional cardinal
 dichotomy in T9.
 
-\subsection{Refutation of L2 in Bacon's appendix model}
+\subsection{Refutation of L2 in Bacon's appendix model and its enlargements}
 
 Goodman's first suggested attack asks whether \Ltwo\ holds in Bacon's appendix
 model when the pure unary operators are exactly the denotations of closed
 terms containing only logical vocabulary.  Isabelle answers this question
-negatively.
+negatively, and proves a stronger result for enlargements of those operators.
 
 Define the unary operator
 \[
@@ -230,8 +233,11 @@ closed terms containing only logical vocabulary.  Isabelle proves:
 \begin{array}{ll}
 \text{(i)}   & Z\text{ is surjective};\\
 \text{(ii)}  & Z(P)=Z(\neg P),\text{ so }Z\text{ is not injective};\\
-\text{(iii)} & Z\text{ is right-cancellative on the denotations of closed
-                    logical terms};\\
+\text{(iii)} & \text{for every composition-closed class of pure unary
+                    operators containing }Z,\\
+              & \text{surjectivity of }Z\text{ carries each }\funp
+                    \text{ proposition }p\text{ to the }\funp
+                    \text{ proposition }Zp;\\
 \text{(iv)}  & Z\notin G.
 \end{array}
 \]
@@ -240,31 +246,41 @@ Surjectivity is witnessed explicitly by
  P_S=\{\,v^\frown 0:v\in S\,\},
  \qquad Z(P_S)=S.
 \]
-Right-cancellativity implies that \(Zp\) is \(\funp\) whenever \(p\) is
-\(\funp\).  Choose such a \(p\).  Then
+For the closed-logical operators themselves, clause (iii) yields the earlier
+right-cancellation result.  More generally, let \(S\) be a class of pure
+unary operators containing the closed-logical operators and closed under
+composition.  Assume that \(S\) admits a \(\funp\) proposition \(p\), where
+\(\funp\) is understood relative to \(S\).  Since \(Z\) is surjective,
+clause (iii) shows that \(Zp\) is also \(\funp\) relative to \(S\), and
 \[
- \mathsf{id}(Zp)=Zp=Z(p),
+ \mathsf{id}(Zp)=Zp=Z(p).
 \]
-although \(\mathsf{id}\not\approx Z\), since \(Z\) is not reversible.  This is
-an explicit counterexample to \Ltwo.  Since strong \Ltwo\ entails weak
-\Ltwo, it fails in this model as well.
+If \Ltwo\ held relative to \(S\), identity and \(Z\) would therefore be of
+the same kind.  A reversible witness for that claim would supply a left
+inverse for \(Z\), making \(Z\) injective.  Clause (ii) rules this out.
+Consequently weak \Ltwo\ fails relative to \(S\).  Since strong \Ltwo\ entails
+weak \Ltwo, it fails as well.
 
 \subsection{What this advances}
 
 This settles the first open problem in Goodman's list: \Ltwo\ is false in
-Bacon's appendix model under the proposed interpretation of purity.  The
-earlier Isabelle analysis had shown
-that no counterexample occurs among identity, necessity, possibility,
-constant truth, and constant falsity; \(Z\) is the first verified
-nonreversible closed logical operator that nevertheless preserves the
-distinctions relevant to \(\funp\).
+Bacon's appendix model under the proposed interpretation of purity.  It also
+shows that enlarging the pure unary operators cannot restore \Ltwo\ on the
+same tree frame, provided that the enlarged class remains closed under
+composition and admits a \(\funp\) proposition.  The earlier Isabelle
+analysis had shown that no counterexample occurs among identity, necessity,
+possibility, constant truth, and constant falsity; \(Z\) is the first
+verified nonreversible closed logical operator that nevertheless preserves
+the distinctions relevant to \(\funp\).
 
 The result does not prove the consistency of \PP.  Bacon's appendix model
-still fails \PP\ at the unary-operator type.  What it shows is that failure of
-\Ltwo---one of the two escape routes forced by T6---is mathematically
-available in Bacon's own semantic setting.  It also shows that a negative
-solution cannot treat \Ltwo\ as automatic merely because purity is
-interpreted by closed logical definability.
+still fails \PP\ at the unary-operator type, and the enlargement theorem
+assumes rather than constructs a suitable enlarged interpretation of the
+pure unary operators.  What it shows is that failure of \Ltwo---one of the
+two escape routes forced by T6---persists throughout the relevant
+enlargements of Bacon's semantic setting.  It also shows that a negative
+solution cannot treat \Ltwo\ as automatic merely because purity includes all
+closed logical denotations or because \PP\ is added on the same tree frame.
 
 \section{Audit of the object-language theorems}
 
@@ -414,7 +430,7 @@ yet been instantiated for Bacon's stock of operators denoted by closed terms
 containing only logical vocabulary.  The
 multiple-fundamental ``wide Fun'' argument remains prose-level.\\
 
-M5 & Verified and repaired; one generalization open &
+M5 & Verified and repaired; unrestricted generalization refuted &
 The operator \(f=G_T\) obtained by exchanging \(s\) and \(s'\) is an invariant involution violating \TU, \WI,
 and \Inv.  The notes' subsequent countability argument is false: both the
 orbit and the displayed world-indexed family are countable.  We replace it
@@ -438,7 +454,13 @@ displayed collision calculation is also verified: the closed operator
 \]
 takes the same value at \(\mathsf{NC}(r)\) and truth, although
 \(\mathsf{NC}(r)\neq\mathsf{truth}\), whenever \(\funp(r)\).  Extending this
-argument uniformly to merely existentially given invertibles remains open.\\
+collision argument uniformly to merely existentially given invertibles is
+impossible.  Isabelle proves in \(\mathsf{CEV}+\) that every operator with an
+existentially supplied two-sided inverse is injective; in particular, the
+displayed collision operator is not reversible.  Conversely, the rebuilt
+model's exotic operator is a reversible, non-truth-uniform bijection and has
+no collision.  A \PP-specific collision argument would therefore require a
+further condition constraining the action of the inverse witness.\\
 
 M6 & Conditional model-theoretic theorem &
 Under the same explicit assumptions---necessitated \QSS, membership of every
@@ -662,20 +684,23 @@ truth-flipping.  Bacon's substitution-structure models do not already supply
 the desired example: M1 locates their first obstruction to \PP, while M2 shows
 that identifying purity with invariance is incompatible with \QSS.  The
 operator \(Z\) shows that the operators denoted by Bacon's closed logical
-terms already take the \(\neg\Ltwo\) branch, but the model's independent
-failure of \PP\ prevents
-this from being a positive solution.
+terms already take the \(\neg\Ltwo\) branch.  The enlargement theorem shows
+that every composition-closed enlargement of those operators that admits a
+\(\funp\) proposition does so as well.  The missing step is not preservation
+of this escape route but construction of an enlarged interpretation that
+also validates \PP\ and the remaining background theory.
 
 \paragraph{Negative route.}
 The most direct negative route is the one already isolated in Goodman's
 notes: derive enough of \Ltwo\ and one of \Inv, \WI, \TU, or \RS\ from the
 remaining principles, and apply T6.  The formalization verifies the relevant
 T6 implications and removes the need to assume a \(\funp\) witness separately.
-The \(Z\) counterexample shows that Bacon's base theory and the interpretation
-of purity by denotations of closed logical terms do not by themselves secure
-\Ltwo.  Any
-negative proof along this route must therefore use \PP\ or some further
-principle not validated by that model.
+The \(Z\) counterexample and its enlargement theorem show that neither
+closed-logical purity nor merely adding further pure operators on Bacon's
+tree frame secures \Ltwo\ under the stated closure and \(\funp\) conditions.
+Any negative proof deriving \Ltwo\ from \PP\ must therefore use features not
+present in these tree interpretations; alternatively, it would show that no
+such \PP\ enlargement exists.
 
 \paragraph{Relative plausibility.}
 The formal work does not establish that either answer is more likely.  It
@@ -694,8 +719,6 @@ The following items should not be reported as verified:
 \item The multiple-fundamental ``wide Fun'' discussion in M4, which does not
       state a precise selection condition on \(\Fun\) or a precise Separated
       Structure formula.
-\item The proposed extension of the verified M5 collision calculation from
-      its displayed operator to merely existentially given invertibles.
 \end{enumerate}
 
 \section{Recommended next steps}
@@ -707,16 +730,20 @@ Goodman's notes.
 \item \textbf{Obtain determinate formulations.}
       Obtain an exact T7b statement, an exact formulation of the wide-Fun
       discussion before encoding them.
-\item \textbf{Generalize the M5 collision method.}
-      Determine whether the displayed noninjectivity calculation can be
-      extended to invertible operators given only existentially, as would be
-      required for the proposed PP-derived use of the method.
+\item \textbf{Isolate any genuinely \PP-specific M5 premise.}
+      The unrestricted existential generalization of the M5 collision method
+      is false: reversible operators are injective, and the rebuilt exotic
+      operator is a non-truth-uniform bijection.  Further work should pursue
+      this route only if \PP\ supplies an additional constraint on the
+      inverse witness that is strong enough to force the displayed kind of
+      collision.
 \item \textbf{Test Goodman's negative route.}
-      In light of the \(Z\) counterexample, determine whether \Ltwo\ follows
-      only after adding \PP\ or some independently acceptable principle not
-      valid in Bacon's appendix model.  Together with \TU, \WI, \Inv, or the
-      strong-\Ltwo+\RS\ route, the verified T6 theorems then give the
-      corresponding inconsistency result.
+      Determine whether \Ltwo\ follows from \PP\ in the full theory even
+      though it fails throughout the relevant composition-closed
+      enlargements on Bacon's tree frame.  A positive derivation, together
+      with \TU, \WI, \Inv, or the strong-\Ltwo+\RS\ route, would yield the
+      corresponding T6 contradiction and would also explain why no such tree
+      enlargement can validate \PP.
 \item \textbf{Keep model claims and proof-theoretic claims separate.}
       In particular, do not promote the conditional M4/M6 stock theorems to
       claims about Bacon's appendix model until their stock premises are
@@ -748,10 +775,12 @@ handoff files identify the source theory corresponding to each result.
 The appropriate overall verdict is therefore:
 \emph{the formalization verifies, corrects, or precisely qualifies every
 determinate claim in Goodman's notes, including two substantive repairs.  It
-also completes the rebuilding step in M5, refutes L2 in Bacon's appendix
-model under the proposed interpretation of purity, and proves the exact T6
-semantic consequence and several strengthening results directly relevant to
-the notes.  The remaining underspecified and model-dependent claims are
-explicitly identified.  Goodman's consistency question itself remains open.}
+also completes the rebuilding step in M5, proves that the unrestricted
+existential generalization of the M5 collision method is false, refutes L2 in
+Bacon's appendix model and every relevant composition-closed enlargement,
+and proves the exact T6 semantic consequence and several strengthening
+results directly relevant to the notes.  The remaining underspecified and
+model-dependent claims are explicitly identified.  Goodman's consistency
+question itself remains open.}
 
 \end{document}
