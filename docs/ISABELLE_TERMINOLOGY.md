@@ -59,9 +59,9 @@ documentation, for example: “world-relative identity (implemented by
    source vocabulary or define a technical expression immediately.
 2. Isabelle exposition leads with the mathematical claim.  An implementation
    name may follow in parentheses when it helps readers find the formal object.
-3. `STATUS.md`, `CODEX_HANDOFF.md`, and historical debate transcripts may
-   retain implementation history, but their opening summaries should use the
-   source vocabulary and label later material as implementation history.
+3. `STATUS.md` gives only the current mathematical status. Historical debate
+   transcripts may retain implementation terminology, but they must not be
+   treated as current reader-facing documentation.
 
 Before delivering a report, also verify that every LaTeX not-equal sign is
 written as `\neq`, never `\ne`.

@@ -1,5 +1,11 @@
 # Consensus debate — 2026-07-31 17:11
 
+> Repository note, 2026-07-31: this final transcript is retained as the
+> source-fidelity audit record. Its separate prompt and checkpoint files were
+> removed when the live documentation was consolidated; the full question,
+> argument, findings, and verdict remain below. The audit's low-severity
+> report-wording finding was repaired before the final repository checkpoint.
+
 ## Question
 We need a hard-nosed post-repair fidelity audit of the
 Higher_Order_Metaphysics Isabelle project. Claude must use Claude Opus 5 at
@@ -113,7 +119,8 @@ Claude: 12m 10s (3 turns); Codex: 9m 18s (2 turns); total: 21m 28s
 
 **Answer:** Yes. The maintained Isabelle development is correct, complete at its stated scope, and source-faithful to Bacon, Bacon–Dorr, and Goodman. Both repairs prompted by the previous audit are verified from theorem statements and proofs. All four exact-model tasks are genuinely complete at the *t*-fragment scope, and every PER-based construction is confined to `secondary/` under an independently recomputed import closure. One Low-severity defect survives, and it is in the two report documents only, not in the Isabelle: the description of Theorem 10.1's scope still misnames the unverified residue, and it errs by *understating* what is proved.
 
-Durable progress record: `reports/CLAUDE_OPUS5_POSTFIX_FIDELITY_AUDIT_PROGRESS_2026-07-31.md`.
+The separate progress record was removed during the later documentation
+consolidation; the complete audit transcript is retained here.
 
 ---
 

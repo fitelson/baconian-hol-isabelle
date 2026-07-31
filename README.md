@@ -41,10 +41,8 @@ Its terminal theory is
 ## Goodman project
 
 The application of these background theories to Jeremy Goodman's
-Purity-of-Pure consistency question is kept in
-[`theories/goodman/`](theories/goodman/).  Its current mathematical status is
-given in the [Goodman verification and progress report
-(PDF)](reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf).
+Purity-of-Pure consistency question has its own
+[project page](theories/goodman/README.md).
 
 ## Building
 
@@ -69,8 +67,7 @@ The project contains no admitted Isabelle proofs.
   directory and session map;
 - [`docs/ISABELLE_TERMINOLOGY.md`](docs/ISABELLE_TERMINOLOGY.md):
   Bacon--Dorr--Goodman terminology;
-- [`STATUS.md`](STATUS.md): detailed theorem status; and
-- [`CODEX_HANDOFF.md`](CODEX_HANDOFF.md): implementation-level handoff.
+- [`STATUS.md`](STATUS.md): concise current theorem status.
 
 For theory, theorem, import, and dependency queries, the repository includes
 an Isabelle-native knowledge graph in [`isabelle-kg/`](isabelle-kg/), generated

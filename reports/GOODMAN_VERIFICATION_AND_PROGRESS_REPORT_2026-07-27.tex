@@ -144,7 +144,7 @@ also settled Goodman's proposed calibration of \Ltwo\ in Bacon's appendix
 model: a closed logical operator \(Z\) refutes \Ltwo\ when the pure unary
 operators are exactly the denotations of closed terms containing only logical
 vocabulary.  Isabelle proves the required composition closure and constructs
-the \(\funp\) proposition for that exact stock.
+the \(\funp\) proposition relative to this stock.
 Finally, we have now carried Goodman's second and third suggested attacks
 farther.  A type-correct Pure Completeness construction, together with
 \Ltwo\ and the standard action of pure reversible operators on kinds,
@@ -371,14 +371,13 @@ Bacon's raw-word presentation the same operator is
           \AND(\exists n\;\langle n\rangle^\frown i\notin P)\,\}.
 \]
 Isabelle proves that a closed term containing only logical vocabulary has
-exactly this denotation.  Hence \(Z\) belongs to Bacon's exact stock of
-closed-logical unary operators.  It further proves:
+exactly this denotation.  Hence \(Z\) belongs to Bacon's stock of unary
+operators denoted by closed logical terms.  It further proves:
 \[
 \begin{array}{ll}
 \text{(i)}   & Z\text{ is surjective};\\
 \text{(ii)}  & Z(P)=Z(\neg P),\text{ so }Z\text{ is not injective};\\
-\text{(iii)} & Z\text{ is right-cancellative on the exact closed-logical
-                    stock};\\
+\text{(iii)} & Z\text{ is right-cancellative on that stock};\\
 \text{(iv)}  & Z\notin G.
 \end{array}
 \]
@@ -387,7 +386,7 @@ Surjectivity is witnessed explicitly by
  P_S=\{\,\langle 0\rangle^\frown i:i\in S\,\},
  \qquad Z(P_S)=S.
 \]
-The exact stock is countable and composition-closed.  A generic-separation
+This stock is countable and composition-closed.  A generic-separation
 argument supplies a proposition \(p\) satisfying \(\funp\) relative to that
 stock.  Clause (iii) is equivalent to saying that \(Zp\) also satisfies
 \(\funp\), and
@@ -397,7 +396,8 @@ stock.  Clause (iii) is equivalent to saying that \(Zp\) also satisfies
 If \Ltwo\ held, identity and \(Z\) would therefore be of the same kind.  A
 reversible witness for that claim would supply a left inverse for \(Z\),
 making \(Z\) injective.  Clause (ii) rules this out.  Consequently both weak
-and strong \Ltwo\ fail for Bacon's exact closed-logical stock.
+and strong \Ltwo\ fail when the pure unary operators are precisely the
+denotations of closed logical terms in Bacon's model.
 
 \subsection{What this advances}
 
@@ -1213,7 +1213,7 @@ There is also a cardinal form of the granularity route.  Once Attack~3 gives
 \(2^{|K|}\leq |G|\), any injection of \(G\) into a stock of descriptions of
 cardinality at most \(|K|\) contradicts Cantor's theorem.  In particular, if
 \(K\) is infinite, descriptions by finite strings over \(K\) provide such a
-ceiling.  Bacon's exact stock of operators denoted by closed logical terms is
+ceiling.  Bacon's stock of operators denoted by closed logical terms is
 countable, so it cannot realize the complete Pure Completeness--\Ltwo\ package
 that yields the exponential lower bound.  This does not refute \PP: the
 Purity schema says that closed logical terms denote pure entities, not that
@@ -1419,7 +1419,8 @@ Goodman's notes.
       collision.
 \item \textbf{Test Goodman's negative route.}
       Determine whether \Ltwo\ follows from \PP\ in the full theory even
-      though it fails for Bacon's exact closed-logical stock.  A positive
+      though it fails when the pure unary operators are precisely Bacon's
+      closed logical denotations.  A positive
       derivation, together
       with \TU, \WI, \Inv, or the strong-\Ltwo+\RS\ route, would yield the
       corresponding T6 contradiction and would also explain why Bacon's exact
@@ -1431,8 +1432,8 @@ Goodman's notes.
 
 \section{Reproducibility}
 
-The repository's three-layer organization and current build commands are
-documented in \isa{README.md} and
+The repository's background-theory organization, Goodman project index, and
+current build commands are documented in \isa{README.md} and
 \isa{docs/REPOSITORY_STRUCTURE.md}.  We do not reproduce that implementation
 documentation here.
 
@@ -1445,8 +1446,9 @@ The dedicated audit theory is
 \isa{reports/audit_goodman_complete/Audit_Goodman_Complete.thy}.
 \]
 The verification matrix gives, for each claim, the exact Isabelle theorem and
-the qualification under which it has been proved.  The project status and
-handoff files identify the source theory corresponding to each result.
+the qualification under which it has been proved, and identifies the source
+theory corresponding to each result.  \isa{STATUS.md} gives the concise
+current project status.
 The audit theory is a kernel-cleanliness gate.  It checks that its 158 listed
 theorems have no oracles, dangling hypotheses, or unsolved unification pairs;
 the source-fidelity and hypothesis-strength assessments reported here come
@@ -1461,8 +1463,9 @@ The appropriate overall verdict is therefore:
 \emph{the formalization verifies, corrects, or precisely qualifies every
 determinate claim in Goodman's notes.  It completes the rebuilding step in
 M5, proves that the unrestricted existential generalization of the M5
-collision method is false, refutes L2 for the exact closed-logical stock in
-Bacon's appendix model, proves the exact T6 semantic
+collision method is false, refutes L2 when the pure unary operators are
+precisely the closed logical denotations in Bacon's appendix model, proves
+the exact T6 semantic
 consequence, and completes Bacon's footnote-59 denotation argument in the
 exact tree semantics and in arbitrary compositional CEV+ Henkin models.  The
 last result proves that full QLN, PP, and Purity of Fun have no such model,

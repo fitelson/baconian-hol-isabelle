@@ -238,7 +238,7 @@ The mathematical status is not inferred from directory names.  Use:
   status of claims in Goodman's notes;
 - `reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf` for the
   reader-facing account;
-- `STATUS.md` for the chronological implementation record.
+- `STATUS.md` for the concise current project status.
 
 The consistency question remains open.  In particular, a verified finite or
 fragment model is not automatically a model of Goodman's unrestricted
