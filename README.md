@@ -70,6 +70,8 @@ The project contains no admitted Isabelle proofs.
 - [`STATUS.md`](STATUS.md): concise current theorem status.
 
 For theory, theorem, import, and dependency queries, the repository includes
-an Isabelle-native knowledge graph in [`isabelle-kg/`](isabelle-kg/), generated
-from Isabelle's elaborated session database by
-[`tools/isabelle_kg/build_graph.sh`](tools/isabelle_kg/build_graph.sh).
+tools for generating and querying an Isabelle-native knowledge graph. The
+generated `isabelle-kg/` directory is local and intentionally excluded from
+Git because it is large. See the [knowledge-graph
+guide](tools/isabelle_kg/README.md) for prerequisites, construction, and query
+examples.
