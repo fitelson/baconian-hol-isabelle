@@ -1,8 +1,8 @@
 # Higher-Order Metaphysics in Isabelle
 
-This repository formalizes the higher-order logical background developed by
-Bacon and Dorr.  Its two principal layers are Bacon's base theory \(H\) and
-Classicism, including CE and CEV.
+This repository contains Isabelle/HOL formalizations of higher-order logic and
+contemporary higher-order metaphysics. Its two principal background layers are
+the base theory \(H\) and Classicism, including CE and CEV.
 
 ## Base theory \(H\)
 
