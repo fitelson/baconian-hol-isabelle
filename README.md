@@ -1,4 +1,4 @@
-# Bacon--Dorr Higher-Order Logic in Isabelle/HOL
+# Higher-Order Metaphysics in Isabelle
 
 This repository formalizes the higher-order logical background developed by
 Bacon and Dorr.  Its two principal layers are Bacon's base theory \(H\) and
