@@ -1,0 +1,9 @@
+% Algebraic bridge: fun'-orbit reachability implies weak L2.
+
+include('00_common_semantics.tff.in').
+
+tff(assume_fun_prime_orbit,axiom,
+    ! [W:world] : fun_prime_orbit(W)).
+
+tff(orbit_implies_weak_L2,conjecture,
+    ! [W:world] : weak_L2(W)).

@@ -125,6 +125,80 @@ next
   qed
 qed
 
+subsection \<open>The exact finite-fragment form of the Recombination question\<close>
+
+text \<open>
+  The following corollaries instantiate the preceding compactness theorem to
+  Goodman's Recombination-only stock.  In particular, they do not add
+  Exhaustion, persistence, or a separate Modalized Functionality schema.
+
+  The consequence relation here is the axiom-extension relation.  Thus
+  Generalization, Instantiation, and vector Equivalence may be applied above
+  members of a finite fragment.  This is stronger than treating the members
+  of the fragment merely as local assumptions.
+\<close>
+
+theorem pp_recombination_axiom_consistency_iff_finite_fragments:
+  "pp_recombination_axiom_consistency_question \<longleftrightarrow>
+    (\<forall>U. finite U \<longrightarrow>
+      U \<subseteq> pp_recombination_PP_axioms \<longrightarrow>
+      CEV_axiom_consistent [] U)"
+  unfolding pp_recombination_axiom_consistency_question_def
+  by (rule CEV_axiom_consistent_iff_finite_fragments)
+
+theorem pp_recombination_axiom_negative_answer_iff_finite_inconsistent_core:
+  "\<not> pp_recombination_axiom_consistency_question \<longleftrightarrow>
+    (\<exists>U. finite U \<and>
+      U \<subseteq> pp_recombination_PP_axioms \<and>
+      [] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse)"
+proof
+  assume negative: "\<not> pp_recombination_axiom_consistency_question"
+  then have derives_false:
+    "[] ; pp_recombination_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+    unfolding pp_recombination_axiom_consistency_question_def
+      CEV_axiom_consistent_def
+    by simp
+  obtain U where finite_U: "finite U"
+    and U_sub: "U \<subseteq> pp_recombination_PP_axioms"
+    and U_derives_false: "[] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+    using derives_false by (rule CEV_axiom_proves_finite_support)
+  show "\<exists>U. finite U \<and>
+      U \<subseteq> pp_recombination_PP_axioms \<and>
+      [] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+    using finite_U U_sub U_derives_false by blast
+next
+  assume finite_core:
+    "\<exists>U. finite U \<and>
+      U \<subseteq> pp_recombination_PP_axioms \<and>
+      [] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+  then obtain U where U_sub: "U \<subseteq> pp_recombination_PP_axioms"
+    and U_derives_false: "[] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+    by blast
+  have "[] ; pp_recombination_PP_axioms \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+    using U_derives_false U_sub by (rule CEV_axiom_proves_mono)
+  then show "\<not> pp_recombination_axiom_consistency_question"
+    unfolding pp_recombination_axiom_consistency_question_def
+      CEV_axiom_consistent_def
+    by simp
+qed
+
+corollary pp_recombination_finite_inconsistent_core_answers_negatively:
+  assumes "finite U"
+    and "U \<subseteq> pp_recombination_PP_axioms"
+    and "[] ; U \<turnstile>\<^sub>CEV\<^sup>+ ObjFalse"
+  shows "\<not> pp_recombination_axiom_consistency_question"
+  using assms
+    pp_recombination_axiom_negative_answer_iff_finite_inconsistent_core
+  by blast
+
+corollary pp_recombination_all_finite_fragments_answer_affirmatively:
+  assumes "\<And>U. finite U \<Longrightarrow>
+    U \<subseteq> pp_recombination_PP_axioms \<Longrightarrow>
+    CEV_axiom_consistent [] U"
+  shows "pp_recombination_axiom_consistency_question"
+  using assms pp_recombination_axiom_consistency_iff_finite_fragments
+  by blast
+
 subsection \<open>The background theory and Purity of Pure\<close>
 
 definition fresh_modalized_functionality :: "otype \<Rightarrow> otype \<Rightarrow> oterm" where

@@ -1,0 +1,258 @@
+theory Bacon_PP_ZF_Tree_Dual_Full_Modal_Stock
+  imports
+    Higher_Order_Metaphysics_PP_ZF_Dual_Negated_Modal_Frontier.Bacon_PP_ZF_Tree_Dual_Negated_Modal_Frontier
+begin
+
+section \<open>The complete four-index modal enlargement\<close>
+
+definition pp_t_dual_negated_modal_generated_sections :: "ZF set" where
+  "pp_t_dual_negated_modal_generated_sections =
+    {pp_t_dual_recurrent_full_section pp_t_necessary_falsity_operator,
+     pp_t_dual_recurrent_full_section pp_t_possible_falsity_operator}"
+
+definition pp_t_dual_full_modal_stock ::
+    "bool list \<Rightarrow> ZF \<Rightarrow> bool"
+where
+  "pp_t_dual_full_modal_stock w X
+    \<longleftrightarrow>
+    Elem X (pp_t_domain pp_t_one_context_unary_type)
+    \<and>
+    (pp_t_dual_modal_stock w X
+      \<or>
+     (\<exists>P \<in> pp_t_dual_negated_modal_generated_sections.
+       pp_t_eqv pp_t_one_context_unary_type w X P
+       \<or>
+       pp_t_eqv pp_t_one_context_unary_type w X
+         (pp_t_pointwise_complement P)))"
+
+lemma pp_t_dual_negated_modal_generated_section_in_domain:
+  assumes "P \<in> pp_t_dual_negated_modal_generated_sections"
+  shows "Elem P (pp_t_domain pp_t_one_context_unary_type)"
+proof -
+  from assms have
+      "P = pp_t_dual_recurrent_full_section
+          pp_t_necessary_falsity_operator
+      \<or>
+       P = pp_t_dual_recurrent_full_section
+          pp_t_possible_falsity_operator"
+    unfolding pp_t_dual_negated_modal_generated_sections_def by blast
+  then show ?thesis
+  proof
+    assume P0:
+        "P = pp_t_dual_recurrent_full_section
+          pp_t_necessary_falsity_operator"
+    show ?thesis
+      unfolding P0
+      by (rule pp_t_dual_recurrent_full_section_in_domain[
+        OF pp_t_negated_modal_operators_in_domain(1)])
+  next
+    assume P0:
+        "P = pp_t_dual_recurrent_full_section
+          pp_t_possible_falsity_operator"
+    show ?thesis
+      unfolding P0
+      by (rule pp_t_dual_recurrent_full_section_in_domain[
+        OF pp_t_negated_modal_operators_in_domain(2)])
+  qed
+qed
+
+lemma pp_t_dual_full_modal_stock_admissible:
+  "pp_t_predicate_admissible pp_t_one_context_unary_type
+    pp_t_dual_full_modal_stock"
+  unfolding pp_t_predicate_admissible_def
+proof (intro allI impI)
+  fix w X Y v
+  assume X: "Elem X (pp_t_domain pp_t_one_context_unary_type)"
+    and Y: "Elem Y (pp_t_domain pp_t_one_context_unary_type)"
+    and XY: "pp_t_eqv pp_t_one_context_unary_type w X Y"
+    and wv: "prefix w v"
+  have base:
+      "pp_t_dual_modal_stock v X = pp_t_dual_modal_stock v Y"
+    using pp_t_dual_modal_stock_admissible X Y XY wv
+    unfolding pp_t_predicate_admissible_def by blast
+  have class_eq:
+      "\<And>P. Elem P (pp_t_domain pp_t_one_context_unary_type)
+        \<Longrightarrow>
+        pp_t_eqv pp_t_one_context_unary_type v X P
+          =
+        pp_t_eqv pp_t_one_context_unary_type v Y P"
+  proof -
+    fix P
+    assume P: "Elem P (pp_t_domain pp_t_one_context_unary_type)"
+    show "pp_t_eqv pp_t_one_context_unary_type v X P
+        =
+      pp_t_eqv pp_t_one_context_unary_type v Y P"
+      using pp_t_reverse_eqv_class_predicate_admissible[OF P]
+        X Y XY wv
+      unfolding pp_t_predicate_admissible_def by blast
+  qed
+  show "pp_t_dual_full_modal_stock v X
+      = pp_t_dual_full_modal_stock v Y"
+    unfolding pp_t_dual_full_modal_stock_def
+    using X Y base class_eq
+      pp_t_dual_negated_modal_generated_section_in_domain
+      pp_t_pointwise_complement_in_domain
+    by blast
+qed
+
+lemma pp_t_dual_full_modal_stock_negation_closed:
+  assumes X: "Elem X (pp_t_domain pp_t_one_context_unary_type)"
+    and stock: "pp_t_dual_full_modal_stock w X"
+  shows
+    "pp_t_dual_full_modal_stock w (pp_t_pointwise_complement X)"
+proof -
+  let ?N = pp_t_pointwise_complement
+  have NX: "Elem (?N X) (pp_t_domain pp_t_one_context_unary_type)"
+    by (rule pp_t_pointwise_complement_in_domain[OF X])
+  from stock have cases:
+      "pp_t_dual_modal_stock w X
+      \<or>
+       (\<exists>P \<in> pp_t_dual_negated_modal_generated_sections.
+        pp_t_eqv pp_t_one_context_unary_type w X P
+        \<or>
+        pp_t_eqv pp_t_one_context_unary_type w X (?N P))"
+    unfolding pp_t_dual_full_modal_stock_def by blast
+  from cases show ?thesis
+  proof
+    assume base: "pp_t_dual_modal_stock w X"
+    show ?thesis
+      unfolding pp_t_dual_full_modal_stock_def
+      using NX pp_t_dual_modal_stock_negation_closed[OF X base]
+      by blast
+  next
+    assume generated:
+        "\<exists>P \<in> pp_t_dual_negated_modal_generated_sections.
+          pp_t_eqv pp_t_one_context_unary_type w X P
+          \<or>
+          pp_t_eqv pp_t_one_context_unary_type w X (?N P)"
+    obtain P where
+        Pset: "P \<in> pp_t_dual_negated_modal_generated_sections"
+      and XP:
+        "pp_t_eqv pp_t_one_context_unary_type w X P
+        \<or>
+         pp_t_eqv pp_t_one_context_unary_type w X (?N P)"
+      using generated by blast
+    have P: "Elem P (pp_t_domain pp_t_one_context_unary_type)"
+      by (rule
+        pp_t_dual_negated_modal_generated_section_in_domain[OF Pset])
+    have NP: "Elem (?N P) (pp_t_domain pp_t_one_context_unary_type)"
+      by (rule pp_t_pointwise_complement_in_domain[OF P])
+    have result:
+        "pp_t_eqv pp_t_one_context_unary_type w (?N X) P
+        \<or>
+         pp_t_eqv pp_t_one_context_unary_type w (?N X) (?N P)"
+    proof -
+      from XP show ?thesis
+      proof
+        assume XP0:
+            "pp_t_eqv pp_t_one_context_unary_type w X P"
+        then show ?thesis
+          using pp_t_pointwise_complement_respects_equivalence[
+            OF X P] by blast
+      next
+        assume XP1:
+            "pp_t_eqv pp_t_one_context_unary_type w X (?N P)"
+        have complements:
+            "pp_t_eqv pp_t_one_context_unary_type w
+              (?N X) (?N (?N P))"
+          by (rule pp_t_pointwise_complement_respects_equivalence[
+            OF X NP XP1])
+        have involution: "?N (?N P) = P"
+          by (rule pp_t_pointwise_complement_involution[OF P])
+        show ?thesis using complements unfolding involution by blast
+      qed
+    qed
+    show ?thesis
+      unfolding pp_t_dual_full_modal_stock_def
+      using NX Pset result by blast
+  qed
+qed
+
+theorem pp_t_dual_full_modal_stock_recombines:
+  "pp_t_unary_recombines_at pp_t_dual_full_modal_stock
+    (pp_t_probe_modal_boolean_dual_recurrent_seed_at w) w"
+  unfolding pp_t_unary_recombines_at_def
+proof (intro allI impI)
+  fix X q
+  let ?r = "pp_t_probe_modal_boolean_dual_recurrent_seed_at w"
+  assume X: "Elem X (pp_t_domain pp_t_one_context_unary_type)"
+    and stock: "pp_t_dual_full_modal_stock w X"
+    and necessary:
+      "\<forall>v. prefix w v \<longrightarrow> pp_t_holds (X \<acute> ?r) v"
+    and q: "Elem q (pp_t_domain Prop)"
+  have r: "Elem ?r (pp_t_domain Prop)"
+    by (rule pp_t_probe_modal_boolean_dual_recurrent_seed_at_in_domain)
+  have safe: "pp_t_recombination_safe_unary_operator X ?r w"
+  proof -
+    from stock have cases:
+        "pp_t_dual_modal_stock w X
+        \<or>
+         (\<exists>P \<in> pp_t_dual_negated_modal_generated_sections.
+          pp_t_eqv pp_t_one_context_unary_type w X P
+          \<or>
+          pp_t_eqv pp_t_one_context_unary_type w X
+            (pp_t_pointwise_complement P))"
+      unfolding pp_t_dual_full_modal_stock_def by blast
+    from cases show ?thesis
+    proof
+      assume base: "pp_t_dual_modal_stock w X"
+      show ?thesis
+        using pp_t_dual_modal_stock_recombines X base
+        unfolding pp_t_unary_recombines_at_def
+          pp_t_recombination_safe_unary_operator_def
+        by blast
+    next
+      assume generated:
+          "\<exists>P \<in> pp_t_dual_negated_modal_generated_sections.
+            pp_t_eqv pp_t_one_context_unary_type w X P
+            \<or>
+            pp_t_eqv pp_t_one_context_unary_type w X
+              (pp_t_pointwise_complement P)"
+      obtain P where
+          Pset: "P \<in> pp_t_dual_negated_modal_generated_sections"
+        and XP:
+          "pp_t_eqv pp_t_one_context_unary_type w X P
+          \<or>
+           pp_t_eqv pp_t_one_context_unary_type w X
+            (pp_t_pointwise_complement P)"
+        using generated by blast
+      have P: "Elem P (pp_t_domain pp_t_one_context_unary_type)"
+        by (rule
+          pp_t_dual_negated_modal_generated_section_in_domain[OF Pset])
+      have NP: "Elem (pp_t_pointwise_complement P)
+          (pp_t_domain pp_t_one_context_unary_type)"
+        by (rule pp_t_pointwise_complement_in_domain[OF P])
+      have P_safe:
+          "pp_t_recombination_safe_unary_operator P ?r w"
+        and NP_safe:
+          "pp_t_recombination_safe_unary_operator
+            (pp_t_pointwise_complement P) ?r w"
+        using Pset
+        unfolding pp_t_dual_negated_modal_generated_sections_def
+        by (auto intro:
+          pp_t_dual_negated_modal_positive_sections_safe
+          pp_t_dual_negated_modal_complemented_sections_safe)
+      from XP show ?thesis
+      proof
+        assume XP0:
+            "pp_t_eqv pp_t_one_context_unary_type w X P"
+        show ?thesis
+          by (rule pp_t_equivalent_recombination_safe_operator[
+            OF X P XP0 r P_safe])
+      next
+        assume XP1:
+            "pp_t_eqv pp_t_one_context_unary_type w X
+              (pp_t_pointwise_complement P)"
+        show ?thesis
+          by (rule pp_t_equivalent_recombination_safe_operator[
+            OF X NP XP1 r NP_safe])
+      qed
+    qed
+  qed
+  show "pp_t_holds (X \<acute> q) w"
+    using safe necessary q
+    unfolding pp_t_recombination_safe_unary_operator_def
+    by blast
+qed
+
+end

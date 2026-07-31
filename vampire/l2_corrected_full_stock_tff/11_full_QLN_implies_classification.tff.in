@@ -1,0 +1,8 @@
+% Primary full-stock hard target:
+% Does the corrected full-QLN + PP representation force composition
+% classification?
+
+include('02_full_QLN_PP_stock.tff.in').
+
+tff(full_QLN_implies_composition_classification,conjecture,
+    ! [W:world] : composition_classification(W)).

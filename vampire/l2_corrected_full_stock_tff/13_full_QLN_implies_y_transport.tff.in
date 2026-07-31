@@ -1,0 +1,8 @@
+% Weaker alternate full-stock hard target:
+% Does the corrected full-QLN + PP representation force Y-relative
+% transport?
+
+include('02_full_QLN_PP_stock.tff.in').
+
+tff(full_QLN_implies_y_transport,conjecture,
+    ! [W:world] : y_transport(W)).

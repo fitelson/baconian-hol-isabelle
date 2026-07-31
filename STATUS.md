@@ -1,5 +1,380 @@
 # PP Consistency Status
 
+> **Checkpoint: post-repair Opus 5 fidelity audit passes, 2026-07-31.**
+> The final Claude Opus 5--Codex audit independently checked Bacon's,
+> Bacon--Dorr's, and Goodman's sources against the maintained theorem
+> statements and proofs.  It gives PASS verdicts for the exact carriers and
+> action, Bacon's arbitrary-signature Theorem 10.1 throughout the
+> `t`-fragment, full H/Classicist/CE/CEV soundness including individual
+> Existence and arbitrary-vector Equivalence, enumeration and gluing, the
+> semantic frame-theory representation theorem, the exact L2 refutation, and
+> the PER quarantine.  The audit's sole surviving finding was a low-severity
+> wording error that placed arbitrary signatures outside the verified scope;
+> the report, matrix, and repository documentation now state the correct
+> boundary: only signatures involving `e`-containing types remain outside
+> scope.  The four-task exact-model goal is complete.  Transcript:
+> `reports/CONSENSUS_POSTFIX_FIDELITY_AUDIT_2026-07-31.md`.
+
+> **Checkpoint: Bacon's exact appendix metatheory is canonical and isolated,
+> 2026-07-31.**
+> The official HOL-ZF development is now
+> `theories/goodman/models/hol_zf/canonical/`.  It proves Bacon's exact
+> all-type Proposition 8 construction, Bacon's arbitrary-signature
+> Theorem 10.1 throughout the `t`-fragment,
+> H/Classicist/CE/CEV soundness including the individual Existence instance
+> and vector Equivalence, the countable enumeration and gluing construction, and the
+> resulting completeness theorem for a fixed signature in the
+> proposition-generated fragment.  Isabelle supplies the branch-gluing proof
+> Bacon omits.  Signatures involving `e`-containing types remain outside
+> scope, as Bacon explicitly defers that extension.
+>
+> Goodman-specific interpretations over the exact carriers now live in
+> `models/hol_zf/extensions/`.  Every older full, hyperintensional,
+> Boolean-tree, natural-word, and fragment model, together with the abandoned
+> closure-code/PER construction, now lives in `models/hol_zf/secondary/`.
+> `tools/check_exact_bacon_boundary.py`, invoked by `check_isabelle.sh`, checks
+> that neither `canonical/` nor `extensions/` reaches `secondary/` and that
+> the PER declarations occur only in the quarantined secondary theory.  The
+> exact HOL-ZF theories are now the complete contents of
+> `Higher_Order_Metaphysics_PP_ZF_Model`; all older constructions are built
+> only in the child session `Higher_Order_Metaphysics_PP_ZF_Secondary`.
+> Both sessions and the boundary audit pass.  Goodman's consistency question
+> remains open.
+
+> **Checkpoint: Bacon's Proposition 8 is proved for the exact HOL--ZF
+> recursion, 2026-07-31.**
+> `Bacon_PP_ZF_Full_MSet.thy` now defines the carriers exactly as in Bacon's
+> full surjective (M)-set construction: the singleton individual carrier,
+> the powerset of the free monoid at propositions with division action, and
+> the restricted function space of Definition 7.2 at every arrow type.  A
+> simultaneous induction proves closure, the monoid laws, and a canonical
+> preimage operation at every type.  Hence every recursive carrier is a
+> surjective (M)-set, and the arrow instance is Proposition 8.  Isabelle
+> also proves that the function action is independent of which preimage is
+> chosen and verifies the substitution/application equation.  The theorem is
+> deliberately scoped to
+> this exact free-monoid recursion: Bacon's printed footnote does not by
+> itself verify the function-space condition at words other than the word
+> used to choose the preimages.  The maintained serial repository audit,
+> including the complete Goodman audit, passes.
+> The next fidelity layer is Definition 8.1's logical interpretation over
+> these exact carriers.
+
+> **Checkpoint: the QLN granularity condition is tested in the complete object
+> language, 2026-07-31.**
+> `Bacon_PP_Goodman_Granularity_QLN.thy` defines closed logical builders for
+> the truth-functional agreement operator
+> `p \<mapsto> (Zp \<longleftrightarrow> p)` and its pointwise disagreement
+> operator, proves their values pure from `Pure(Z)` by application closure,
+> reconstructs a generic unary Exhaustion instance, and combines it
+> with Recombination into the exact unary QLN biconditional.  The principal
+> theorem proves that over the full QLN+PP stock the modal agreement
+> disjunction is equivalent to the pointwise truth-uniformity disjunction.
+> Thus the proposed granularity condition is exactly TU in this setting, not
+> a weaker intermediate principle.  The logical-purity schema, application
+> closure, and `Pure(Z)` supply the purity premises; PP is present in the
+> ambient stock but is not their source, and no proof of either disjunct from
+> PP is known.  This is a proof-theoretic reduction, not
+> an underivability theorem or a PP countermodel; the rebuilt M5
+> interpretation remains only PP-free model-theoretic calibration.  The
+> Frontier session and the expanded
+> 158-target complete Goodman audit pass.  Goodman's consistency question
+> remains open.
+
+> **Checkpoint: Bacon's omitted QLN verification is reconstructed for
+> Goodman's specialization, 2026-07-31.**
+> `Bacon_PP_ZF_Bacon_QLN.thy` proves global zeroary and unary Quantified
+> Logical Necessity in the completed tree interpretation with one fundamental
+> proposition and the complete closed-logical pure stock.  Zeroary Exhaustion
+> follows from the truth/falsity classification of closed logical
+> propositions.  Unary Exhaustion follows from cone invariance of every
+> closed logical unary denotation; unary Recombination is supplied by the
+> generic fundamental proposition.  These are all nonvacuous QLN instances
+> in Goodman's unique-fundamental-proposition setting.  The broader extension
+> to arbitrary individual types or several pairwise-distinct fundamental
+> entities is not claimed.  The HOL-ZF model session and the 158-target
+> complete Goodman audit both pass.  This closes a source-verification gap but
+> does not alter the answer to Goodman's consistency question, which remains
+> open.
+
+> **Checkpoint: semantic SCC assembly is verified, and the finite T6
+> iteration reaches an exact collision boundary, 2026-07-30.**
+> `Bacon_PP_ZF_Two_Component_Assembly.thy` now supplies the missing semantic
+> successor theorem.  A stabilized classifier-bearing component can be
+> combined with a later component when the latter's support avoids the old
+> application-source types and the unary stock and its classifier.  Isabelle
+> verifies preservation of admissibility, the old and new application
+> closures, PP, and the same Recombination seed; the theorem iterates through
+> any finite successor rank.  A concrete classifier-cycle-plus-proposition
+> successor instantiates the result.  This makes SCC condensation a genuine
+> construction method for separated successor components, while correctly
+> leaving internal enlargement of the classifier component untreated.
+>
+> `Bacon_PP_ZF_T6_Collision_Carrier.thy` attacks that internal case directly.
+> It iterates the T6 classifier/diagonal enlargement and proves that every
+> finite stage is admissible, finite-represented, PP-self-classifying,
+> equivariant, and supplied with true and false `fun'` witnesses.
+> Application closure at a stage is equivalent to stabilization, and
+> stabilization is equivalent to one literal global collision with a stage
+> representative.  Uniform eliminations leave only necessary falsity, the
+> old T6 operator, or an earlier generated diagonal as possible collisions.
+> Any surviving collision must have a false square on every stage-`fun'`
+> witness.
+>
+> The necessary-falsity case is now reduced to density of the witness.
+> Isabelle also verifies that equivariance alone cannot supply the needed
+> dense separator: two distinct equivariant Boolean operators can agree on
+> every dense proposition.  Thus this branch has reached a principled
+> stopping point rather than a failed proof search.  Goodman's question
+> remains open.  Renewing the branch requires a stronger invariant specific
+> to the generated T6 stock; otherwise the next program is the more global
+> countable absorption/Henkin construction identified in the July 30
+> strategy reassessment.
+
+> **Checkpoint: the second cyclic package is consistent, and its absorption
+> mechanism is generalized, 2026-07-29.**
+> `Bacon_PP_ZF_Finite_First_Cyclic_Package.thy` now assembles the stabilized
+> symmetrized-singleton stock into a complete tailored HOL-ZF interpretation.
+> Isabelle verifies PP, purity of the displayed logical builder, the required
+> application closure, unique proposition-level fundamentality, and zeroary
+> and unary Recombination, and proves
+> `pp_finite_next_cyclic_package_consistent`.  Thus the first cyclic generator
+> outside the view-completeness elimination theorem is also not an
+> inconsistent core.
+>
+> `Bacon_PP_ZF_Tree_Family_Probe_Absorption.thy` extracts the general reason.
+> For an arbitrary admissible unary stock \(S\) and typed logical family
+> \(B:p\mapsto B_p\), adjoining the probe
+> \(P(p)\leftrightarrow B_p\in S\) stabilizes in one step exactly when every
+> collision \(P\approx B_p\) is already absorbed by \(S\).  If every
+> \(B_p(p)\) is true, collision absorption follows immediately, so every
+> diagonally reflexive family has one-step stabilization.
+>
+> The next genuinely dangerous incoming generator must therefore admit an
+> unabsorbed collision; in particular it cannot be disposed of by diagonal
+> reflexivity.  The next concrete test is the pointwise complement of the
+> symmetrized-singleton family, whose values are false of their own
+> parameters.  Its collision condition is now the exact bounded obstruction.
+
+> **Checkpoint: the symmetrized-singleton cycle stabilizes in one step,
+> 2026-07-29.**
+> The first incoming generator outside the singleton-family elimination
+> theorem is not an obstruction.  Enlarge the old unary stock by the single
+> symmetrized-singleton probe.  Isabelle proves that evaluating the same
+> logical builder against the enlarged stock's classifier returns exactly the
+> probe already adjoined.  The decisive collision lemma is that if a family
+> value is equivalent to the probe, evaluating both at its own parameter
+> forces that family value to have belonged to the old stock already.
+>
+> The enlarged stock has a countable representation: the exact closed logical
+> operators plus the one probe.  Every representative is cone-natural.
+> Isabelle applies the generic-witness construction to obtain a proposition
+> satisfying unary Recombination for the enlarged stock at the root, and then
+> transports it to a coherent moving seed satisfying Recombination at every
+> world.  The remaining step for this finite package is to assemble these
+> ingredients into the tailored internal interpretation and verify all six
+> package axioms together.
+
+> **Checkpoint: strongly connected components and the next cyclic
+> obligation, 2026-07-29.**
+> `Bacon_PP_Finite_Application_Graph.thy` now augments the application
+> dependency graph by PP's edge from the unary type to its classifier type.
+> Isabelle defines the resulting strongly connected components, proves that
+> they form a finite partition of the graph's field, and proves that their
+> strict reachability relation is transitive and irreflexive.  Thus every
+> finite application graph decomposes into an acyclic condensation of cyclic
+> components.
+>
+> For the first classifier-bearing graph, the classifier component is
+> calculated exactly as the two-element set consisting of the unary type and
+> its classifier type.  The probe-builder type is not in this component: its
+> component strictly precedes it and supplies an incoming generated value.
+> Hence later cyclic obligations are distinguished not by a new type-level
+> component, but by the logical builders feeding new values into this fixed
+> component.
+>
+> `Bacon_PP_ZF_Finite_First_Cyclic_Package.thy` formalizes the next explicit
+> incoming generator.  The ordinary singleton family is covered by the
+> verified view-completeness and uniform-definability elimination theorem.
+> The symmetrized-singleton family is not view-complete, so that theorem does
+> not cover it.  Isabelle constructs its finite Recombination-plus-PP package,
+> extracts its classifier-to-unary application pair, proves that the package
+> is genuinely cyclic, and proves that it is a subset of the exact central
+> axiom stock.
+>
+> This classification is not an inconsistency result, and failure of
+> view-completeness does not show that the forced symmetrized-singleton probe
+> is nonlogical by every possible argument.  The next exact task is to decide
+> whether that forced value belongs to the old closed logical unary stock by
+> some other theorem; if not, enlarge the stock by that value and test whether
+> the same component stabilizes.
+
+> **Checkpoint: acyclic stabilization and the first cyclic package,
+> 2026-07-29.**
+> `Bacon_PP_Finite_Application_Graph.thy` defines the finite type-dependency
+> graph generated by application closure.  Isabelle proves that whenever
+> there is no path from the unary-stock classifier type back to the unary
+> type, every generated unary expression is classifier-free.  Consequently
+> its generated unary denotations are independent of the proposed value of
+> the classifier.  This is the acyclic finite-graph stabilization theorem.
+>
+> `Bacon_PP_Finite_Fragment_Model_Program.thy` then isolates the first
+> classifier-bearing cyclic package: the four fixed PP/Recombination
+> principles, purity of the singleton-family probe builder, and application
+> closure from the classifier type to the unary type.  Its single
+> classifier-to-unary application edge is proved to be the subset-minimal
+> type-level cycle.
+>
+> `Bacon_PP_ZF_Finite_First_Cyclic_Package.thy` constructs a tailored HOL-ZF
+> model of that entire package.  The unary pure stock is Bacon's exact closed
+> logical stock; the next two relevant stocks are the equivalence classes of
+> its classifier and of the probe builder.  Application around the cycle
+> yields the singleton-family test, which the existing elimination theorem
+> identifies with the closed logical settled-now operator.  Isabelle verifies
+> PP, the builder-purity instance, the required application closure, unique
+> proposition-level fundamentality, and zeroary and unary Recombination, and
+> proves `pp_finite_first_cyclic_package_consistent`.
+>
+> Thus classifier-bearing cyclicity is not by itself an inconsistent core.
+> The remaining compactness target is a stabilized model for every finite
+> cyclic package, or an Isabelle-checked contradiction for a later package.
+
+> **Checkpoint: Recombination-only finite-fragment program, 2026-07-29.**
+> `Bacon_PP_Fresh_Finite_Fragment.thy` now instantiates axiom-extension
+> compactness to the exact Recombination-only stock.  Isabelle proves that
+> Goodman's question has an affirmative answer iff every finite subset of
+> that stock is axiom-extension consistent.  It also proves the exact
+> converse: a negative answer is equivalent to one finite subset deriving
+> falsity in the axiom-extension calculus.  These results do not add
+> Exhaustion, persistence, or a separate Modalized Functionality schema.
+>
+> `Bacon_PP_Finite_Fragment_Model_Program.thy` extracts from each finite
+> fragment its finite set of closed logical generators, finite set of
+> application type-pairs, finite set of types stipulated to have no
+> fundamental entities, and its fixed PP/Recombination/fundamentality
+> principles.  It then gives a checked semantic interface for a family of
+> countable tailored models.  Each model is required to validate PP even if
+> its input fragment omits PP, so every witness is genuinely
+> self-classifying.  Isabelle proves that an instantiation of this interface
+> answers Goodman affirmatively.
+>
+> The interface is now instantiated for the first classifier-bearing cyclic
+> package, but not yet for an arbitrary finite package.  Finite presentation
+> does not by itself remove cycles created by application closure at
+> classifier-bearing types; it isolates those cycles as the exact
+> constructive obligation.  The full serial check and refreshed Isabelle
+> knowledge graph pass.
+
+> **Checkpoint: exact view-completeness and uniform definability criteria,
+> 2026-07-29.**
+> `Bacon_PP_ZF_Tree_Family_View_Definability.thy` determines exactly when
+> the cone-class equation is sufficient.  For a closed logical family
+> \(B:p\mapsto B_p\), define the local condition at \(w\) by
+> \[
+>   \forall s\;
+>   B_{(p\upharpoonright w)\upharpoonright s}
+>     =B_{p\upharpoonright w}.
+> \]
+> Membership of \(B_p\) in the closed logical unary stock at \(w\) always
+> implies this condition.  The converse holds at every world exactly when
+> \(B\) is *view-complete*: at the root, every parameter satisfying the
+> condition gives a value \(B_p\) with a closed logical representative.
+> Root view-completeness and global sufficiency are proved equivalent.
+>
+> Under view-completeness, Isabelle proves a second exact equivalence:
+> `λp. Pure(B p)` has a closed logical representative iff the displayed
+> cone-class condition has one closed logical definition valid uniformly at
+> every world.  Injective logical families are proved view-complete and
+> their condition is definable by non-contingency.  Families whose whole
+> range is already closed logical are also view-complete.
+>
+> `Bacon_PP_ZF_Tree_Indexed_Family_Probe.thy` gives the required
+> higher-order uniform version.  For arbitrary object-language type
+> \(\alpha\), it constructs and evaluates the indexed probe
+> \((a,p)\mapsto\mathrm{Pure}(B(a,p))\).  The probe is eliminable exactly
+> when stock membership is represented by one closed logical term of type
+> \(\alpha\to\mathrm{Prop}\to\mathrm{Prop}\).  Separate representatives for
+> each value of \(a\) do not suffice for a quantifier over \(\alpha\).
+>
+> These theorems separate the remaining problem into two independent
+> obligations for each noninjective family: prove view-completeness, and
+> define its cone-class condition uniformly.  They do not prove that every
+> closed logical family is view-complete; that assertion is now the precise
+> semantic descent problem behind the remaining one-classifier contexts.
+> The serial HOL-ZF build and all dependent bridge sessions pass.
+
+> **Checkpoint: inverse cone-naturality extended to arbitrary logical
+> families, 2026-07-29.**
+> `Bacon_PP_ZF_Tree_Inverse_Cone_Naturality.thy` isolates and proves the
+> general argument behind the singleton-family calculation.  For every
+> closed logical family \(B:p\mapsto B_p\), cone-naturality of \(B_p\)
+> forces
+> \(B_{p\upharpoonright s}=B_p\).  Therefore, if \(B_p\) belongs at the
+> root to the closed logical unary stock, every cone view of \(p\) lies in
+> the same \(B\)-equivalence class as \(p\).
+>
+> Isabelle proves full classifier elimination for every such family that
+> determines its parameter on cones.  Ordinary injectivity of \(B\) is a
+> sufficient condition; the resulting classifier test is exactly
+> non-contingency, \(\lambda p.(\Box p\lor\Box\neg p)\).  The theory also
+> eliminates the opposite degenerate case in which every value of \(B\)
+> is already a closed logical operator, including every constant family,
+> and proves closure under arbitrary closed logical postprocessing.
+>
+> This does not eliminate every one-occurrence context.  A nonconstant,
+> noninjective \(B\) can preserve only an equivalence class of propositions,
+> so cone-naturality need not recover \(p\) itself.  The exact remaining
+> task is to define, in the closed logical language, the condition that all
+> cone views of \(p\) remain in its \(B\)-class, and to prove that this
+> condition is also sufficient for \(B_p\) to belong to the closed logical
+> stock.  Classifier occurrences under higher-order quantifiers require
+> this result uniformly.  Thus the inverse argument now covers its maximal
+> unconditional class, but the full one-classifier problem and one-step
+> stabilization remain open.  The serial HOL-ZF build and all dependent
+> bridge sessions pass.
+
+> **Checkpoint: the first open one-classifier Henkin context is eliminated,
+> 2026-07-29.**
+> `Bacon_PP_ZF_Tree_Singleton_Family_Elimination.thy` proves in the exact
+> HOL-ZF tree/Henkin semantics that
+> `λq. □(q ↔ p)` belongs to the closed logical unary stock at a world exactly
+> when `p` is settled there.  Consequently the previously unresolved
+> singleton test `λp. Pure(λq. □(q ↔ p))` is literally the closed logical
+> non-contingency operator `λp. (□p ∨ □¬p)`.  The proof uses an inverse
+> cone-naturality argument: if the singleton-family operator is logical at a
+> cone root, its cone-naturality forces the cone view of `p` to equal `p`,
+> hence `p` is constant on that cone.
+>
+> This is genuine progress on the positive Henkin line, not yet a model of
+> the full central stock.  It removes the first obstruction isolated by the
+> one-occurrence classifier analysis.  The remaining task is to extend the
+> same inverse/elimination method to every one-classifier context and then
+> to the complete application-closed stock.  The serial HOL-ZF build and all
+> dependent bridge sessions pass.
+
+> **Checkpoint: arbitrary-Henkin M1 obstruction, 2026-07-29.**
+> `Bacon_PP_Goodman_M1_Henkin.thy` abstracts the exact footnote-59
+> calculation from Bacon's tree semantics to the denotable-function-space
+> CEV+ Henkin interface.  Its assumptions are now explicit: compositional
+> clauses for variables, constants, application, abstraction, conjunction,
+> identity, `Pure`, and `Fun`; application closure; type-indexed identity
+> reflexivity, transitivity, and congruence; and preservation of truth by
+> proposition identity.  From local purity of the footnote-59 operator, QSS,
+> and unique proposition-level fundamentality, Isabelle proves the diagonal
+> contradiction without any tree-specific premise.
+>
+> The global theorem `M1_fn59_PP_failure` excludes PP in every such CEV+
+> Henkin model that validates the PP-free M1 background, QSS, and unique
+> fundamentality.  The corollary
+> `no_full_QLN_model_with_purity_of_fun` proves that no such model validates
+> full QLN + PP + Purity of Fun.  This is the strongest model-independent M1
+> result.  It does **not** answer Goodman's question: Purity of Fun is
+> deliberately absent from `pp_recombination_PP_axioms` and
+> `pp_full_QLN_PP_axioms`, and the footnote-59 purity derivation uses it.
+> The remaining M1 route is therefore to derive Purity of Fun from the
+> central stock or replace that use in the construction of the diagonal.
+> The maintained kernel audit now checks 142 theorem objects.
+
 > **Checkpoint: scope and maintenance repair, 2026-07-29.**
 > Higher-type equality in the bounded semantic bridge is now type-directed:
 > proposition equality, unary-operator equality, and classifier equality are
@@ -23,7 +398,7 @@
 > QLN, Modalized Functionality, and unique fundamentality, but no fragment
 > model theorem was ever implemented.  The substantive modal-word theory is
 > retained in the higher-order-quantified session.  The maintained Goodman
-> theorem-object audit now checks 136 targets and is selected by
+> theorem-object audit now checks 136 targets at that checkpoint and is selected by
 > `check_isabelle.sh`.
 
 > **Checkpoint: staged Vampire analysis of L2 from PP, 2026-07-29.**
@@ -48,7 +423,7 @@
 > 2026-07-28.**
 > The Goodman report and verification matrix now record the completed M5
 > rebuilding theorem.  The theory
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy`
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model.thy`
 > constructs the least application-closed pure stock containing all closed
 > logical denotations and Goodman's displayed exotic operator.  Isabelle
 > verifies that the operator's denotation is typed, commutes with taking
@@ -78,11 +453,15 @@
 > maintained development serially.  See `docs/REPOSITORY_STRUCTURE.md`.
 >
 > Goodman's first suggested L2 calibration is settled negatively.
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_L2_Child_Xor.thy`
-> defines the closed logical child-XOR operator \(Z\), proves it surjective,
-> noninjective, right-cancellative on Bacon's exact closed-logical stock, and
-> nonreversible, and proves `pp_b_child_xor_refutes_exact_L2`.  Thus global
+> `theories/goodman/models/hol_zf/extensions/Bacon_PP_ZF_Exact_L2_Child_Variation.thy`
+> defines the closed logical immediate-successor variation operator \(Z\) on
+> Bacon's finite-natural-word action, proves it surjective, noninjective,
+> right-cancellative on the exact closed-logical stock, and nonreversible,
+> and proves `pp_e_child_variation_refutes_exact_L2`.  Thus global
 > semantic L2, and hence strong L2, is false in Bacon's exact appendix model.
+> This exact result supersedes the older two-child calculation in the
+> secondary comparison model; it makes no claim about arbitrary enlarged
+> pure stocks.
 > This does not settle the PP consistency question because that model
 > independently fails PP at the unary-operator type.  Later chronological
 > entries describing global L2 as open record an earlier frontier and are
@@ -466,8 +845,8 @@
 > and the wide-Fun discussion in M4 are underspecified; the proposed general
 > M5 collision argument and the fully instantiated M5 rebuilt model remain
 > open.  The main PP consistency question remains open.  Global semantic L2
-> is now refuted by the later child-XOR result recorded at the top of this
-> file.
+> for Bacon's exact closed-logical stock is now refuted by the later
+> immediate-successor variation result recorded at the top of this file.
 >
 > The earlier bounded-microreport Claude--Codex audit converged after four
 > turns and its three precision repairs are incorporated.  A final
@@ -521,7 +900,7 @@
 >
 > **Base and vector-Equivalence soundness discharged; the fixed point is now
 > the sole model-existence obligation, 2026-07-27.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_CEV_Soundness.thy` gives a direct semantic proof
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_CEV_Soundness.thy` gives a direct semantic proof
 > of every CEV base axiom and every vector-Equivalence instance in the
 > restricted tree Henkin model.  The development proves evaluator
 > extensionality, shift and substitution, beta and eta compatibility, all
@@ -547,7 +926,7 @@
 > require either global semantic L2 for the generated stock or a
 > classification of its pure reversible cone-natural operators.
 >
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` now isolates the remaining
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` now isolates the remaining
 > construction problem exactly.  The inclusion
 >
 > ```text
@@ -564,7 +943,7 @@
 >
 > **Repaired central stock reduced to the same self-reference fixed point,
 > 2026-07-27.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Repaired_Central_Stock.thy` proves that zeroary
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Repaired_Central_Stock.thy` proves that zeroary
 > Exhaustion is globally valid in every cone-natural basis model.  The key
 > semantic lemma is that a pure proposition true at a world is locally
 > equivalent to truth: its basis representative is cone-natural and hence a
@@ -601,7 +980,7 @@
 >
 > **The stabilizer-orbit relation is lifted to the actual tree action,
 > 2026-07-27.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Stabilizer_Orbit.thy` defines actual
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Stabilizer_Orbit.thy` defines actual
 > precomposition `G \<circ> \<psi>` on the HOL-ZF proposition domain and proves
 > that its raw Boolean-tree operator is exactly
 > `pp_b_operator_of G \<circ> pp_b_operator_of \<psi>`.
@@ -633,7 +1012,7 @@
 >
 > **Closed object-language quotient diagonal and generated-stock closure
 > checked, 2026-07-27.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder.thy` defines the
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Quotient_Diagonal_Builder.thy` defines the
 > constant-free closed term `pp_qd_builder` of type
 > `(Ind -> U) -> (Prop -> Prop -> Prop) ->
 > (Prop -> U -> U -> Prop) -> U`, where `U = Prop -> Prop`.
@@ -657,7 +1036,7 @@
 >
 > **Ambient inverse and root-semantic quotient diagonal formalized;
 > first tag tests are negative, 2026-07-27.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Ambient_Inverse.thy` now machine-checks the
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Ambient_Inverse.thy` now machine-checks the
 > Boolean cone profile
 > `X_w \<cong> 2 \<times> X_{w@[False]} \<times> X_{w@[True]}`, proves that every
 > view-respecting ambient bijection induces a bijection on every cone, and
@@ -666,7 +1045,7 @@
 > `\<lambda>\<psi> q. \<exists>p. (\<psi>p = q \<and> p)` is typed, logical, in the
 > unary domain, and is proved pointwise correct against the raw inverse.
 >
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Quotient_Diagonal.thy` formalizes the
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Quotient_Diagonal.thy` formalizes the
 > root-semantic `D_R` schema, separator representations, root-truth
 > congruence, and tag homogeneity.  Its central theorem,
 > `pp_qd_absorption_forces_tag_heterogeneity`, proves that if `D_R` is
@@ -723,7 +1102,7 @@
 
 > **`Ind`-enumerator construction reduced to one exact absorption fixed
 > point, 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Diagonal.thy` proves that root PER
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Range_Diagonal.thy` proves that root PER
 > equivalence is literal equality at every object type.  Therefore root
 > range-completeness is equivalent to all-world range-completeness, and both
 > are equivalent to the raw set identity between the unary basis and the
@@ -739,7 +1118,7 @@
 > `pp_b_generic_separator_for_countable_stock` separately constructs an
 > external separator for any countable cone-equivariant unary stock.
 >
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` defines the explicit
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Range_Term_Basis.thy` defines the explicit
 > applicative basis generated from all closed logical denotations, all of
 > `Nat` at `Ind`, and one distinguished cone-natural enumerator `E`.  The
 > locale `pp_t_cone_natural_enumerator` verifies all five
@@ -761,7 +1140,7 @@
 
 > **Seeded-basis model theorem and `Ind`-range criterion checked,
 > 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Seeded_Stock.thy` packages the semantic
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Seeded_Stock.thy` packages the semantic
 > construction over an arbitrary `pp_t_stock_basis`.  For every such basis it
 > selects a root generic seed, transports it by cone lift, interprets `Pure`
 > by the basis saturation and `Fun` by the local identity class of the
@@ -776,7 +1155,7 @@
 > next-type basis stock at the root.  This is the sufficient-basis theorem
 > requested by the classifier-frontier audit.
 >
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Range_Classifier.thy` then verifies the live
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Range_Classifier.thy` then verifies the live
 > simultaneous route.  The closed, logical, well-typed term
 > `pp_range_classifier_builder`, applied to any typed
 > `E : Ind \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)`, is
@@ -801,7 +1180,7 @@
 > theories contain no `sorry` or `oops`, and `git diff --check` is clean.
 
 > **Countable cone-natural basis abstraction checked, 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Basis_Stock.thy` defines
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Basis_Stock.thy` defines
 > `pp_t_basis_stock D`, the local-equivalence saturation of a typed
 > type-indexed basis `D`.  The locale `pp_t_stock_basis` assumes exactly the
 > current construction data: typedness, countability, cone naturality,
@@ -835,7 +1214,7 @@
 
 > **Generic-seed background model and exact PP root reduction checked,
 > 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Generic_Seed.thy` now carries the generic root
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Generic_Seed.thy` now carries the generic root
 > seed through cone lift to every world, interprets `Fun_Prop` as the local
 > identity class of that transported seed, and proves global unique
 > fundamentality, no fundamentals at every non-proposition type, all
@@ -882,7 +1261,7 @@
 
 > **All-type cone gluing and unconditional exact-stock Recombination
 > checked, 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Generic_Seed.thy` constructs, for every countable
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Generic_Seed.thy` constructs, for every countable
 > stock of cone-equivariant proposition operators, one proposition whose
 > reserved Boolean cones diagonalize against every nonuniversal operator.
 > The exact stock of denotations of closed, typed, constant-free unary terms
@@ -919,7 +1298,7 @@
 
 > **Full closed-logical stock constructed; moving-seed tree model refuted,
 > 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Logical_Stock.thy` defines
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Logical_Stock.thy` defines
 > `pp_t_closed_logical_stock`, the local-identity closure of the denotations
 > of all closed, well-typed, constant-free object terms.  It proves that this
 > stock is admissible, contains every evaluation of every such term, is least
@@ -950,7 +1329,7 @@
 
 > **Branching HOL-ZF model scaffold instantiated; first logical
 > Recombination obstruction passed, 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Tree_Frame.thy` is the live positive construction.
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Tree_Frame.thy` is the live positive construction.
 > Its worlds are finite Boolean words ordered by prefix.  A proved bijection
 > with `Nat` lets propositions remain the preconstructed set
 > `Power Nat`, without unused or duplicated world coordinates.
@@ -1002,7 +1381,7 @@
 > full-frame recommendation, not evidence that the central stock itself is
 > inconsistent.
 >
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Hyper_Frame.thy` implements the required refinement
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Hyper_Frame.thy` implements the required refinement
 > without returning to closure evaluation.  Propositions remain preconstructed
 > subsets of `Nat`, but object identity is the world-indexed relation
 > `pp_h_eqv`.  At proposition type, `P ≈_w Q` means agreement at every
@@ -1027,7 +1406,7 @@
 > domains, followed by a new `henkin_action_model` interpretation.
 
 > **Preconstructed HOL-ZF full frame instantiated, 2026-07-26.**
-> `theories/goodman/models/hol_zf/Bacon_PP_ZF_Full_Frame.thy` implements Claude's recommended
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Full_Frame.thy` implements Claude's recommended
 > semantic pivot in a separate Isabelle session,
 > `Higher_Order_Metaphysics_PP_ZF_Model`.  The object domains are fixed before
 > denotation: `Ind` is `Nat`, `Prop` is `Power Nat`, and
@@ -1059,7 +1438,7 @@
 > certificate.
 
 > **Closure-evaluator route closed, 2026-07-26.**
-> `theories/goodman/notes/Bacon_PP_Central_Model_Obligations.thy` now proves the typed
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_Central_Model_Obligations.thy` now proves the typed
 > quantifier-cycle witness
 > `F = λa. ∀P^(Ind→Prop). P a` and proves that the corresponding closure is
 > self-related at `Ind→Prop` for every application operation that returns
@@ -1086,7 +1465,7 @@
 > `isabelle build -D . Higher_Order_Metaphysics_PP_Frontier` is clean.
 
 > **Direct central-stock model program opened, 2026-07-26.**
-> `theories/goodman/notes/Bacon_PP_Central_Model_Obligations.thy` now fixes the exact
+> `theories/goodman/models/hol_zf/secondary/Bacon_PP_Central_Model_Obligations.thy` now fixes the exact
 > positive certificate as the locale `pp_central_stock_model`.  An
 > interpretation must discharge the denotable Henkin clauses, global soundness
 > of base CEV and vector Equivalence, and
@@ -3099,9 +3478,12 @@ an exotic noninvariant operator as pure.  This isolates the remaining
 countermodel burden without claiming that the unbounded PP and purity schemas
 have already been modeled.
 
-## Goodman M1--M7 completion (2026-07-27)
+## Goodman M1--M7 statement audit (2026-07-27)
 
-The determinate M-claims are now machine-checked.
+The determinate M-claims are now machine-checked at the scopes stated in their
+theorems.  This heading records completion of the statement-by-statement
+audit; it does not assert that every conditional stock premise has been
+instantiated in Bacon's appendix model.
 
 - **M1:** `Bacon_PP_Goodman_M1_Complete.thy` defines Goodman's exact
   footnote-59 operator
@@ -3119,24 +3501,32 @@ The determinate M-claims are now machine-checked.
   theorem. `Bacon_PP_ZF_Goodman_M5_Rebuild.thy` applies it while holding the
   exotic cone-natural unary operator fixed, discharging the rebuilding step
   rather than leaving it conditional on Theorem 10.1.
-- **M6:** `Bacon_PP_Goodman_M6.thy` proves separation of every pair of
-  distinct substitutions by a `fun′` proposition, failure of one-coordinate
-  orbit-diagonal independence, and a strict pair of `fun′` propositions whose
-  inclusion blocks a joint assignment at every view.
+- **M4:** the preimage-heredity and lifted-branch results are conditional stock
+  theorems.  They assume necessitated QSS, membership and invariance conditions
+  for the pure operators, and the stated base operators.  Those premises have
+  not been instantiated for Bacon's complete closed-logical stock.
+- **M6:** `Bacon_PP_Goodman_M6.thy` proves, under its explicit stock premises,
+  separation of every pair of distinct substitutions by a `fun′` proposition,
+  failure of one-coordinate orbit-diagonal independence, and a strict pair of
+  `fun′` propositions whose inclusion blocks a joint assignment at every view.
+  These results likewise have not been instantiated for Bacon's complete
+  closed-logical stock.
 - **M7:** `Bacon_PP_ZF_Goodman_M7.thy` constructs the branch diagonal against
   any countable exact closed unary stock and proves that no such stock can
   exhaust the reachable unary proposition domain.
 
-Together with the earlier M2 and M4 theories, this closes the precise M1--M7
-verification suite. `isabelle build -D . -o timeout=60` passes for both the
-Frontier and HOL-ZF sessions. A single consolidated adversarial audit of this
-completed suite is the next checkpoint; it should scrutinize theorem scope,
-especially the distinction between exact closed-term stocks and broader
-semantic domains.
+Together with the earlier M2 theory, this closes the precise M1--M7
+statement audit, with M4 and M6 retained as conditional theorems.  It does not
+promote them to claims about Bacon's appendix interpretation.  The command
+`isabelle build -D . -o timeout=60` passes for both the Frontier and HOL-ZF
+sessions.  A single
+consolidated adversarial audit of this suite is the next checkpoint; it should
+continue to scrutinize theorem scope, especially the distinction between
+exact closed-term stocks and broader semantic domains.
 
 ## Semantic L2 in Bacon's exact tree model (2026-07-27)
 
-`theories/goodman/models/hol_zf/Bacon_PP_ZF_Goodman_L2_Model.thy` now gives a direct semantic
+`theories/goodman/models/hol_zf/secondary/Bacon_PP_ZF_Goodman_L2_Model.thy` now gives a direct semantic
 formalization of Goodman's L2 over the exact Boolean stock induced by closed,
 constant-free object-language unary terms.
 
@@ -3244,3 +3634,35 @@ than one, EG templates outside the selected root vocabulary, and
 propositional tautologies above the displayed term bound. The context engine
 also needs proof-trace output before a future positive hit can cross the
 mandatory Isabelle replay boundary.
+
+## Pure-diagonal search scaffold (2026-07-30)
+
+`pure_diagonal_search/` now performs a structure-guided search for closed
+logical builders
+
+\[
+B:(((\mathrm{Prop}\to\mathrm{Prop})\to\mathrm{Prop})
+  \to(\mathrm{Prop}\to\mathrm{Prop}))
+\]
+
+and forms \(D=B(\mathrm{Pure})\). It reuses the exact typed term enumerator,
+CEV+ profiles, reference saturator, support minimizer, and Isabelle
+contradiction replay from `finite_core_search/`. The reference prover now
+introduces a conjunction when, and only when, that conjunction is the active
+antecedent of a known implication. This supplies application-closure premises
+without unrestricted quadratic conjunction generation.
+
+The new Isabelle theorem
+`finite_core_pure_logical_builder_application` proves uniformly that every
+well-typed constant-free \(B\) of the displayed type yields a pure
+\(B(\mathrm{Pure})\) in each maintained search profile. Generated audit
+sessions instantiate this theorem and inspect the resulting theorem objects
+for oracles, hypotheses, and flex-flex pairs.
+
+The smoke tranche contained the negative diagonal, positive diagonal,
+Goodman's T6 builder, and the first two exhaustive size-six one-classifier
+builders. Isabelle certified purity for all five. The bounded reference
+search derived no contradiction. This is a calibration result only: the
+reference engine still lacks replayable existential elimination for the
+unique-fundamentality witness, so it does not yet test every closure pattern
+involving an existentially given fundamental proposition.

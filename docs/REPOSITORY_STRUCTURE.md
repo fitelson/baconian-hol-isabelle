@@ -10,12 +10,13 @@ Bacon_Base
         ├── Higher_Order_Metaphysics_PP
         │   ├── Higher_Order_Metaphysics_PP_Frontier
         │   │   └── Higher_Order_Metaphysics_PP_ZF_Model
+        │   │       └── Higher_Order_Metaphysics_PP_ZF_Secondary
         │   └── Higher_Order_Metaphysics_PP_Models
         └── Goodman_CEVplus_Canonical
 ```
 
-The HOL-ZF fragment and bridge sessions continue below
-`Higher_Order_Metaphysics_PP_ZF_Model`; they are listed separately below.
+The older HOL-ZF fragments and bridge sessions continue below
+`Higher_Order_Metaphysics_PP_ZF_Secondary`; they are listed separately below.
 
 ## 1. Bacon's base theory
 
@@ -108,11 +109,64 @@ theorem connects them to the full theory.
 
 ### `models/hol_zf/`
 
-Session: `Higher_Order_Metaphysics_PP_ZF_Model`
+Canonical session: `Higher_Order_Metaphysics_PP_ZF_Model`
 
-Bacon-style substitution models over Isabelle's HOL-ZF universe.  This
-directory contains the formalizations of Bacon's Theorem 10.1, Goodman's
-model-theoretic claims, and the exact semantic L2 counterexample.
+Secondary session: `Higher_Order_Metaphysics_PP_ZF_Secondary`
+
+Bacon's appendix model and the related comparison work over Isabelle's HOL-ZF
+universe are separated into three directories and two sessions.
+
+#### `models/hol_zf/canonical/`
+
+This is the official source-faithful Bacon development.  Its dependency spine
+is:
+
+```text
+Bacon_PP_ZF_Word_Propositions
+  -> Bacon_PP_ZF_Full_MSet
+  -> Bacon_PP_ZF_Exact_Frame
+  -> Bacon_PP_ZF_Exact_Substitution
+  -> Bacon_PP_ZF_Exact_10_1
+  -> Bacon_PP_ZF_Exact_CEV_Soundness
+  -> Bacon_PP_ZF_Exact_Enumeration
+  -> Bacon_PP_ZF_Exact_Completeness
+```
+
+`Bacon_PP_ZF_Full_MSet` recursively uses Bacon's restricted function spaces
+from Definition 7.2 and proves the all-type action, closure, surjectivity,
+preimage-independence, and substitution/application facts required by
+Proposition 8.  The subsequent theories prove Bacon's arbitrary-signature
+Theorem 10.1 throughout the `t`-fragment, exact
+H/Classicist/CE/CEV soundness including the individual Existence instance and
+vector Equivalence, and Bacon's
+enumeration/gluing completeness result for a fixed signature in the
+proposition-generated fragment.  Isabelle supplies the branch-gluing proof
+Bacon omits.  Signatures involving `e`-containing types remain outside scope,
+as Bacon explicitly defers that extension.
+
+#### `models/hol_zf/extensions/`
+
+These theories interpret Goodman's `Pure`, `Fun`, closed logical stock,
+Recombination, Exhaustion, and QLN vocabulary over Bacon's exact carriers.
+They introduce no alternative model.  Both `canonical/` and `extensions/`
+belong to `Higher_Order_Metaphysics_PP_ZF_Model`.
+
+#### `models/hol_zf/secondary/`
+
+This directory contains the older full, hyperintensional, Boolean-tree, and
+natural-word frames, the finite-fragment and stock-enlargement experiments,
+and the abandoned closure-code/PER construction.  These theories remain
+available for comparison and calibration, but they are not the official Bacon
+model.  They belong only to `Higher_Order_Metaphysics_PP_ZF_Secondary`.  The
+maintained boundary check verifies both this session separation and that
+neither `canonical/` nor `extensions/` imports them.
+
+The source-level QLN granularity test is in
+`notes/Bacon_PP_Goodman_Granularity_QLN.thy`.  It encodes the truth-functional
+agreement and disagreement operators, reconstructs unary Exhaustion as a
+generic CEV+ instance, proves their purity by application closure, and verifies
+that the proposed modal condition is equivalent to pointwise truth uniformity
+under full QLN.
 
 ### `models/fragments/`
 
@@ -146,6 +200,21 @@ result was removed.
 `Goodman_CEVplus_Modal_Quantified_Bridge` translate between the CEV+
 axiom stocks and the HOL-ZF fragment models.
 
+The constructive finite-fragment program is separated from those
+translation bridges:
+
+| Directory | Session | Role |
+|---|---|---|
+| `bridges/finite_fragments/` | `Goodman_CEVplus_Finite_Fragment_Model_Program` | Extracts the exact finite data and states the tailored-model interface used with compactness. |
+| `bridges/finite_cyclic_model/` | `Goodman_CEVplus_Finite_First_Cyclic_Model` | Verifies the first cyclic packages, finite successor-component assembly, and the current `fun'`/T6 collision analysis. |
+
+The latter session name is retained for qualified-name stability, although
+its contents now extend beyond the first cyclic package.  Its successor
+assembly theorem applies only when a later component's stock support is
+separated from the old application sources and from the unary stock and its
+classifier.  Internal stabilization of the classifier-bearing component
+remains a distinct obligation.
+
 ## Session declarations
 
 All active project sessions are declared in the root `ROOT` file.  Separate
@@ -174,3 +243,23 @@ The mathematical status is not inferred from directory names.  Use:
 The consistency question remains open.  In particular, a verified finite or
 fragment model is not automatically a model of Goodman's unrestricted
 logical-purity schema.
+
+## Search tools
+
+`finite_core_search/` is the general bounded derivability search. Its typed
+term enumerator, CEV+ profiles, reference saturator, support minimizer, and
+Isabelle contradiction replay are also used by `pure_diagonal_search/`.
+
+`pure_diagonal_search/` restricts attention to closed logical terms
+
+```text
+B : (((Prop -> Prop) -> Prop) -> (Prop -> Prop))
+```
+
+and searches the pure unary operators `B(Pure)` forced by logical purity, PP,
+and application closure. The initial exhaustive generated tranche has one
+classifier occurrence outside quantifier scope; named priority builders add
+the basic negative and positive diagonals and Goodman's T6 builder. A
+generated Isabelle audit checks every candidate's type, empty nonlogical
+vocabulary, and purity theorem. Any contradiction hit is passed to the
+existing finite-core replay and is not certified before that replay builds.

@@ -62,6 +62,11 @@ class SearchResult:
     def proof_dag(self) -> list[ProofNode]:
         if not self.found:
             return []
+        return self.proof_dag_for(OBJ_FALSE)
+
+    def proof_dag_for(self, target: Term) -> list[ProofNode]:
+        if target not in self.proofs:
+            return []
         ordered: list[ProofNode] = []
         seen: set[Term] = set()
 
@@ -74,7 +79,7 @@ class SearchResult:
             seen.add(term)
             ordered.append(node)
 
-        visit(OBJ_FALSE)
+        visit(target)
         return ordered
 
 
@@ -104,6 +109,7 @@ def _better(new: ProofNode, old: ProofNode) -> bool:
 def saturate(
     pool: list[AxiomEntry],
     bounds: Bounds,
+    seed_terms: Iterable[tuple[Term, Type]] = (),
 ) -> SearchResult:
     proofs: dict[Term, ProofNode] = {}
     id_to_axiom = {axiom.stable_id: axiom for axiom in pool}
@@ -132,6 +138,12 @@ def saturate(
     add(ProofNode(OBJ_TRUE, "obj_true"))
 
     closed_terms: set[tuple[Term, Type]] = set()
+    for term, ty in seed_terms:
+        if infer_type((), term) != ty:
+            raise ValueError(
+                f"ill-typed seed term {term.compact()} at {ty.short()}"
+            )
+        closed_terms.add((term, ty))
     for _, term in priority_logical_terms():
         ty = infer_type((), term)
         assert ty is not None
@@ -206,6 +218,24 @@ def saturate(
                 antecedent, consequent = formula.args
                 implications.setdefault(antecedent, []).append(
                     (consequent, node)
+                )
+        # Introduce only conjunctions that are active antecedents.  This
+        # supplies the premises of application closure without generating
+        # the quadratic set of all conjunctions of proved formulas.
+        for antecedent in implications:
+            if antecedent.tag != "Conj":
+                continue
+            left, right = antecedent.args
+            left_node = snapshot_map.get(left)
+            right_node = snapshot_map.get(right)
+            if left_node is not None and right_node is not None:
+                add(
+                    ProofNode(
+                        antecedent,
+                        "conj_intro",
+                        (left, right),
+                        support=left_node.support | right_node.support,
+                    )
                 )
         for antecedent, antecedent_node in list(snapshot_map.items()):
             for consequent, implication_node in implications.get(
@@ -295,6 +325,7 @@ def minimize_support(
     pool: list[AxiomEntry],
     result: SearchResult,
     bounds: Bounds,
+    seed_terms: Iterable[tuple[Term, Type]] = (),
 ) -> tuple[list[AxiomEntry], SearchResult]:
     if not result.found:
         return [], result
@@ -304,7 +335,7 @@ def minimize_support(
     for candidate in list(core_ids):
         trial_ids = [axiom_id for axiom_id in core_ids if axiom_id != candidate]
         trial_pool = [by_id[axiom_id] for axiom_id in trial_ids]
-        trial_result = saturate(trial_pool, bounds)
+        trial_result = saturate(trial_pool, bounds, seed_terms)
         if trial_result.found:
             core_ids = trial_ids
             current_result = trial_result

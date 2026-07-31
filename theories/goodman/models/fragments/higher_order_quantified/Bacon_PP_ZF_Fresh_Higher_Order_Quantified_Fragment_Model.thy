@@ -1,7 +1,7 @@
 theory Bacon_PP_ZF_Fresh_Higher_Order_Quantified_Fragment_Model
   imports
     "Higher_Order_Metaphysics_PP_ZF_Possibility.Bacon_PP_ZF_Fresh_Possibility_Fragment_Model"
-    "Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Higher_Order_Quantifiers"
+    "Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_L2_Higher_Order_Quantifiers"
 begin
 
 section \<open>The two additional modal denotations\<close>

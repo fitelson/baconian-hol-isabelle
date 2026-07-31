@@ -97,6 +97,119 @@ proof (unfold pp_function_space_member_def, intro allI impI)
     by (simp add: pp_fun_view_apply pp_view_compose)
 qed
 
+subsection \<open>Surjectivity of Bacon's unary function-space action\<close>
+
+text \<open>
+  Proposition 8 of Bacon's appendix says that the function-space action is
+  itself surjective.  At the word model there is a canonical preimage: move
+  the argument down to its \<open>i\<close>-view, apply the target function, and lift the
+  resulting proposition back into the cone determined by \<open>i\<close>.  The
+  nontrivial obligation is that this preimage still belongs to Bacon's
+  restricted function space.  The following three cone calculations discharge
+  that obligation without appealing to an unrestricted function space.
+\<close>
+
+definition pp_fun_lift ::
+    "pp_word \<Rightarrow> (pp_sem_prop \<Rightarrow> pp_sem_prop) \<Rightarrow>
+      (pp_sem_prop \<Rightarrow> pp_sem_prop)" where
+  "pp_fun_lift i F = (\<lambda>P. pp_lift i (F (pp_view i P)))"
+
+lemma pp_view_lift_longer_suffix:
+  "pp_view (k @ i) (pp_lift i P) = pp_view k P"
+  by (auto simp: pp_view_def pp_lift_def append_assoc)
+
+lemma pp_view_lift_shorter_suffix:
+  "pp_view j (pp_lift (k @ j) P) = pp_lift k P"
+  by (auto simp: pp_view_def pp_lift_def append_assoc)
+
+lemma pp_view_lift_incomparable_suffixes:
+  assumes not_ji: "\<nexists>k. j = k @ i"
+    and not_ij: "\<nexists>k. i = k @ j"
+  shows "pp_view j (pp_lift i P) = {}"
+proof (rule set_eqI)
+  fix x
+  show "x \<in> pp_view j (pp_lift i P) \<longleftrightarrow> x \<in> {}"
+  proof
+    assume "x \<in> pp_view j (pp_lift i P)"
+    then obtain y where y: "y \<in> P" and equation: "x @ j = y @ i"
+      by (auto simp: pp_view_def pp_lift_def)
+    have "(\<exists>k. j = k @ i) \<or> (\<exists>k. i = k @ j)"
+      using equation
+      by (metis append_eq_append_conv2)
+    then show "x \<in> {}"
+      using not_ji not_ij by blast
+  next
+    assume "x \<in> {}"
+    then show "x \<in> pp_view j (pp_lift i P)" by simp
+  qed
+qed
+
+theorem pp_fun_lift_member:
+  assumes member: "pp_function_space_member F"
+  shows "pp_function_space_member (pp_fun_lift i F)"
+proof (unfold pp_function_space_member_def, intro allI impI)
+  fix j P Q
+  assume views: "pp_view j P = pp_view j Q"
+  show "pp_view j (pp_fun_lift i F P) =
+      pp_view j (pp_fun_lift i F Q)"
+  proof (cases "\<exists>k. j = k @ i")
+    case True
+    then obtain k where j: "j = k @ i" by blast
+    have input_views:
+        "pp_view k (pp_view i P) = pp_view k (pp_view i Q)"
+      using views j by (simp add: pp_view_compose)
+    have output_views:
+        "pp_view k (F (pp_view i P)) =
+         pp_view k (F (pp_view i Q))"
+      using member input_views
+      unfolding pp_function_space_member_def by blast
+    show ?thesis
+      using output_views j
+      by (simp add: pp_fun_lift_def pp_view_lift_longer_suffix)
+  next
+    case not_ji: False
+    show ?thesis
+    proof (cases "\<exists>k. i = k @ j")
+      case True
+      then obtain k where i: "i = k @ j" by blast
+      have input_equal: "pp_view i P = pp_view i Q"
+        using views i by (metis pp_view_compose)
+      show ?thesis
+        using input_equal i
+        by (simp add: pp_fun_lift_def pp_view_lift_shorter_suffix)
+    next
+      case not_ij: False
+      have left: "pp_view j (pp_lift i (F (pp_view i P))) = {}"
+        using not_ji not_ij
+        by (rule pp_view_lift_incomparable_suffixes)
+      have right: "pp_view j (pp_lift i (F (pp_view i Q))) = {}"
+        using not_ji not_ij
+        by (rule pp_view_lift_incomparable_suffixes)
+      show ?thesis
+        using left right by (simp add: pp_fun_lift_def)
+    qed
+  qed
+qed
+
+lemma pp_fun_view_fun_lift[simp]:
+  "pp_fun_view i (pp_fun_lift i F) = F"
+proof (rule ext)
+  fix P
+  have "pp_fun_view i (pp_fun_lift i F) P =
+      pp_view i (pp_lift i (F (pp_view i (pp_lift i P))))"
+    by (simp add: pp_fun_view_apply pp_fun_lift_def)
+  also have "... = F P"
+    by simp
+  finally show "pp_fun_view i (pp_fun_lift i F) P = F P" .
+qed
+
+theorem pp_fun_view_surjective_on_function_space:
+  assumes member: "pp_function_space_member F"
+  shows "\<exists>G. pp_function_space_member G \<and>
+    pp_fun_view i G = F"
+  using pp_fun_lift_member[OF member, of i]
+  by (intro exI[of _ "pp_fun_lift i F"]) simp
+
 definition pp_fun_invariant ::
     "(pp_sem_prop \<Rightarrow> pp_sem_prop) \<Rightarrow> bool" where
   "pp_fun_invariant F \<longleftrightarrow>

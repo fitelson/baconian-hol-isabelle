@@ -1,0 +1,7 @@
+% Conditional Recombination-only orbit target.
+
+include('01_recombination_PP_stock.tff.in').
+include('03_exists_fun_prime_assumption.tff.in').
+
+tff(recombination_plus_fun_prime_implies_orbit,conjecture,
+    ! [W:world] : fun_prime_orbit(W)).

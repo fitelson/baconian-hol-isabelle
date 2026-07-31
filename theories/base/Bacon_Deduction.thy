@@ -88,6 +88,8 @@ subsection \<open>H theoremhood\<close>
 
 inductive H_proves :: "ctx \<Rightarrow> oterm \<Rightarrow> bool" ("_ \<turnstile>\<^sub>H _" [50, 50] 50) where
   PC[intro]: "prop_tautology \<Gamma> A \<Longrightarrow> \<Gamma> \<turnstile>\<^sub>H A"
+| IndividualExistence[intro]:
+    "\<Gamma> \<turnstile>\<^sub>H Exists Ind (Eq Ind (Var 0) (Var 0))"
 | UI[intro]: "\<sigma> # \<Gamma> \<turnstile> A : Prop \<Longrightarrow> \<Gamma> \<turnstile> T : \<sigma> \<Longrightarrow>
     \<Gamma> \<turnstile>\<^sub>H Imp (Forall \<sigma> A) (subst0 T A)"
 | EG[intro]: "\<sigma> # \<Gamma> \<turnstile> A : Prop \<Longrightarrow> \<Gamma> \<turnstile> T : \<sigma> \<Longrightarrow>
@@ -118,6 +120,10 @@ proof (induction rule: H_proves.induct)
   case (PC \<Gamma> A)
   then show ?case
     by (simp add: prop_tautology_def)
+next
+  case (IndividualExistence \<Gamma>)
+  show ?case
+    by (rule has_type.Exists, rule has_type.Eq; simp)
 next
   case (UI \<sigma> \<Gamma> A T)
   then have "\<Gamma> \<turnstile> subst0 T A : Prop"

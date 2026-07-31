@@ -1,0 +1,26 @@
+%------------------------------------------------------------------------------
+% Finite relevant representation of pp_full_QLN_PP_axioms.
+%------------------------------------------------------------------------------
+%
+% This extends the Recombination-only PP stock by both substantive
+% Exhaustion directions.  Existence of a fun' proposition is NOT an axiom:
+% target 10 asks Vampire to derive it through the QSS bridge.
+%------------------------------------------------------------------------------
+
+include('01_recombination_PP_stock.tff.in').
+
+% Zeroary Exhaustion:
+% Pure(p) -> (p -> Box p).
+tff(zeroary_exhaustion,axiom,
+    ! [W:world,P:prop] :
+      ((pure_prop_at(W,P) & holds(W,P)) => box_true(W,P))).
+
+% Unary Exhaustion:
+% Pure(X) & Fun(r) -> ((forall q Xq) -> Box Xr).
+tff(unary_exhaustion,axiom,
+    ! [W:world,X:op1,R:prop] :
+      ((pure_op_at(W,X)
+        & fundamental_prop_at(W,R)
+        & ! [Q:prop] : holds(W,app(X,Q)))
+       =>
+       box_true(W,app(X,R)))).

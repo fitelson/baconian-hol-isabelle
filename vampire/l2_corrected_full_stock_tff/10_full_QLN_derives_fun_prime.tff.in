@@ -1,0 +1,8 @@
+% Bridge gate for the corrected full-QLN stock.
+%
+% Unlike the old finite probe, this file does not assume exists fun'.
+
+include('02_full_QLN_PP_stock.tff.in').
+
+tff(full_QLN_derives_exists_fun_prime,conjecture,
+    ! [W:world] : ? [P:prop] : fun_prime(W,P)).

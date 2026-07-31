@@ -261,6 +261,73 @@ next
   qed
 qed
 
+theorem pp_b_generic_separator_for_countable_stock_with_root:
+  fixes Stock :: "pp_b_operator set"
+  assumes countable: "countable Stock"
+    and equivariant:
+      "\<And>F. F \<in> Stock \<Longrightarrow> pp_b_equivariant F"
+  shows "\<exists>R.
+    ([] \<in> R \<longleftrightarrow> b)
+    \<and>
+    (\<forall>F \<in> Stock. \<forall>G \<in> Stock.
+      (F R = G R \<longleftrightarrow> F = G))"
+proof -
+  obtain Q where separates:
+      "\<forall>F \<in> Stock. \<forall>G \<in> Stock.
+        (F Q = G Q \<longleftrightarrow> F = G)"
+    using pp_b_generic_separator_for_countable_stock[
+      OF countable equivariant] by blast
+  let ?R =
+    "if b
+     then insert [] (pp_b_lift [True] Q)
+     else pp_b_lift [True] Q"
+  have root: "[] \<in> ?R \<longleftrightarrow> b"
+    by (cases b)
+      (auto simp: pp_b_lift_def)
+  have view: "pp_b_view [True] ?R = Q"
+    by (cases b)
+      (auto simp: pp_b_view_def pp_b_lift_def)
+  have separator:
+      "F \<in> Stock \<Longrightarrow>
+       G \<in> Stock \<Longrightarrow>
+       (F ?R = G ?R \<longleftrightarrow> F = G)"
+    for F G
+  proof
+    assume F: "F \<in> Stock"
+      and G: "G \<in> Stock"
+      and outputs: "F ?R = G ?R"
+    have F_view:
+        "pp_b_view [True] (F ?R) = F Q"
+    proof -
+      have raw:
+          "pp_b_view [True] (F ?R) =
+           F (pp_b_view [True] ?R)"
+        using equivariant[OF F]
+        unfolding pp_b_equivariant_def by blast
+      show ?thesis using raw view by simp
+    qed
+    have G_view:
+        "pp_b_view [True] (G ?R) = G Q"
+    proof -
+      have raw:
+          "pp_b_view [True] (G ?R) =
+           G (pp_b_view [True] ?R)"
+        using equivariant[OF G]
+        unfolding pp_b_equivariant_def by blast
+      show ?thesis using raw view by simp
+    qed
+    have "F Q = G Q"
+      using outputs F_view G_view by simp
+    then show "F = G"
+      using separates F G by blast
+  next
+    assume "F = G"
+    then show "F ?R = G ?R" by simp
+  qed
+  show ?thesis
+    using root separator by blast
+qed
+
 section \<open>The exact closed-logical operator stock\<close>
 
 definition pp_b_of_zf :: "ZF \<Rightarrow> pp_b_prop" where

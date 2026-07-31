@@ -40,7 +40,7 @@ implementation constructions.
 | operators denoted by closed expressions using \(E\) | `pp_t_enumerator_basis E U`, “generated unary stock” |
 | \(\mathcal C_E=\{E(n):n\in\mathbb N\}\) | `pp_t_term_basis_fixed_point`, “absorption fixed point” |
 | respects Bacon's substitution action | `E_cone_natural`, “cone-natural” |
-| world-relative identity | `pp_uval_per`, “PER” |
+| world-relative identity | `pp_e_eqv`, “local identity” |
 | property of being a value of \(E\) | “range classifier” |
 | candidate fundamental proposition \(r\) | “seed” or “generic seed” |
 | operator applying exactly to the members of a class | “classifier” |
@@ -51,7 +51,7 @@ implementation constructions.
 
 Implementation terminology may appear parenthetically in developer
 documentation, for example: “world-relative identity (implemented by
-`pp_uval_per`).”  It should not replace the mathematical description.
+`pp_e_eqv`).”  It should not replace the mathematical description.
 
 ## Documentation layers
 

@@ -25,13 +25,27 @@ Everything specific to Goodman's question is below `theories/goodman/`:
 - `notes/`: the object-language and model-theoretic claims T1--T9 and M1--M7;
 - `cevplus/`: finite-fragment, Henkin, and canonical metatheory for CEV+;
 - `models/finite/`: Isabelle certificates for bounded external models;
-- `models/hol_zf/`: Bacon-style models formalized over HOL-ZF;
+- `models/hol_zf/canonical/`: the official, source-faithful HOL-ZF
+  formalization of Bacon's appendix model;
+- `models/hol_zf/extensions/`: Goodman's vocabulary interpreted over Bacon's
+  exact carriers;
+- `models/hol_zf/secondary/`: older comparison models, fragment experiments,
+  and the quarantined closure-code/PER program;
 - `models/fragments/`: separately localized model extensions;
 - `bridges/`: translations between the CEV+ formulation and the model
-  sessions.
+  sessions, together with the finite-fragment model interface and verified
+  cyclic-component constructions.
 
 The detailed directory and session map is in
 [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
+
+Two certificate-first search tools sit beside the Isabelle sources:
+
+- [`finite_core_search/`](finite_core_search/README.md) enumerates bounded
+  finite stocks and accepts a contradiction only after Isabelle replay;
+- [`pure_diagonal_search/`](pure_diagonal_search/README.md) enumerates closed
+  logical builders \(B\), forms \(B(\mathrm{Pure})\), checks their purity in
+  Isabelle, and screens them for replayable contradictions.
 
 ## Goodman's question
 
@@ -62,15 +76,40 @@ Among the principal results:
   fundamentality derives the existence of a `fun-prime` proposition.
 - All four T6 contradiction routes are machine-checked.
 - T9's cardinal dichotomy is verified from its explicit counting assumptions.
-- Goodman's L2 is false in Bacon's appendix model.  The closed logical
-  operator \(Z\), defined by comparing the truth values at the two immediate
-  successor worlds, is surjective, noninjective, right-cancellative among the
-  operators denoted by closed terms containing only logical vocabulary, and
-  nonreversible; it therefore supplies an explicit L2 counterexample.
+- Bacon's footnote-59/M1 diagonal is verified in arbitrary compositional CEV+
+  Henkin models: full QLN, PP, and Purity of Fun have no such model.  This
+  stronger inconsistency theorem does not answer Goodman's question because
+  the central axiom sets omit Purity of Fun.
+- Bacon's omitted QLN verification is reconstructed for the
+  unique-fundamental-proposition specialization relevant to Goodman.  The
+  complete closed-logical stock satisfies both zeroary and unary QLN; the
+  broader multiple-fundamental extension is not claimed.
+- Goodman's QLN granularity condition is encoded in the complete object
+  language.  Full QLN and application closure prove that the modal agreement
+  disjunction is equivalent to pointwise truth uniformity.  Thus the proposed
+  condition is exactly TU in this setting, not a weaker intermediate lemma;
+  no derivation of TU from PP is claimed.
+- Goodman's L2 is false in Bacon's exact appendix model.  The closed logical
+  operator \(Z\), true exactly when its argument varies among the immediate
+  successors of the current world, is surjective, noninjective,
+  right-cancellative on the exact closed-logical stock, and nonreversible; it
+  therefore supplies an explicit L2 counterexample.
 
 The last item settles Goodman's proposed semantic calibration of L2.  It does
 not settle the consistency question, because Bacon's appendix model independently
 fails Purity of Pure at the unary-operator type.
+
+The official Bacon model is now the exact recursive HOL-ZF construction in
+`theories/goodman/models/hol_zf/canonical/`.  It proves the all-type action and
+surjectivity facts used in Proposition 8, Bacon's arbitrary-signature
+Theorem 10.1 throughout the `t`-fragment, with only signatures involving
+`e`-containing types excluded,
+H/Classicist/CE/CEV soundness including the individual Existence instance and
+vector Equivalence, and the
+enumeration/gluing completeness theorem for Bacon's proposition-generated
+fragment.  The older tree and PER developments have no import path into this
+chain and are built only in the separate
+`Higher_Order_Metaphysics_PP_ZF_Secondary` session.
 
 ## Building
 
@@ -81,7 +120,9 @@ Isabelle builds must be run serially:
 ```
 
 This single serial build plan includes every root session and the maintained
-Goodman theorem-object audit.
+Goodman theorem-object audit.  Before Isabelle starts, it also checks that the
+canonical Bacon model and its Goodman extensions do not import any theory in
+the secondary directory and that the PER declarations remain quarantined.
 
 Focused builds use the central session graph:
 
@@ -91,6 +132,7 @@ isabelle build -j 1 -d . Bacon_Classicism
 isabelle build -j 1 -d . Goodman_CEVplus
 isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_Frontier
 isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_ZF_Model
+isabelle build -j 1 -d . Higher_Order_Metaphysics_PP_ZF_Secondary
 ```
 
 The audit alone can still be run as a focused check:
@@ -124,7 +166,7 @@ database rather than parsing source text heuristically:
 tools/isabelle_kg/build_graph.sh
 tools/isabelle_kg/query_graph.py stats
 tools/isabelle_kg/query_graph.py search L2
-tools/isabelle_kg/query_graph.py deps pp_b_child_xor_refutes_exact_L2 --depth 2
+tools/isabelle_kg/query_graph.py deps pp_e_child_variation_refutes_exact_L2 --depth 2
 ```
 
 The generated graph is stored in `isabelle-kg/` and is the default source for

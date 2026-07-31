@@ -1,0 +1,1144 @@
+%------------------------------------------------------------------------------
+% Goodman T6-Inv in a reified CEV+ proof calculus
+%
+% This file is intended for Vampire 5.0.1.  It is deliberately not accompanied
+% by a claimed Vampire result: Codex has not run it.
+%
+% Unlike goodman_t6_inv_from_axioms.tff.in, this problem does not interpret the
+% object language semantically.  Object-language types, terms, contexts,
+% renaming, substitution, typing, propositional tautology, beta/eta conversion,
+% and all five proof layers H, C, CE, CEV, and CEV+ are first-order objects.
+%
+% The conjecture is not the metalogical $false.  It is the exact reified
+% derivability claim
+%
+%        [] ; T6-Inv |-CEV+ ObjFalse.
+%
+% A Vampire proof must therefore be a finite use of the reified proof rules.
+% No semantic truth predicate occurs, and none of Pure(D), either T5 diagonal
+% refutation, the Inv case split, or D(D(r)) is supplied as an axiom.
+%
+% The inductively generated Isabelle relations are represented by their closure
+% clauses.  This is sound for a positive derivability target: every finite TFF
+% proof using these clauses expands to a finite derivation in the corresponding
+% Isabelle inductive calculus.  The encoding is not intended to use first-order
+% model finding to establish non-derivability, since first-order closure clauses
+% do not impose leastness.
+%------------------------------------------------------------------------------
+
+%==============================================================================
+% 1. Reified syntax
+%==============================================================================
+
+tff(ty_type, type, ty: $tType).
+tff(tm_type, type, tm: $tType).
+tff(nat_type, type, nat: $tType).
+tff(name_type, type, name: $tType).
+tff(ctx_type, type, ctx: $tType).
+tff(tys_type, type, tys: $tType).
+tff(tms_type, type, tms: $tType).
+tff(ren_type, type, ren: $tType).
+tff(sub_type, type, sub: $tType).
+tff(val_type, type, val: $tType).
+
+% Object-language types.
+tff(ind_type, type, ind: ty).
+tff(prop_type, type, prop: ty).
+tff(arr_type, type, arr: (ty * ty) > ty).
+
+% Peano naturals.
+tff(zero_type, type, zero: nat).
+tff(suc_type, type, suc: nat > nat).
+
+% Type contexts and type lists.
+tff(ctx_nil_type, type, ctx_nil: ctx).
+tff(ctx_cons_type, type, ctx_cons: (ty * ctx) > ctx).
+tff(tys_nil_type, type, tys_nil: tys).
+tff(tys_cons_type, type, tys_cons: (ty * tys) > tys).
+tff(append_ctx_type, type, append_ctx: (tys * ctx) > ctx).
+tff(arrow_type_type, type, arrow_type: (tys * ty) > ty).
+
+% Term lists.
+tff(tms_nil_type, type, tms_nil: tms).
+tff(tms_cons_type, type, tms_cons: (tm * tms) > tms).
+tff(inc_vars_type, type, inc_vars: tms > tms).
+tff(fresh_vars_type, type, fresh_vars: tys > tms).
+tff(app_vec_type, type, app_vec: (tm * tms) > tm).
+
+% Object-language term constructors.
+tff(var_t_type, type, var_t: nat > tm).
+tff(const_t_type, type, const_t: (name * ty) > tm).
+tff(app_t_type, type, app_t: (tm * tm) > tm).
+tff(lam_t_type, type, lam_t: (ty * tm) > tm).
+tff(eq_t_type, type, eq_t: (ty * tm * tm) > tm).
+tff(neg_t_type, type, neg_t: tm > tm).
+tff(conj_t_type, type, conj_t: (tm * tm) > tm).
+tff(disj_t_type, type, disj_t: (tm * tm) > tm).
+tff(imp_t_type, type, imp_t: (tm * tm) > tm).
+tff(all_t_type, type, all_t: (ty * tm) > tm).
+tff(ex_t_type, type, ex_t: (ty * tm) > tm).
+
+tff(iff_t_type, type, iff_t: (tm * tm) > tm).
+tff(iff_t_definition, axiom,
+    ! [A: tm, B: tm] :
+      iff_t(A,B) = conj_t(imp_t(A,B),imp_t(B,A))).
+
+% Context and vector operations.
+tff(append_ctx_nil, axiom,
+    ! [G: ctx] : append_ctx(tys_nil,G) = G).
+tff(append_ctx_cons, axiom,
+    ! [S: ty, Ss: tys, G: ctx] :
+      append_ctx(tys_cons(S,Ss),G) =
+      ctx_cons(S,append_ctx(Ss,G))).
+
+tff(arrow_type_nil, axiom,
+    ! [T: ty] : arrow_type(tys_nil,T) = T).
+tff(arrow_type_cons, axiom,
+    ! [S: ty, Ss: tys, T: ty] :
+      arrow_type(tys_cons(S,Ss),T) =
+      arr(S,arrow_type(Ss,T))).
+
+tff(inc_vars_nil, axiom,
+    inc_vars(tms_nil) = tms_nil).
+tff(inc_vars_cons, axiom,
+    ! [N: nat, Ns: tms] :
+      inc_vars(tms_cons(var_t(N),Ns)) =
+      tms_cons(var_t(suc(N)),inc_vars(Ns))).
+
+tff(fresh_vars_nil, axiom,
+    fresh_vars(tys_nil) = tms_nil).
+tff(fresh_vars_cons, axiom,
+    ! [S: ty, Ss: tys] :
+      fresh_vars(tys_cons(S,Ss)) =
+      tms_cons(var_t(zero),inc_vars(fresh_vars(Ss)))).
+
+tff(app_vec_nil, axiom,
+    ! [F: tm] : app_vec(F,tms_nil) = F).
+tff(app_vec_cons, axiom,
+    ! [F: tm, A: tm, As: tms] :
+      app_vec(F,tms_cons(A,As)) =
+      app_vec(app_t(F,A),As)).
+
+%==============================================================================
+% 2. Renaming, shifting, and substitution
+%==============================================================================
+
+tff(ren_suc_type, type, ren_suc: ren).
+tff(lift_ren_type, type, lift_ren: ren > ren).
+tff(ren_at_type, type, ren_at: (ren * nat) > nat).
+tff(rename_type, type, rename: (ren * tm) > tm).
+tff(shift_type, type, shift: tm > tm).
+tff(shift_by_list_type, type, shift_by_list: (tys * tm) > tm).
+
+tff(ren_suc_at, axiom,
+    ! [N: nat] : ren_at(ren_suc,N) = suc(N)).
+tff(lift_ren_zero, axiom,
+    ! [R: ren] : ren_at(lift_ren(R),zero) = zero).
+tff(lift_ren_suc, axiom,
+    ! [R: ren, N: nat] :
+      ren_at(lift_ren(R),suc(N)) = suc(ren_at(R,N))).
+
+tff(rename_var, axiom,
+    ! [R: ren, N: nat] :
+      rename(R,var_t(N)) = var_t(ren_at(R,N))).
+tff(rename_const, axiom,
+    ! [R: ren, C: name, S: ty] :
+      rename(R,const_t(C,S)) = const_t(C,S)).
+tff(rename_app, axiom,
+    ! [R: ren, M: tm, N: tm] :
+      rename(R,app_t(M,N)) =
+      app_t(rename(R,M),rename(R,N))).
+tff(rename_lam, axiom,
+    ! [R: ren, S: ty, M: tm] :
+      rename(R,lam_t(S,M)) =
+      lam_t(S,rename(lift_ren(R),M))).
+tff(rename_eq, axiom,
+    ! [R: ren, S: ty, M: tm, N: tm] :
+      rename(R,eq_t(S,M,N)) =
+      eq_t(S,rename(R,M),rename(R,N))).
+tff(rename_neg, axiom,
+    ! [R: ren, A: tm] :
+      rename(R,neg_t(A)) = neg_t(rename(R,A))).
+tff(rename_conj, axiom,
+    ! [R: ren, A: tm, B: tm] :
+      rename(R,conj_t(A,B)) =
+      conj_t(rename(R,A),rename(R,B))).
+tff(rename_disj, axiom,
+    ! [R: ren, A: tm, B: tm] :
+      rename(R,disj_t(A,B)) =
+      disj_t(rename(R,A),rename(R,B))).
+tff(rename_imp, axiom,
+    ! [R: ren, A: tm, B: tm] :
+      rename(R,imp_t(A,B)) =
+      imp_t(rename(R,A),rename(R,B))).
+tff(rename_all, axiom,
+    ! [R: ren, S: ty, A: tm] :
+      rename(R,all_t(S,A)) =
+      all_t(S,rename(lift_ren(R),A))).
+tff(rename_ex, axiom,
+    ! [R: ren, S: ty, A: tm] :
+      rename(R,ex_t(S,A)) =
+      ex_t(S,rename(lift_ren(R),A))).
+
+tff(shift_definition, axiom,
+    ! [M: tm] : shift(M) = rename(ren_suc,M)).
+tff(shift_by_list_nil, axiom,
+    ! [M: tm] : shift_by_list(tys_nil,M) = M).
+tff(shift_by_list_cons, axiom,
+    ! [S: ty, Ss: tys, M: tm] :
+      shift_by_list(tys_cons(S,Ss),M) =
+      shift(shift_by_list(Ss,M))).
+
+tff(sub_zero_type, type, sub_zero: tm > sub).
+tff(lift_sub_type, type, lift_sub: sub > sub).
+tff(sub_at_type, type, sub_at: (sub * nat) > tm).
+tff(subst_type, type, subst: (sub * tm) > tm).
+tff(subst0_type, type, subst0: (tm * tm) > tm).
+
+tff(sub_zero_zero, axiom,
+    ! [N: tm] : sub_at(sub_zero(N),zero) = N).
+tff(sub_zero_suc, axiom,
+    ! [N: tm, K: nat] :
+      sub_at(sub_zero(N),suc(K)) = var_t(K)).
+tff(lift_sub_zero, axiom,
+    ! [S: sub] : sub_at(lift_sub(S),zero) = var_t(zero)).
+tff(lift_sub_suc, axiom,
+    ! [S: sub, K: nat] :
+      sub_at(lift_sub(S),suc(K)) = shift(sub_at(S,K))).
+
+tff(subst_var, axiom,
+    ! [S: sub, N: nat] :
+      subst(S,var_t(N)) = sub_at(S,N)).
+tff(subst_const, axiom,
+    ! [S: sub, C: name, T: ty] :
+      subst(S,const_t(C,T)) = const_t(C,T)).
+tff(subst_app, axiom,
+    ! [S: sub, M: tm, N: tm] :
+      subst(S,app_t(M,N)) =
+      app_t(subst(S,M),subst(S,N))).
+tff(subst_lam, axiom,
+    ! [S: sub, T: ty, M: tm] :
+      subst(S,lam_t(T,M)) =
+      lam_t(T,subst(lift_sub(S),M))).
+tff(subst_eq, axiom,
+    ! [S: sub, T: ty, M: tm, N: tm] :
+      subst(S,eq_t(T,M,N)) =
+      eq_t(T,subst(S,M),subst(S,N))).
+tff(subst_neg, axiom,
+    ! [S: sub, A: tm] :
+      subst(S,neg_t(A)) = neg_t(subst(S,A))).
+tff(subst_conj, axiom,
+    ! [S: sub, A: tm, B: tm] :
+      subst(S,conj_t(A,B)) =
+      conj_t(subst(S,A),subst(S,B))).
+tff(subst_disj, axiom,
+    ! [S: sub, A: tm, B: tm] :
+      subst(S,disj_t(A,B)) =
+      disj_t(subst(S,A),subst(S,B))).
+tff(subst_imp, axiom,
+    ! [S: sub, A: tm, B: tm] :
+      subst(S,imp_t(A,B)) =
+      imp_t(subst(S,A),subst(S,B))).
+tff(subst_all, axiom,
+    ! [S: sub, T: ty, A: tm] :
+      subst(S,all_t(T,A)) =
+      all_t(T,subst(lift_sub(S),A))).
+tff(subst_ex, axiom,
+    ! [S: sub, T: ty, A: tm] :
+      subst(S,ex_t(T,A)) =
+      ex_t(T,subst(lift_sub(S),A))).
+tff(subst0_definition, axiom,
+    ! [N: tm, M: tm] :
+      subst0(N,M) = subst(sub_zero(N),M)).
+
+%==============================================================================
+% 3. Typing
+%==============================================================================
+
+tff(lookup_type, type, lookup: (ctx * nat * ty) > $o).
+tff(typed_type, type, typed: (ctx * tm * ty) > $o).
+
+tff(lookup_zero, axiom,
+    ! [S: ty, G: ctx] :
+      lookup(ctx_cons(S,G),zero,S)).
+tff(lookup_suc, axiom,
+    ! [S: ty, G: ctx, N: nat, T: ty] :
+      (lookup(G,N,T) => lookup(ctx_cons(S,G),suc(N),T))).
+
+tff(type_var, axiom,
+    ! [G: ctx, N: nat, T: ty] :
+      (lookup(G,N,T) => typed(G,var_t(N),T))).
+tff(type_const, axiom,
+    ! [G: ctx, C: name, T: ty] :
+      typed(G,const_t(C,T),T)).
+tff(type_app, axiom,
+    ! [G: ctx, M: tm, N: tm, S: ty, T: ty] :
+      ((typed(G,M,arr(S,T)) & typed(G,N,S))
+       => typed(G,app_t(M,N),T))).
+tff(type_lam, axiom,
+    ! [G: ctx, M: tm, S: ty, T: ty] :
+      (typed(ctx_cons(S,G),M,T)
+       => typed(G,lam_t(S,M),arr(S,T)))).
+tff(type_eq, axiom,
+    ! [G: ctx, M: tm, N: tm, S: ty] :
+      ((typed(G,M,S) & typed(G,N,S))
+       => typed(G,eq_t(S,M,N),prop))).
+tff(type_neg, axiom,
+    ! [G: ctx, A: tm] :
+      (typed(G,A,prop) => typed(G,neg_t(A),prop))).
+tff(type_conj, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop) & typed(G,B,prop))
+       => typed(G,conj_t(A,B),prop))).
+tff(type_disj, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop) & typed(G,B,prop))
+       => typed(G,disj_t(A,B),prop))).
+tff(type_imp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop) & typed(G,B,prop))
+       => typed(G,imp_t(A,B),prop))).
+tff(type_all, axiom,
+    ! [G: ctx, S: ty, A: tm] :
+      (typed(ctx_cons(S,G),A,prop)
+       => typed(G,all_t(S,A),prop))).
+tff(type_ex, axiom,
+    ! [G: ctx, S: ty, A: tm] :
+      (typed(ctx_cons(S,G),A,prop)
+       => typed(G,ex_t(S,A),prop))).
+
+%==============================================================================
+% 4. Propositional tautologies
+%==============================================================================
+
+tff(atom_value_type, type, atom_value: (val * tm) > $o).
+tff(prop_eval_type, type, prop_eval: (val * tm) > $o).
+tff(prop_tautology_type, type, prop_tautology: (ctx * tm) > $o).
+tff(false_val_type, type, false_val: val).
+tff(make_true_type, type, make_true: (val * tm) > val).
+
+% These two constructors ensure that the first-order valuation sort contains
+% every finite truth assignment: begin with the all-false valuation and add
+% each atom assigned true.  Since every displayed propositional formula has
+% only finitely many atomic subformulas, quantification over val is therefore
+% neither weaker nor stronger than Isabelle's quantification over all Boolean
+% valuations for the purpose of prop_tautology.
+tff(false_val_is_false, axiom,
+    ! [A: tm] : ~atom_value(false_val,A)).
+tff(make_true_value, axiom,
+    ! [V: val, A: tm, B: tm] :
+      (atom_value(make_true(V,A),B) <=>
+       (B = A | atom_value(V,B)))).
+
+% Exactly as in Bacon_Deduction: only the four displayed truth-functional
+% connectives are evaluated recursively; every other term form is atomic.
+tff(eval_var, axiom,
+    ! [V: val, N: nat] :
+      (prop_eval(V,var_t(N)) <=> atom_value(V,var_t(N)))).
+tff(eval_const, axiom,
+    ! [V: val, C: name, S: ty] :
+      (prop_eval(V,const_t(C,S)) <=>
+       atom_value(V,const_t(C,S)))).
+tff(eval_app, axiom,
+    ! [V: val, M: tm, N: tm] :
+      (prop_eval(V,app_t(M,N)) <=>
+       atom_value(V,app_t(M,N)))).
+tff(eval_lam, axiom,
+    ! [V: val, S: ty, M: tm] :
+      (prop_eval(V,lam_t(S,M)) <=>
+       atom_value(V,lam_t(S,M)))).
+tff(eval_eq, axiom,
+    ! [V: val, S: ty, M: tm, N: tm] :
+      (prop_eval(V,eq_t(S,M,N)) <=>
+       atom_value(V,eq_t(S,M,N)))).
+tff(eval_neg, axiom,
+    ! [V: val, A: tm] :
+      (prop_eval(V,neg_t(A)) <=> ~prop_eval(V,A))).
+tff(eval_conj, axiom,
+    ! [V: val, A: tm, B: tm] :
+      (prop_eval(V,conj_t(A,B)) <=>
+       (prop_eval(V,A) & prop_eval(V,B)))).
+tff(eval_disj, axiom,
+    ! [V: val, A: tm, B: tm] :
+      (prop_eval(V,disj_t(A,B)) <=>
+       (prop_eval(V,A) | prop_eval(V,B)))).
+tff(eval_imp, axiom,
+    ! [V: val, A: tm, B: tm] :
+      (prop_eval(V,imp_t(A,B)) <=>
+       (prop_eval(V,A) => prop_eval(V,B)))).
+tff(eval_all, axiom,
+    ! [V: val, S: ty, A: tm] :
+      (prop_eval(V,all_t(S,A)) <=>
+       atom_value(V,all_t(S,A)))).
+tff(eval_ex, axiom,
+    ! [V: val, S: ty, A: tm] :
+      (prop_eval(V,ex_t(S,A)) <=>
+       atom_value(V,ex_t(S,A)))).
+
+tff(prop_tautology_definition, axiom,
+    ! [G: ctx, A: tm] :
+      (prop_tautology(G,A) <=>
+       (typed(G,A,prop)
+        & ! [V: val] : prop_eval(V,A)))).
+
+%==============================================================================
+% 5. Beta/eta conversion inside formula contexts
+%==============================================================================
+
+tff(beta_contract_type, type, beta_contract: (tm * tm) > $o).
+tff(eta_contract_type, type, eta_contract: (tm * tm) > $o).
+tff(beta_step_type, type, beta_step: (tm * tm) > $o).
+tff(eta_step_type, type, eta_step: (tm * tm) > $o).
+
+tff(beta_root_contract, axiom,
+    ! [S: ty, M: tm, N: tm] :
+      beta_contract(app_t(lam_t(S,M),N),subst0(N,M))).
+tff(eta_root_contract, axiom,
+    ! [S: ty, F: tm] :
+      eta_contract(lam_t(S,app_t(shift(F),var_t(zero))),F)).
+
+% compatible_step, separately instantiated for beta and eta.
+tff(beta_step_root, axiom,
+    ! [M: tm, N: tm] :
+      (beta_contract(M,N) => beta_step(M,N))).
+tff(eta_step_root, axiom,
+    ! [M: tm, N: tm] :
+      (eta_contract(M,N) => eta_step(M,N))).
+
+tff(beta_step_app_left, axiom,
+    ! [M: tm, Mp: tm, N: tm] :
+      (beta_step(M,Mp) => beta_step(app_t(M,N),app_t(Mp,N)))).
+tff(beta_step_app_right, axiom,
+    ! [M: tm, N: tm, Np: tm] :
+      (beta_step(N,Np) => beta_step(app_t(M,N),app_t(M,Np)))).
+tff(beta_step_lam, axiom,
+    ! [S: ty, M: tm, Mp: tm] :
+      (beta_step(M,Mp) => beta_step(lam_t(S,M),lam_t(S,Mp)))).
+tff(beta_step_eq_left, axiom,
+    ! [S: ty, M: tm, Mp: tm, N: tm] :
+      (beta_step(M,Mp) =>
+       beta_step(eq_t(S,M,N),eq_t(S,Mp,N)))).
+tff(beta_step_eq_right, axiom,
+    ! [S: ty, M: tm, N: tm, Np: tm] :
+      (beta_step(N,Np) =>
+       beta_step(eq_t(S,M,N),eq_t(S,M,Np)))).
+tff(beta_step_neg, axiom,
+    ! [A: tm, Ap: tm] :
+      (beta_step(A,Ap) => beta_step(neg_t(A),neg_t(Ap)))).
+tff(beta_step_conj_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (beta_step(A,Ap) =>
+       beta_step(conj_t(A,B),conj_t(Ap,B)))).
+tff(beta_step_conj_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (beta_step(B,Bp) =>
+       beta_step(conj_t(A,B),conj_t(A,Bp)))).
+tff(beta_step_disj_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (beta_step(A,Ap) =>
+       beta_step(disj_t(A,B),disj_t(Ap,B)))).
+tff(beta_step_disj_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (beta_step(B,Bp) =>
+       beta_step(disj_t(A,B),disj_t(A,Bp)))).
+tff(beta_step_imp_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (beta_step(A,Ap) =>
+       beta_step(imp_t(A,B),imp_t(Ap,B)))).
+tff(beta_step_imp_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (beta_step(B,Bp) =>
+       beta_step(imp_t(A,B),imp_t(A,Bp)))).
+tff(beta_step_all, axiom,
+    ! [S: ty, A: tm, Ap: tm] :
+      (beta_step(A,Ap) =>
+       beta_step(all_t(S,A),all_t(S,Ap)))).
+tff(beta_step_ex, axiom,
+    ! [S: ty, A: tm, Ap: tm] :
+      (beta_step(A,Ap) =>
+       beta_step(ex_t(S,A),ex_t(S,Ap)))).
+
+tff(eta_step_app_left, axiom,
+    ! [M: tm, Mp: tm, N: tm] :
+      (eta_step(M,Mp) => eta_step(app_t(M,N),app_t(Mp,N)))).
+tff(eta_step_app_right, axiom,
+    ! [M: tm, N: tm, Np: tm] :
+      (eta_step(N,Np) => eta_step(app_t(M,N),app_t(M,Np)))).
+tff(eta_step_lam, axiom,
+    ! [S: ty, M: tm, Mp: tm] :
+      (eta_step(M,Mp) => eta_step(lam_t(S,M),lam_t(S,Mp)))).
+tff(eta_step_eq_left, axiom,
+    ! [S: ty, M: tm, Mp: tm, N: tm] :
+      (eta_step(M,Mp) =>
+       eta_step(eq_t(S,M,N),eq_t(S,Mp,N)))).
+tff(eta_step_eq_right, axiom,
+    ! [S: ty, M: tm, N: tm, Np: tm] :
+      (eta_step(N,Np) =>
+       eta_step(eq_t(S,M,N),eq_t(S,M,Np)))).
+tff(eta_step_neg, axiom,
+    ! [A: tm, Ap: tm] :
+      (eta_step(A,Ap) => eta_step(neg_t(A),neg_t(Ap)))).
+tff(eta_step_conj_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (eta_step(A,Ap) =>
+       eta_step(conj_t(A,B),conj_t(Ap,B)))).
+tff(eta_step_conj_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (eta_step(B,Bp) =>
+       eta_step(conj_t(A,B),conj_t(A,Bp)))).
+tff(eta_step_disj_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (eta_step(A,Ap) =>
+       eta_step(disj_t(A,B),disj_t(Ap,B)))).
+tff(eta_step_disj_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (eta_step(B,Bp) =>
+       eta_step(disj_t(A,B),disj_t(A,Bp)))).
+tff(eta_step_imp_left, axiom,
+    ! [A: tm, Ap: tm, B: tm] :
+      (eta_step(A,Ap) =>
+       eta_step(imp_t(A,B),imp_t(Ap,B)))).
+tff(eta_step_imp_right, axiom,
+    ! [A: tm, B: tm, Bp: tm] :
+      (eta_step(B,Bp) =>
+       eta_step(imp_t(A,B),imp_t(A,Bp)))).
+tff(eta_step_all, axiom,
+    ! [S: ty, A: tm, Ap: tm] :
+      (eta_step(A,Ap) => eta_step(all_t(S,A),all_t(S,Ap)))).
+tff(eta_step_ex, axiom,
+    ! [S: ty, A: tm, Ap: tm] :
+      (eta_step(A,Ap) => eta_step(ex_t(S,A),ex_t(S,Ap)))).
+
+%==============================================================================
+% 6. H: Bacon's minimal classical higher-order logic
+%==============================================================================
+
+tff(h_proves_type, type, h_proves: (ctx * tm) > $o).
+
+tff(h_pc, axiom,
+    ! [G: ctx, A: tm] :
+      (prop_tautology(G,A) => h_proves(G,A))).
+tff(h_ui, axiom,
+    ! [G: ctx, S: ty, A: tm, T: tm] :
+      ((typed(ctx_cons(S,G),A,prop) & typed(G,T,S))
+       => h_proves(G,imp_t(all_t(S,A),subst0(T,A))))).
+tff(h_eg, axiom,
+    ! [G: ctx, S: ty, A: tm, T: tm] :
+      ((typed(ctx_cons(S,G),A,prop) & typed(G,T,S))
+       => h_proves(G,imp_t(subst0(T,A),ex_t(S,A))))).
+tff(h_ref, axiom,
+    ! [G: ctx, M: tm, S: ty] :
+      (typed(G,M,S) => h_proves(G,eq_t(S,M,M)))).
+tff(h_ll, axiom,
+    ! [G: ctx, A: tm, B: tm, F: tm, S: ty] :
+      ((typed(G,A,S) & typed(G,B,S) & typed(G,F,arr(S,prop)))
+       => h_proves(G,
+            imp_t(eq_t(S,A,B),
+              imp_t(app_t(F,A),app_t(F,B)))))).
+tff(h_beta, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop) & typed(G,B,prop) & beta_step(A,B))
+       => h_proves(G,iff_t(A,B)))).
+tff(h_eta, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop) & typed(G,B,prop) & eta_step(A,B))
+       => h_proves(G,iff_t(A,B)))).
+tff(h_mp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((h_proves(G,A) & h_proves(G,imp_t(A,B)))
+       => h_proves(G,B))).
+tff(h_gen, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(G,P,prop)
+        & typed(ctx_cons(S,G),Q,prop)
+        & h_proves(ctx_cons(S,G),imp_t(shift(P),Q)))
+       => h_proves(G,imp_t(P,all_t(S,Q))))).
+tff(h_inst, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(ctx_cons(S,G),P,prop)
+        & typed(G,Q,prop)
+        & h_proves(ctx_cons(S,G),imp_t(P,shift(Q))))
+       => h_proves(G,imp_t(ex_t(S,P),Q)))).
+
+%==============================================================================
+% 7. C: Classicism
+%==============================================================================
+
+tff(c_proves_type, type, c_proves: (ctx * tm) > $o).
+tff(boolean_identity_type, type, boolean_identity: tm > $o).
+
+% The six Boolean identities are named syntactic objects.  Their expanded
+% constructor equations occur below with the other named object-language terms.
+tff(bool_comm_conj_type, type, bool_comm_conj: tm).
+tff(bool_comm_disj_type, type, bool_comm_disj: tm).
+tff(bool_dist_conj_disj_type, type, bool_dist_conj_disj: tm).
+tff(bool_dist_disj_conj_type, type, bool_dist_disj_conj: tm).
+tff(bool_dissolve_conj_disj_type, type, bool_dissolve_conj_disj: tm).
+tff(bool_dissolve_disj_conj_type, type, bool_dissolve_disj_conj: tm).
+
+tff(boolean_identity_1, axiom, boolean_identity(bool_comm_conj)).
+tff(boolean_identity_2, axiom, boolean_identity(bool_comm_disj)).
+tff(boolean_identity_3, axiom, boolean_identity(bool_dist_conj_disj)).
+tff(boolean_identity_4, axiom, boolean_identity(bool_dist_disj_conj)).
+tff(boolean_identity_5, axiom, boolean_identity(bool_dissolve_conj_disj)).
+tff(boolean_identity_6, axiom, boolean_identity(bool_dissolve_disj_conj)).
+
+tff(classic_identity_identity_type, type,
+    classic_identity_identity: ty > tm).
+tff(classic_absorb_disj_forall_type, type,
+    classic_absorb_disj_forall: ty > tm).
+tff(classic_dist_disj_forall_type, type,
+    classic_dist_disj_forall: ty > tm).
+tff(classic_absorb_conj_exists_type, type,
+    classic_absorb_conj_exists: ty > tm).
+tff(classic_dist_conj_exists_type, type,
+    classic_dist_conj_exists: ty > tm).
+
+tff(c_from_h, axiom,
+    ! [G: ctx, A: tm] :
+      (h_proves(G,A) => c_proves(G,A))).
+tff(c_boolean_identity, axiom,
+    ! [G: ctx, A: tm] :
+      (boolean_identity(A) => c_proves(G,A))).
+tff(c_identity_identity, axiom,
+    ! [G: ctx, S: ty] :
+      c_proves(G,classic_identity_identity(S))).
+tff(c_absorb_disj_forall, axiom,
+    ! [G: ctx, S: ty] :
+      c_proves(G,classic_absorb_disj_forall(S))).
+tff(c_dist_disj_forall, axiom,
+    ! [G: ctx, S: ty] :
+      c_proves(G,classic_dist_disj_forall(S))).
+tff(c_absorb_conj_exists, axiom,
+    ! [G: ctx, S: ty] :
+      c_proves(G,classic_absorb_conj_exists(S))).
+tff(c_dist_conj_exists, axiom,
+    ! [G: ctx, S: ty] :
+      c_proves(G,classic_dist_conj_exists(S))).
+tff(c_mp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((c_proves(G,A) & c_proves(G,imp_t(A,B)))
+       => c_proves(G,B))).
+tff(c_gen, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(G,P,prop)
+        & typed(ctx_cons(S,G),Q,prop)
+        & c_proves(ctx_cons(S,G),imp_t(shift(P),Q)))
+       => c_proves(G,imp_t(P,all_t(S,Q))))).
+tff(c_inst, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(ctx_cons(S,G),P,prop)
+        & typed(G,Q,prop)
+        & c_proves(ctx_cons(S,G),imp_t(P,shift(Q))))
+       => c_proves(G,imp_t(ex_t(S,P),Q)))).
+
+%==============================================================================
+% 8. CE and CEV
+%==============================================================================
+
+tff(ce_proves_type, type, ce_proves: (ctx * tm) > $o).
+tff(cev_proves_type, type, cev_proves: (ctx * tm) > $o).
+tff(zeta_body_type, type, zeta_body: (tys * tm * tm) > tm).
+
+tff(zeta_body_definition, axiom,
+    ! [Ss: tys, F: tm, G: tm] :
+      zeta_body(Ss,F,G) =
+      iff_t(
+        app_vec(shift_by_list(Ss,F),fresh_vars(Ss)),
+        app_vec(shift_by_list(Ss,G),fresh_vars(Ss)))).
+
+tff(ce_from_c, axiom,
+    ! [G: ctx, A: tm] :
+      (c_proves(G,A) => ce_proves(G,A))).
+tff(ce_prop_equivalence, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((typed(G,A,prop)
+        & typed(G,B,prop)
+        & ce_proves(G,iff_t(A,B)))
+       => ce_proves(G,eq_t(prop,A,B)))).
+tff(ce_mp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((ce_proves(G,A) & ce_proves(G,imp_t(A,B)))
+       => ce_proves(G,B))).
+tff(ce_gen, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(G,P,prop)
+        & typed(ctx_cons(S,G),Q,prop)
+        & ce_proves(ctx_cons(S,G),imp_t(shift(P),Q)))
+       => ce_proves(G,imp_t(P,all_t(S,Q))))).
+tff(ce_inst, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(ctx_cons(S,G),P,prop)
+        & typed(G,Q,prop)
+        & ce_proves(ctx_cons(S,G),imp_t(P,shift(Q))))
+       => ce_proves(G,imp_t(ex_t(S,P),Q)))).
+
+tff(cev_from_ce, axiom,
+    ! [G: ctx, A: tm] :
+      (ce_proves(G,A) => cev_proves(G,A))).
+tff(cev_vector_equivalence, axiom,
+    ! [G: ctx, Ss: tys, F: tm, H: tm] :
+      ((typed(G,F,arrow_type(Ss,prop))
+        & typed(G,H,arrow_type(Ss,prop))
+        & cev_proves(append_ctx(Ss,G),zeta_body(Ss,F,H)))
+       => cev_proves(G,eq_t(arrow_type(Ss,prop),F,H)))).
+tff(cev_mp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((cev_proves(G,A) & cev_proves(G,imp_t(A,B)))
+       => cev_proves(G,B))).
+tff(cev_gen, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(G,P,prop)
+        & typed(ctx_cons(S,G),Q,prop)
+        & cev_proves(ctx_cons(S,G),imp_t(shift(P),Q)))
+       => cev_proves(G,imp_t(P,all_t(S,Q))))).
+tff(cev_inst, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(ctx_cons(S,G),P,prop)
+        & typed(G,Q,prop)
+        & cev_proves(ctx_cons(S,G),imp_t(P,shift(Q))))
+       => cev_proves(G,imp_t(ex_t(S,P),Q)))).
+
+%==============================================================================
+% 9. CEV+ with an added stock of axioms
+%==============================================================================
+
+tff(stock_type, type, stock: tm > $o).
+tff(cevplus_proves_type, type, cevplus_proves: (ctx * tm) > $o).
+
+tff(cevplus_axiom, axiom,
+    ! [G: ctx, A: tm] :
+      ((stock(A) & typed(G,A,prop))
+       => cevplus_proves(G,A))).
+tff(cevplus_base, axiom,
+    ! [G: ctx, A: tm] :
+      (cev_proves(G,A) => cevplus_proves(G,A))).
+tff(cevplus_vector_equivalence, axiom,
+    ! [G: ctx, Ss: tys, F: tm, H: tm] :
+      ((typed(G,F,arrow_type(Ss,prop))
+        & typed(G,H,arrow_type(Ss,prop))
+        & cevplus_proves(append_ctx(Ss,G),zeta_body(Ss,F,H)))
+       => cevplus_proves(G,eq_t(arrow_type(Ss,prop),F,H)))).
+tff(cevplus_mp, axiom,
+    ! [G: ctx, A: tm, B: tm] :
+      ((cevplus_proves(G,A) & cevplus_proves(G,imp_t(A,B)))
+       => cevplus_proves(G,B))).
+tff(cevplus_gen, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(G,P,prop)
+        & typed(ctx_cons(S,G),Q,prop)
+        & cevplus_proves(ctx_cons(S,G),imp_t(shift(P),Q)))
+       => cevplus_proves(G,imp_t(P,all_t(S,Q))))).
+tff(cevplus_inst, axiom,
+    ! [G: ctx, P: tm, Q: tm, S: ty] :
+      ((typed(ctx_cons(S,G),P,prop)
+        & typed(G,Q,prop)
+        & cevplus_proves(ctx_cons(S,G),imp_t(P,shift(Q))))
+       => cevplus_proves(G,imp_t(ex_t(S,P),Q)))).
+
+%==============================================================================
+% 10. Exact Classicist axiom terms
+%==============================================================================
+
+tff(prop_bin_ty_type, type, prop_bin_ty: ty).
+tff(pred_ty_type, type, pred_ty: ty > ty).
+tff(identity_ty_type, type, identity_ty: ty > ty).
+
+tff(prop_bin_ty_definition, axiom,
+    prop_bin_ty = arr(prop,arr(prop,prop))).
+tff(pred_ty_definition, axiom,
+    ! [S: ty] : pred_ty(S) = arr(S,prop)).
+tff(identity_ty_definition, axiom,
+    ! [S: ty] : identity_ty(S) = arr(S,arr(S,prop))).
+
+tff(bool_comm_conj_definition, axiom,
+    bool_comm_conj =
+    eq_t(prop_bin_ty,
+      lam_t(prop,lam_t(prop,conj_t(var_t(suc(zero)),var_t(zero)))),
+      lam_t(prop,lam_t(prop,conj_t(var_t(zero),var_t(suc(zero))))))).
+
+tff(bool_comm_disj_definition, axiom,
+    bool_comm_disj =
+    eq_t(prop_bin_ty,
+      lam_t(prop,lam_t(prop,disj_t(var_t(suc(zero)),var_t(zero)))),
+      lam_t(prop,lam_t(prop,disj_t(var_t(zero),var_t(suc(zero))))))).
+
+% The remaining four named Boolean identities and the five Classicist
+% identities are definitionally expanded by the following equations.  They are
+% not used as additional proof rules.
+tff(bool_dist_conj_disj_definition, axiom,
+    bool_dist_conj_disj =
+    eq_t(arr(prop,arr(prop,arr(prop,prop))),
+      lam_t(prop,lam_t(prop,lam_t(prop,
+        conj_t(var_t(suc(suc(zero))),
+          disj_t(var_t(suc(zero)),var_t(zero)))))),
+      lam_t(prop,lam_t(prop,lam_t(prop,
+        disj_t(
+          conj_t(var_t(suc(suc(zero))),var_t(suc(zero))),
+          conj_t(var_t(suc(suc(zero))),var_t(zero)))))))).
+
+tff(bool_dist_disj_conj_definition, axiom,
+    bool_dist_disj_conj =
+    eq_t(arr(prop,arr(prop,arr(prop,prop))),
+      lam_t(prop,lam_t(prop,lam_t(prop,
+        disj_t(var_t(suc(suc(zero))),
+          conj_t(var_t(suc(zero)),var_t(zero)))))),
+      lam_t(prop,lam_t(prop,lam_t(prop,
+        conj_t(
+          disj_t(var_t(suc(suc(zero))),var_t(suc(zero))),
+          disj_t(var_t(suc(suc(zero))),var_t(zero)))))))).
+
+tff(bool_dissolve_conj_disj_definition, axiom,
+    bool_dissolve_conj_disj =
+    eq_t(prop_bin_ty,
+      lam_t(prop,lam_t(prop,
+        conj_t(var_t(suc(zero)),
+          disj_t(var_t(zero),neg_t(var_t(zero)))))),
+      lam_t(prop,lam_t(prop,var_t(suc(zero)))))).
+
+tff(bool_dissolve_disj_conj_definition, axiom,
+    bool_dissolve_disj_conj =
+    eq_t(prop_bin_ty,
+      lam_t(prop,lam_t(prop,
+        disj_t(var_t(suc(zero)),
+          conj_t(var_t(zero),neg_t(var_t(zero)))))),
+      lam_t(prop,lam_t(prop,var_t(suc(zero)))))).
+
+tff(classic_identity_identity_definition, axiom,
+    ! [S: ty] :
+      classic_identity_identity(S) =
+      eq_t(identity_ty(S),
+        lam_t(S,lam_t(S,eq_t(S,var_t(suc(zero)),var_t(zero)))),
+        lam_t(S,lam_t(S,
+          all_t(pred_ty(S),
+            iff_t(
+              app_t(var_t(zero),var_t(suc(suc(zero)))),
+              app_t(var_t(zero),var_t(suc(zero))))))))).
+
+tff(classic_absorb_disj_forall_definition, axiom,
+    ! [S: ty] :
+      classic_absorb_disj_forall(S) =
+      eq_t(arr(pred_ty(S),arr(S,prop)),
+        lam_t(pred_ty(S),lam_t(S,
+          disj_t(
+            app_t(var_t(suc(zero)),var_t(zero)),
+            all_t(S,app_t(var_t(suc(suc(zero))),var_t(zero)))))),
+        lam_t(pred_ty(S),lam_t(S,
+          app_t(var_t(suc(zero)),var_t(zero)))))).
+
+tff(classic_dist_disj_forall_definition, axiom,
+    ! [S: ty] :
+      classic_dist_disj_forall(S) =
+      eq_t(arr(pred_ty(S),arr(prop,prop)),
+        lam_t(pred_ty(S),lam_t(prop,
+          disj_t(
+            var_t(zero),
+            all_t(S,app_t(var_t(suc(suc(zero))),var_t(zero)))))),
+        lam_t(pred_ty(S),lam_t(prop,
+          all_t(S,
+            disj_t(
+              var_t(suc(zero)),
+              app_t(var_t(suc(suc(zero))),var_t(zero)))))))).
+
+tff(classic_absorb_conj_exists_definition, axiom,
+    ! [S: ty] :
+      classic_absorb_conj_exists(S) =
+      eq_t(arr(pred_ty(S),arr(S,prop)),
+        lam_t(pred_ty(S),lam_t(S,
+          conj_t(
+            app_t(var_t(suc(zero)),var_t(zero)),
+            ex_t(S,app_t(var_t(suc(suc(zero))),var_t(zero)))))),
+        lam_t(pred_ty(S),lam_t(S,
+          app_t(var_t(suc(zero)),var_t(zero)))))).
+
+tff(classic_dist_conj_exists_definition, axiom,
+    ! [S: ty] :
+      classic_dist_conj_exists(S) =
+      eq_t(arr(pred_ty(S),arr(prop,prop)),
+        lam_t(pred_ty(S),lam_t(prop,
+          conj_t(
+            var_t(zero),
+            ex_t(S,app_t(var_t(suc(suc(zero))),var_t(zero)))))),
+        lam_t(pred_ty(S),lam_t(prop,
+          ex_t(S,
+            conj_t(
+              var_t(suc(zero)),
+              app_t(var_t(suc(suc(zero))),var_t(zero)))))))).
+
+%==============================================================================
+% 11. Goodman's T6-Inv vocabulary as exact object-language terms
+%==============================================================================
+
+tff(pure_name_type, type, pure_name: name).
+
+tff(unary_ty_type, type, unary_ty: ty).
+tff(unary_ty_definition, axiom,
+    unary_ty = arr(prop,prop)).
+
+tff(pure_const_type, type, pure_const: ty > tm).
+tff(pp_pure_type, type, pp_pure: (ty * tm) > tm).
+tff(pure_const_definition, axiom,
+    ! [S: ty] :
+      pure_const(S) = const_t(pure_name,arr(S,prop))).
+tff(pp_pure_definition, axiom,
+    ! [S: ty, M: tm] :
+      pp_pure(S,M) = app_t(pure_const(S),M)).
+
+tff(identity_op_type, type, identity_op: tm).
+tff(negation_op_type, type, negation_op: tm).
+tff(compose_type, type, compose: (tm * tm) > tm).
+
+tff(identity_op_definition, axiom,
+    identity_op = lam_t(prop,var_t(zero))).
+tff(negation_op_definition, axiom,
+    negation_op = lam_t(prop,neg_t(var_t(zero)))).
+tff(compose_definition, axiom,
+    ! [F: tm, G: tm] :
+      compose(F,G) =
+      lam_t(prop,
+        app_t(shift(F),app_t(shift(G),var_t(zero))))).
+
+tff(shift2_type, type, shift2: tm > tm).
+tff(shift2_definition, axiom,
+    ! [M: tm] : shift2(M) = shift(shift(M))).
+
+tff(fun_prime_type, type, fun_prime: tm > tm).
+tff(fun_prime_definition, axiom,
+    ! [P: tm] :
+      fun_prime(P) =
+      all_t(unary_ty,
+        all_t(unary_ty,
+          imp_t(
+            conj_t(
+              pp_pure(unary_ty,var_t(suc(zero))),
+              pp_pure(unary_ty,var_t(zero))),
+            imp_t(
+              eq_t(prop,
+                app_t(var_t(suc(zero)),shift2(P)),
+                app_t(var_t(zero),shift2(P))),
+              eq_t(unary_ty,
+                var_t(suc(zero)),var_t(zero))))))).
+
+tff(exists_fun_prime_type, type, exists_fun_prime: tm).
+tff(exists_fun_prime_definition, axiom,
+    exists_fun_prime = ex_t(prop,fun_prime(var_t(zero)))).
+
+tff(reversible_type, type, reversible: tm > tm).
+tff(group_member_type, type, group_member: tm > tm).
+tff(same_kind_type, type, same_kind: (tm * tm) > tm).
+
+tff(reversible_definition, axiom,
+    ! [Z: tm] :
+      reversible(Z) =
+      ex_t(unary_ty,
+        conj_t(
+          pp_pure(unary_ty,var_t(zero)),
+          conj_t(
+            eq_t(unary_ty,
+              compose(shift(Z),var_t(zero)),
+              identity_op),
+            eq_t(unary_ty,
+              compose(var_t(zero),shift(Z)),
+              identity_op))))).
+
+tff(group_member_definition, axiom,
+    ! [Z: tm] :
+      group_member(Z) =
+      conj_t(pp_pure(unary_ty,Z),reversible(Z))).
+
+tff(same_kind_definition, axiom,
+    ! [X: tm, Y: tm] :
+      same_kind(X,Y) =
+      ex_t(unary_ty,
+        conj_t(
+          group_member(var_t(zero)),
+          eq_t(unary_ty,
+            shift(X),
+            compose(shift(Y),var_t(zero)))))).
+
+tff(pp_l2_type, type, pp_l2: tm).
+tff(pp_l2_definition, axiom,
+    pp_l2 =
+    all_t(unary_ty,
+      all_t(unary_ty,
+        all_t(prop,
+          all_t(prop,
+            imp_t(
+              conj_t(
+                pp_pure(unary_ty,var_t(suc(suc(suc(zero))))),
+                conj_t(
+                  pp_pure(unary_ty,var_t(suc(suc(zero)))),
+                  conj_t(
+                    fun_prime(var_t(suc(zero))),
+                    conj_t(
+                      fun_prime(var_t(zero)),
+                      eq_t(prop,
+                        app_t(var_t(suc(suc(suc(zero)))),
+                              var_t(suc(zero))),
+                        app_t(var_t(suc(suc(zero))),
+                              var_t(zero))))))),
+              same_kind(
+                var_t(suc(suc(suc(zero)))),
+                var_t(suc(suc(zero)))))))))).
+
+tff(pp_inv_type, type, pp_inv: tm).
+tff(pp_inv_definition, axiom,
+    pp_inv =
+    all_t(unary_ty,
+      iff_t(
+        group_member(var_t(zero)),
+        disj_t(
+          eq_t(unary_ty,var_t(zero),identity_op),
+          eq_t(unary_ty,var_t(zero),negation_op))))).
+
+% Goodman's liar D.
+tff(t6_d_type, type, t6_d: tm).
+tff(t6_d_definition, axiom,
+    t6_d =
+    lam_t(prop,
+      all_t(unary_ty,
+        all_t(prop,
+          imp_t(
+            conj_t(
+              pp_pure(unary_ty,var_t(suc(zero))),
+              conj_t(
+                fun_prime(var_t(zero)),
+                eq_t(prop,
+                  var_t(suc(suc(zero))),
+                  app_t(var_t(suc(zero)),var_t(zero))))),
+            neg_t(
+              app_t(var_t(suc(zero)),
+                    var_t(suc(suc(zero)))))))))).
+
+% The constant-free abstraction whose application to Pure beta-contracts to D.
+tff(t6_abstract_body_type, type, t6_abstract_body: tm).
+tff(t6_builder_type, type, t6_builder: tm).
+tff(t6_instance_type, type, t6_instance: tm).
+
+tff(t6_abstract_body_definition, axiom,
+    t6_abstract_body =
+    lam_t(prop,
+      all_t(unary_ty,
+        all_t(prop,
+          imp_t(
+            conj_t(
+              app_t(var_t(suc(suc(suc(zero)))),
+                    var_t(suc(zero))),
+              conj_t(
+                all_t(unary_ty,
+                  all_t(unary_ty,
+                    imp_t(
+                      conj_t(
+                        app_t(var_t(suc(suc(suc(suc(suc(zero)))))),
+                              var_t(suc(zero))),
+                        app_t(var_t(suc(suc(suc(suc(suc(zero)))))),
+                              var_t(zero))),
+                      imp_t(
+                        eq_t(prop,
+                          app_t(var_t(suc(zero)),
+                                var_t(suc(suc(zero)))),
+                          app_t(var_t(zero),
+                                var_t(suc(suc(zero))))),
+                        eq_t(unary_ty,
+                          var_t(suc(zero)),var_t(zero)))))),
+                eq_t(prop,
+                  var_t(suc(suc(zero))),
+                  app_t(var_t(suc(zero)),var_t(zero))))),
+            neg_t(
+              app_t(var_t(suc(zero)),
+                    var_t(suc(suc(zero)))))))))).
+
+tff(t6_builder_definition, axiom,
+    t6_builder =
+    lam_t(arr(unary_ty,prop),t6_abstract_body)).
+tff(t6_instance_definition, axiom,
+    t6_instance = app_t(t6_builder,pure_const(unary_ty))).
+
+% PP and application closure.
+tff(application_closure_type, type,
+    application_closure: (ty * ty) > tm).
+tff(application_closure_definition, axiom,
+    ! [S: ty, T: ty] :
+      application_closure(S,T) =
+      all_t(arr(S,T),
+        all_t(S,
+          imp_t(
+            conj_t(
+              pp_pure(arr(S,T),var_t(suc(zero))),
+              pp_pure(S,var_t(zero))),
+            pp_pure(T,
+              app_t(var_t(suc(zero)),var_t(zero))))))).
+
+tff(pp_target_type, type, pp_target: tm).
+tff(pp_target_definition, axiom,
+    pp_target =
+    pp_pure(arr(unary_ty,prop),pure_const(unary_ty))).
+
+% ObjTrue and ObjFalse.
+tff(obj_true_type, type, obj_true: tm).
+tff(obj_false_type, type, obj_false: tm).
+tff(obj_true_definition, axiom,
+    obj_true = all_t(prop,imp_t(var_t(zero),var_t(zero)))).
+tff(obj_false_definition, axiom,
+    obj_false = neg_t(obj_true)).
+
+%==============================================================================
+% 12. The exact T6-Inv axiom stock
+%==============================================================================
+
+tff(logical_type, type, logical: tm > $o).
+
+% consts_of(M) = {}: every syntactic constructor except Const preserves the
+% empty logical vocabulary.  Closedness is supplied separately by typing in [].
+tff(logical_var, axiom,
+    ! [N: nat] : logical(var_t(N))).
+tff(logical_app, axiom,
+    ! [M: tm, N: tm] :
+      ((logical(M) & logical(N)) => logical(app_t(M,N)))).
+tff(logical_lam, axiom,
+    ! [S: ty, M: tm] :
+      (logical(M) => logical(lam_t(S,M)))).
+tff(logical_eq, axiom,
+    ! [S: ty, M: tm, N: tm] :
+      ((logical(M) & logical(N)) => logical(eq_t(S,M,N)))).
+tff(logical_neg, axiom,
+    ! [A: tm] : (logical(A) => logical(neg_t(A)))).
+tff(logical_conj, axiom,
+    ! [A: tm, B: tm] :
+      ((logical(A) & logical(B)) => logical(conj_t(A,B)))).
+tff(logical_disj, axiom,
+    ! [A: tm, B: tm] :
+      ((logical(A) & logical(B)) => logical(disj_t(A,B)))).
+tff(logical_imp, axiom,
+    ! [A: tm, B: tm] :
+      ((logical(A) & logical(B)) => logical(imp_t(A,B)))).
+tff(logical_all, axiom,
+    ! [S: ty, A: tm] :
+      (logical(A) => logical(all_t(S,A)))).
+tff(logical_ex, axiom,
+    ! [S: ty, A: tm] :
+      (logical(A) => logical(ex_t(S,A)))).
+
+% Purity schema.
+tff(stock_purity_schema, axiom,
+    ! [M: tm, S: ty] :
+      ((typed(ctx_nil,M,S) & logical(M))
+       => stock(pp_pure(S,M)))).
+
+% Application-closure schema.
+tff(stock_application_closure_schema, axiom,
+    ! [S: ty, T: ty] :
+      stock(application_closure(S,T))).
+
+% PP, existence of fun', weak L2, and Inv.
+tff(stock_pp, axiom, stock(pp_target)).
+tff(stock_exists_fun_prime, axiom, stock(exists_fun_prime)).
+tff(stock_l2, axiom, stock(pp_l2)).
+tff(stock_inv, axiom, stock(pp_inv)).
+
+%==============================================================================
+% 13. Target
+%==============================================================================
+
+tff(goodman_t6_inv_reified_target, conjecture,
+    cevplus_proves(ctx_nil,obj_false)).

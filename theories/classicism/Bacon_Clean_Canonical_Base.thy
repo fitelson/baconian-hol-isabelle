@@ -1771,6 +1771,9 @@ proof (induction arbitrary: \<Delta> r rule: H_proves.induct)
   then show ?case
     by (rule H_proves.PC)
 next
+  case (IndividualExistence \<Gamma>)
+  show ?case by (simp add: H_proves.IndividualExistence)
+next
   case (UI \<rho> \<Gamma> A T)
   have lift_rel: "\<And>n \<tau>. lookup (\<rho> # \<Gamma>) n = Some \<tau> \<Longrightarrow>
       lookup (\<rho> # \<Delta>) (lift_ren r n) = Some \<tau>"
@@ -1905,6 +1908,9 @@ proof (induction arbitrary: N \<sigma> c rule: H_proves.induct)
     using PC.hyps PC.prems by (rule prop_tautology_subst_const)
   then show ?case
     by (rule H_proves.PC)
+next
+  case (IndividualExistence \<Gamma>)
+  show ?case by (simp add: H_proves.IndividualExistence)
 next
   case (UI \<rho> \<Gamma> A T)
   have shifted_N: "\<rho> # \<Gamma> \<turnstile> shift N : \<sigma>"

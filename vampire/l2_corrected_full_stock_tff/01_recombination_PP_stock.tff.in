@@ -1,0 +1,47 @@
+%------------------------------------------------------------------------------
+% Finite relevant representation of pp_recombination_PP_axioms.
+%------------------------------------------------------------------------------
+%
+% This stock contains PP, unique proposition-level fundamentality, no
+% fundamentals at the two represented higher types, zeroary Recombination,
+% and unary Recombination.  It does NOT contain Exhaustion, existence of a
+% fun' proposition, L2, or purity of Goodman's T6 diagonal.
+%------------------------------------------------------------------------------
+
+include('00_common_semantics.tff.in').
+
+% PP at the correct type:
+% Pure_((Prop->Prop)->Prop)(Pure_(Prop->Prop)).
+tff(goodman_PP_at_unary_classifier_type,axiom,
+    ! [W:world] : pure_op2_at(W,pure_unary_classifier)).
+
+% Exactly one fundamental proposition at every world.
+tff(unique_proposition_fundamental,axiom,
+    ! [W:world] :
+      ? [R:prop] :
+        (fundamental_prop_at(W,R)
+         & ! [Q:prop] :
+             (fundamental_prop_at(W,Q) => eq_prop_at(W,Q,R)))).
+
+% No fundamentals at the represented nonproposition types.
+tff(no_unary_operator_fundamentals,axiom,
+    ! [W:world,X:op1] : ~ fundamental_op_at(W,X)).
+
+tff(no_classifier_fundamentals,axiom,
+    ! [W:world,F:op2] : ~ fundamental_op2_at(W,F)).
+
+% Zeroary Recombination:
+% Pure(p) -> (Box p -> p).
+tff(zeroary_recombination,axiom,
+    ! [W:world,P:prop] :
+      ((pure_prop_at(W,P) & box_true(W,P)) => holds(W,P))).
+
+% Unary Recombination:
+% Pure(X) & Fun(r) -> (Box Xr -> forall q Xq).
+tff(unary_recombination,axiom,
+    ! [W:world,X:op1,R:prop] :
+      ((pure_op_at(W,X)
+        & fundamental_prop_at(W,R)
+        & box_true(W,app(X,R)))
+       =>
+       ! [Q:prop] : holds(W,app(X,Q)))).

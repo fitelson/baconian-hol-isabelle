@@ -1,7 +1,7 @@
 theory Bacon_PP_Central_Model_Obligations
   imports
-    Bacon_PP_Axiom_Soundness
-    Bacon_PP_QSS_Recombination_Bridge
+    "Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Axiom_Soundness"
+    "Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_QSS_Recombination_Bridge"
     "Higher_Order_Metaphysics_PP.Bacon_PP_Purity_Operator"
 begin
 

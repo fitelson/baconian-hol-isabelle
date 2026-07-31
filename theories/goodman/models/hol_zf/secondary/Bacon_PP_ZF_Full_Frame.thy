@@ -1,6 +1,7 @@
 theory Bacon_PP_ZF_Full_Frame
   imports
-    "Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Central_Model_Obligations"
+    Bacon_PP_Central_Model_Obligations
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Word_Propositions
     "HOL-ZF.MainZF"
     "HOL-Library.More_List"
 begin
@@ -53,18 +54,6 @@ theorem pp_zf_domain_nonempty:
 
 definition pp_zf_app :: "ZF \<Rightarrow> ZF \<Rightarrow> ZF" where
   "pp_zf_app f x = f \<acute> x"
-
-lemma pp_zf_function_isFun:
-  assumes "Elem f (Fun U V)"
-  shows "isFun f"
-  using assms
-  by (simp add: Fun_def PFun_def Sep)
-
-lemma pp_zf_function_domain:
-  assumes "Elem f (Fun U V)"
-  shows "Domain f = U"
-  using assms
-  by (simp add: Fun_def Sep)
 
 lemma pp_zf_app_closed:
   assumes f: "Elem f (pp_zf_domain (\<sigma> \<rightarrow>\<^sub>o \<tau>))"
@@ -158,9 +147,6 @@ section \<open>Structural denotation over the preconstructed frame\<close>
 
 definition pp_zf_dom :: "otype \<Rightarrow> ZF \<Rightarrow> bool" where
   "pp_zf_dom \<sigma> x \<longleftrightarrow> Elem x (pp_zf_domain \<sigma>)"
-
-definition pp_zf_prop :: "(ZF \<Rightarrow> bool) \<Rightarrow> ZF" where
-  "pp_zf_prop P = Sep Nat P"
 
 lemma pp_zf_prop_member[simp]:
   "Elem w (pp_zf_prop P) \<longleftrightarrow> Elem w Nat \<and> P w"
@@ -459,9 +445,6 @@ text \<open>
 \<close>
 
 section \<open>Internal interpretations of Pure and Fun\<close>
-
-definition pp_zf_truth :: "bool \<Rightarrow> ZF" where
-  "pp_zf_truth b = pp_zf_prop (\<lambda>_. b)"
 
 lemma pp_zf_truth_in_domain:
   "Elem (pp_zf_truth b) (pp_zf_domain Prop)"

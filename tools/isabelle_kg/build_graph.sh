@@ -31,6 +31,7 @@ force_export_sessions() {
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
+    Higher_Order_Metaphysics_PP_ZF_Secondary \
     Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
     Higher_Order_Metaphysics_PP_ZF_Necessity \
     Higher_Order_Metaphysics_PP_ZF_Possibility \
@@ -40,6 +41,9 @@ force_export_sessions() {
     Goodman_CEVplus_Canonical \
     Goodman_CEVplus_ZF_Bridge \
     Goodman_CEVplus_Modal_Quantified_Bridge \
+    Goodman_CEVplus_Finite_Fragment_Model_Program \
+    Goodman_CEVplus_Finite_First_Cyclic_Model \
+    Higher_Order_Metaphysics_PP_ZF_Dual_Pair_Grafting \
     Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
@@ -69,6 +73,7 @@ run_extractor() {
     Higher_Order_Metaphysics_PP_Frontier \
     Higher_Order_Metaphysics_PP_Models \
     Higher_Order_Metaphysics_PP_ZF_Model \
+    Higher_Order_Metaphysics_PP_ZF_Secondary \
     Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
     Higher_Order_Metaphysics_PP_ZF_Necessity \
     Higher_Order_Metaphysics_PP_ZF_Possibility \
@@ -78,6 +83,9 @@ run_extractor() {
     Goodman_CEVplus_Canonical \
     Goodman_CEVplus_ZF_Bridge \
     Goodman_CEVplus_Modal_Quantified_Bridge \
+    Goodman_CEVplus_Finite_Fragment_Model_Program \
+    Goodman_CEVplus_Finite_First_Cyclic_Model \
+    Higher_Order_Metaphysics_PP_ZF_Dual_Pair_Grafting \
     Goodman_Modal_Quantified_Audit_2026_07_28
 }
 
@@ -121,6 +129,48 @@ required_dependencies = {
     "pp_t_M5_full_rebuilt_exotic_certificate",
     "theorem:Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model."
     "pp_t_M5_full_rebuilt_model",
+    "theorem:Bacon_PP_Finite_Application_Graph."
+    "pp_finite_acyclic_unary_values_independent_of_classifier",
+    "theorem:Bacon_PP_Finite_Application_Graph."
+    "pp_finite_component_condensation_acyclic",
+    "theorem:Bacon_PP_Finite_Application_Graph."
+    "pp_finite_first_classifier_component",
+    "theorem:Bacon_PP_Finite_Fragment_Model_Program."
+    "pp_finite_first_package_has_classifier_cycle",
+    "theorem:Bacon_PP_ZF_Finite_First_Cyclic_Package."
+    "pp_finite_first_cyclic_package_consistent",
+    "theorem:Bacon_PP_ZF_Finite_First_Cyclic_Package."
+    "pp_t_next_classifier_cycle_classification",
+    "theorem:Bacon_PP_ZF_Finite_First_Cyclic_Package."
+    "pp_t_symmetrized_probe_stabilizes_after_one_enlargement",
+    "theorem:Bacon_PP_ZF_Finite_First_Cyclic_Package."
+    "pp_t_symmetrized_seed_recombines_at_every_world",
+    "theorem:Bacon_PP_ZF_Finite_First_Cyclic_Package."
+    "pp_finite_next_cyclic_package_consistent",
+    "theorem:Bacon_PP_ZF_Tree_Family_Probe_Absorption."
+    "pp_t_family_probe_stabilizes_iff_collisions_absorbed",
+    "theorem:Bacon_PP_ZF_Tree_Family_Probe_Absorption."
+    "pp_t_diagonally_reflexive_family_probe_stabilizes",
+    "theorem:Bacon_PP_ZF_Two_Component_Assembly."
+    "pp_t_two_component_stock_assembly",
+    "theorem:Bacon_PP_ZF_Two_Component_Assembly."
+    "pp_t_finite_successor_rank_assembly",
+    "theorem:Bacon_PP_ZF_Two_Component_Assembly."
+    "pp_t_first_cyclic_two_component_checkpoint",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_T6_every_finite_stage_satisfies_PP",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_T6_every_finite_stage_equivariant",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_T6_stage_stable_iff_global_collision",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_T6_finite_stage_collision_candidates",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_T6_finite_stage_stability_forces_square_failure",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_t_necessary_falsity_square_iff_dense",
+    "theorem:Bacon_PP_ZF_T6_Collision_Carrier."
+    "pp_b_equivariance_does_not_guarantee_dense_separation",
 }
 sources = {
     edge["source"]

@@ -112,26 +112,10 @@ subsection \<open>Purity of Pure holds in the word-action M-set\<close>
 text \<open>
   The action on an operator \<open>H\<close> of type \<open>(t \<rightarrow> t) \<rightarrow> t\<close> is computed exactly as at
   one type lower: apply \<open>H\<close> to a preimage of the argument under the action at
-  \<open>t \<rightarrow> t\<close>, then take the view of the result.  \<open>pp_fun_lift\<close> below is a canonical
-  such preimage.
+  \<open>t \<rightarrow> t\<close>, then take the view of the result.  The foundational theory
+  \<open>Bacon_PP_MSet\<close> now proves that \<open>pp_fun_lift i F\<close> is such a preimage
+  inside Bacon's restricted function domain whenever \<open>F\<close> belongs to that domain.
 \<close>
-
-definition pp_fun_lift ::
-    "pp_word \<Rightarrow> (pp_sem_prop \<Rightarrow> pp_sem_prop) \<Rightarrow>
-      (pp_sem_prop \<Rightarrow> pp_sem_prop)" where
-  "pp_fun_lift i F = (\<lambda>P. pp_lift i (F (pp_view i P)))"
-
-lemma pp_fun_view_fun_lift[simp]:
-  "pp_fun_view i (pp_fun_lift i F) = F"
-proof (rule ext)
-  fix P
-  have "pp_fun_view i (pp_fun_lift i F) P =
-      pp_view i (pp_lift i (F (pp_view i (pp_lift i P))))"
-    by (simp add: pp_fun_view_apply pp_fun_lift_def)
-  also have "... = F P"
-    by simp
-  finally show "pp_fun_view i (pp_fun_lift i F) P = F P" .
-qed
 
 definition pp_second_order_view ::
     "pp_word \<Rightarrow>

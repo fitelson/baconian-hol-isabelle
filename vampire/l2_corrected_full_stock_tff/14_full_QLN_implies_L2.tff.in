@@ -1,0 +1,7 @@
+% Monolithic comparison target for the corrected full-QLN + PP stock.
+% The staged targets 11--13 should be preferred for proof search.
+
+include('02_full_QLN_PP_stock.tff.in').
+
+tff(full_QLN_implies_weak_L2,conjecture,
+    ! [W:world] : weak_L2(W)).

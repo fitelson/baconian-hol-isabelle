@@ -428,9 +428,9 @@ text \<open>
   \<open>Bacon_PP_Goodman_M1\<close>.  The footnote-59 diagonal is an explicit well-typed
   term; abstracting its occurrences of \<open>Pure\<close> and \<open>Fun\<close> yields a closed
   constant-free builder; PP, Purity of Fun, and two applications of
-  application closure certify the liar itself as pure.  The exact HOL-ZF
-  denotation calculation and its PER-respecting QSS contradiction are proved
-  in \<open>Bacon_PP_ZF_Goodman_M1_Fn59\<close>.
+  application closure certify the liar itself as pure.  A separate semantic
+  instantiation is required to turn this abstract contradiction into a claim
+  about any particular model.
 \<close>
 
 end

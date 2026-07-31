@@ -1,0 +1,249 @@
+%------------------------------------------------------------------------------
+% Goodman T6-Inv: independent native THF semantic refutation problem
+%
+% This file is the native higher-order companion to
+%
+%   goodman_t6_inv_from_axioms.tff.in
+%
+% It is not a reification of the complete CEV+ proof calculus.  Instead, it
+% directly states the ordinary semantic laws and the exact purity, PP,
+% application-closure, weak-L2, and Inv instances used by the T6-Inv route.
+% Consequently, a refutation is an independent semantic check of that finite
+% route, not by itself a machine reconstruction of the full schematic CEV+
+% derivation.
+%
+% Unlike the TFF companion, unary proposition operators have the genuine THF
+% type prop > prop, their Pure classifier has type (prop > prop) > prop, and
+% the constant-free T6 abstraction has the genuine higher-order type
+%
+%   ((prop > prop) > prop) > (prop > prop).
+%
+% Application is THF application, composition is defined by lambda
+% abstraction, and equality between operators is native extensional function
+% equality.  There are no opaque op/app, classifier/build, or composition
+% application sorts.
+%
+% In particular, this file does NOT assume any of the following derived
+% consequences:
+%
+%   Pure(D)
+%   not D(D(r))
+%   not D(not D(r))
+%   the Inv case split for operators of D's kind
+%   D(D(r))
+%
+% Those consequences must be obtained from the displayed semantic laws and
+% schema instances.  The final conjecture is $false, so a proof requires a
+% refutation of the preceding finite semantic stock.
+%------------------------------------------------------------------------------
+
+%==============================================================================
+% Intensional propositions and native higher-order functions
+%==============================================================================
+
+thf(prop_type,type,(prop:$tType)).
+
+% Propositions remain intensional objects.  holds gives their actual truth.
+thf(holds_type,type,(holds:prop>$o)).
+
+% Object-language negation is a native unary proposition operator.
+thf(negation_type,type,(negation:prop>prop)).
+
+% Native operator composition and identity.
+thf(compose_type,type,
+    (compose:(prop>prop)>(prop>prop)>(prop>prop))).
+thf(identity_type,type,(identity:prop>prop)).
+
+% The relevant object-language Pure classifier.
+thf(pure_op_classifier_type,type,
+    (pure_op_classifier:(prop>prop)>prop)).
+
+% Semantic purity predicates at exactly the three types used to infer Pure(D).
+thf(pure_op_type,type,
+    (pure_op:(prop>prop)>$o)).
+thf(pure_classifier_type,type,
+    (pure_classifier:((prop>prop)>prop)>$o)).
+thf(pure_builder_type,type,
+    (pure_builder:(((prop>prop)>prop)>(prop>prop))>$o)).
+
+% Evaluation-injectivity relative to an arbitrary candidate Pure classifier,
+% and the actual fun' predicate obtained from the actual Pure classifier.
+thf(fun_prime_with_type,type,
+    (fun_prime_with:((prop>prop)>prop)>prop>$o)).
+thf(fun_prime_type,type,(fun_prime:prop>$o)).
+
+% The constant-free logical abstraction used in the PP argument, and its
+% instance D obtained by applying it to the actual Pure classifier.
+thf(t6_builder_type,type,
+    (t6_builder:((prop>prop)>prop)>(prop>prop))).
+thf(d_type,type,(d:prop>prop)).
+
+% Goodman's group and kind vocabulary.
+thf(reversible_type,type,
+    (reversible:(prop>prop)>$o)).
+thf(group_member_type,type,
+    (group_member:(prop>prop)>$o)).
+thf(same_kind_type,type,
+    (same_kind:(prop>prop)>(prop>prop)>$o)).
+
+%==============================================================================
+% Ordinary CEV+ semantic laws used in the route
+%==============================================================================
+
+thf(identity_definition,axiom,
+    identity = (^ [P:prop] : P)).
+
+thf(composition_definition,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      ((compose @ X @ Y)
+       =
+       (^ [P:prop] : (X @ (Y @ P))))).
+
+% This application normal form is semantically redundant with the preceding
+% lambda definition, but records the exact beta instance used in the CEV+
+% derivation.
+thf(composition_application,axiom,
+    ! [X:prop>prop,Y:prop>prop,P:prop] :
+      (((compose @ X @ Y) @ P) = (X @ (Y @ P)))).
+
+thf(negation_truth,axiom,
+    ! [P:prop] :
+      ((holds @ (negation @ P))
+       <=>
+       ~ (holds @ P))).
+
+thf(double_negation_identity,axiom,
+    ! [P:prop] :
+      ((negation @ (negation @ P)) = P)).
+
+% Pure at the unary-operator type is represented by the truth of its
+% object-language classifier.
+thf(pure_op_classifier_semantics,axiom,
+    ! [X:prop>prop] :
+      ((pure_op @ X)
+       <=>
+       (holds @ (pure_op_classifier @ X)))).
+
+% fun'_C(p): evaluation at p is injective on operators classified by C.
+thf(fun_prime_with_definition,axiom,
+    ! [C:(prop>prop)>prop,P:prop] :
+      ((fun_prime_with @ C @ P)
+       <=>
+       ! [X:prop>prop,Y:prop>prop] :
+         ((((holds @ (C @ X))
+            & (holds @ (C @ Y)))
+           & ((X @ P) = (Y @ P)))
+          =>
+          (X = Y)))).
+
+thf(fun_prime_definition,axiom,
+    ! [P:prop] :
+      ((fun_prime @ P)
+       <=>
+       (fun_prime_with @ pure_op_classifier @ P))).
+
+% Semantics of the constant-free T6 abstraction.  The classifier C replaces
+% every occurrence of the nonlogical Pure constant in the abstracted body.
+thf(t6_builder_semantics,axiom,
+    ! [C:(prop>prop)>prop,P:prop] :
+      ((holds @ ((t6_builder @ C) @ P))
+       <=>
+       ! [X:prop>prop,Q:prop] :
+         (((holds @ (C @ X))
+           & (fun_prime_with @ C @ Q)
+           & (P = (X @ Q)))
+          =>
+          ~ (holds @ (X @ P))))).
+
+% The actual T6 liar D is the beta instance of that abstraction at Pure.
+thf(t6_builder_beta,axiom,
+    ((t6_builder @ pure_op_classifier) = d)).
+
+%==============================================================================
+% Exact purity and application-closure instances used to obtain Pure(D)
+%==============================================================================
+
+% Purity schema for the closed constant-free T6 abstraction.
+thf(t6_builder_is_logical_and_pure,axiom,
+    (pure_builder @ t6_builder)).
+
+% PP at the type of unary proposition operators.
+thf(pp_purity_of_pure,axiom,
+    (pure_classifier @ pure_op_classifier)).
+
+% The required application-closure instance.
+thf(purity_application_closure,axiom,
+    ! [B:((prop>prop)>prop)>(prop>prop),
+       C:(prop>prop)>prop] :
+      (((pure_builder @ B) & (pure_classifier @ C))
+       =>
+       (pure_op @ (B @ C)))).
+
+% The logical negation operator is pure.
+thf(logical_negation_is_pure,axiom,
+    (pure_op @ negation)).
+
+% The exact purity-schema/application-closure consequence for composition.
+thf(logical_composition_preserves_purity,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      (((pure_op @ X) & (pure_op @ Y))
+       =>
+       (pure_op @ (compose @ X @ Y)))).
+
+%==============================================================================
+% Goodman's reversible operators, group G, and sameness of kind
+%==============================================================================
+
+thf(reversible_definition,axiom,
+    ! [Z:prop>prop] :
+      ((reversible @ Z)
+       <=>
+       ? [W:prop>prop] :
+         ((pure_op @ W)
+          & ((compose @ Z @ W) = identity)
+          & ((compose @ W @ Z) = identity)))).
+
+thf(group_member_definition,axiom,
+    ! [Z:prop>prop] :
+      ((group_member @ Z)
+       <=>
+       ((pure_op @ Z) & (reversible @ Z)))).
+
+thf(same_kind_definition,axiom,
+    ! [X:prop>prop,Y:prop>prop] :
+      ((same_kind @ X @ Y)
+       <=>
+       ? [Z:prop>prop] :
+         ((group_member @ Z)
+          & (X = (compose @ Y @ Z))))).
+
+%==============================================================================
+% The remaining three nonlogical assumptions of the T6-Inv stock
+%==============================================================================
+
+thf(exists_fun_prime,axiom,
+    ? [R:prop] : (fun_prime @ R)).
+
+% Weak L2, with binder order X,Y,p,q.
+thf(weak_l2,axiom,
+    ! [X:prop>prop,Y:prop>prop,P:prop,Q:prop] :
+      (((pure_op @ X)
+        & (pure_op @ Y)
+        & (fun_prime @ P)
+        & (fun_prime @ Q)
+        & ((X @ P) = (Y @ Q)))
+       =>
+       (same_kind @ X @ Y))).
+
+% Inv: the pure reversible operators are exactly identity and negation.
+thf(inv,axiom,
+    ! [Z:prop>prop] :
+      ((group_member @ Z)
+       <=>
+       ((Z = identity) | (Z = negation)))).
+
+%==============================================================================
+% Refutation target
+%==============================================================================
+
+thf(t6_inv_inconsistency,conjecture,$false).

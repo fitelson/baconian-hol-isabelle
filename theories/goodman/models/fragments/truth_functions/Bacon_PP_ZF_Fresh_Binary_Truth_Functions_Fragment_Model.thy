@@ -1,6 +1,6 @@
 theory Bacon_PP_ZF_Fresh_Binary_Truth_Functions_Fragment_Model
   imports
-    "Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model"
+    "Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Fresh_Conjunction_Fragment_Model"
 begin
 
 section \<open>All curried binary truth-functions\<close>

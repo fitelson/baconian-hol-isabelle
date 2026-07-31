@@ -14,7 +14,7 @@ This matrix distinguishes four statuses:
   does not yet discharge those premises.
 - **Open or underspecified**: there is no determinate verified theorem.
 
-The dedicated session `Goodman_Complete_Audit_2026_07_27` audits 128 theorem
+The dedicated session `Goodman_Complete_Audit_2026_07_27` audits 158 theorem
 objects supporting the claims and qualifications in this matrix.  The separate session
 `Goodman_Modal_Quantified_Audit_2026_07_28` audits 30 necessity, possibility,
 higher-order quantified, and corresponding bridge results.  Fresh builds
@@ -23,6 +23,27 @@ audited proof is checked
 without admitted proof steps or undischarged logical assumptions beyond the
 premises stated in its theorem.  The general T9 cardinal theorems retain only
 their stated restriction on the types to which they apply.
+
+Goodman's formal question is the consistency of the CEV+ axiom extension by
+the Recombination-only stock together with PP. Isabelle proves that this is
+equivalent to consistency of every finite subset of the added axioms; a
+negative answer is equivalent to a finite subset from which CEV+ derives
+falsity. A model would be a sufficient consistency certificate, but model
+existence is not the definition of this proof-theoretic question.
+
+The appendix-model, rebuilt-M5, exact-M1, and exact-L2 results use a HOL-ZF
+interpretation whose carrier satisfies axiomatized ZFC. They are relative
+semantic theorems in that setting, not pure-HOL consistency certificates for
+ZFC.
+
+## Exact appendix-model metatheory
+
+| Task | Verified result |
+|---|---|
+| Exact Theorem 10.1 | Isabelle proves Bacon's arbitrary-signature theorem throughout the `t`-fragment, comprising all types built from `t` alone, and supplies the branch-gluing proof Bacon omits. Signatures involving `e`-containing types remain outside scope, as Bacon explicitly defers that extension. |
+| Exact soundness | Proved for H, Classicism, CE, and CEV over Bacon's recursively defined carriers, including the individual Existence instance and vector Equivalence for an arbitrary finite vector of argument types. |
+| Enumeration and gluing | The countable enumeration of consistent sentences and the glued constant assignment are proved over the exact carriers. |
+| Semantic representation | One glued model represents consistency and the complete frame theory for a fixed proposition-generated signature. This is semantic frame-theory representation, not proof-theoretic completeness of H. |
 
 ## Object-language results
 
@@ -59,7 +80,7 @@ fundamentality it also derives existence of a `fun-prime` proposition.
 | Item | Status | Exact conclusion |
 |---|---|---|
 | M1, bottom type | **Verified** | The pure propositions are exactly the two invariant propositions, and the operator applying exactly to them is the noncontingency operator; it is denoted by a closed term containing only logical vocabulary. |
-| M1, first PP failure | **Verified conditionally and syntactically** | The exact footnote-59 liar is typed, beta-reduced, and proved pure from PP plus Purity of Fun. QSS then yields contradiction. Thus any Bacon model with the other premises must omit that liar from its pure unary stock. |
+| M1, first PP failure | **Verified for arbitrary compositional CEV+ Henkin models, with a material qualification** | The exact footnote-59 liar is typed, beta-reduced, and proved pure from PP plus Purity of Fun. Its denotation, QSS, unique fundamentality, and the identity-respecting diagonal contradiction are now abstracted from Bacon's tree semantics to the denotable-function-space Henkin interface. Hence no such model validates full QLN + PP + Purity of Fun. This does not settle Goodman's question, since the central axiom sets deliberately omit Purity of Fun. |
 | M1, fn. 60 corollary | **Exact identification; exclusion conditional** | The infinitary join exists in the full unary function domain and has exactly the pure unary operators as its extension. It is the interpretation of `Pure` at the next type, and PP at that type holds exactly when this operator belongs to the next pure stock. The current Isabelle development does not prove its nonmembership directly in Bacon's appendix construction. It proves nonmembership only from the additional PP-diagonal/QSS assumptions. Thus completeness of the function domain supplies the join, but does not by itself settle its purity. |
 | M2 | **Verified** | Goodman's operators \(G_T\) belong to the invariant function domain, and \(T \mapsto G_T\) is a bijection onto the invariant operators. Cantor yields the cardinal obstruction and failure of QSS under the invariance reading. |
 | M3 | **Verified with stock qualification** | Relative to the chosen stock of pure operators, `fun-prime` is equivalent to freeness against nonzero pure laws; it implies extreme views, the countable Boolean stock has a free generator, and the `fun-prime` class is product-meager. |
@@ -73,8 +94,10 @@ fundamentality it also derives existence of a `fun-prime` proposition.
 | M6 | **Verified conditionally; model instantiation open** | Under necessitated QSS, membership of every pure operator in Bacon's function domain, and invariance, distinct substitutions are separated by a `fun-prime` proposition. With identity, zero, and one also pure, a strict-inclusion `fun-prime` pair blocks the indicated joint assignment. Single-coordinate arbitrary realization fails independently by countability. These results have not all been instantiated for Bacon's stock of operators denoted by closed terms containing only logical vocabulary. |
 | M7, definable reachability | **Verified** | The Tarski diagonal lies outside every value enumerated by the closed terms under consideration, so Fundamental Completeness fails for those denotations. |
 | M7, invariant reachability | **Verified equivalence; instance open** | Every proposition is reachable from `r` by an invariant operator iff the orbit map `i |-> view i r` is injective. Whether Bacon's chosen glued `r` has that property remains construction-sensitive. |
-| Bacon Theorem 10.1 | **Verified, qualified** | The rebuilt-family theorem is proved. At type `Ind`, its identity quotient forces the family to be constant; it cannot deliver a family of distinct individual denotations. |
-| L2 in Bacon's appendix model and enlargements of its pure unary operators | **Refuted** | The operator \(Z(P)=\{w:P(w^\frown0)\) and \(P(w^\frown1)\) differ in truth value\(\}\) is denoted by a closed term containing only logical vocabulary. It is globally surjective and noninjective. Isabelle proves, relative to every composition-closed class of pure unary operators containing the closed-logical operators and admitting a `fun-prime` proposition, that \(Z\) carries `fun-prime` propositions to `fun-prime` propositions and gives an L2 counterexample with identity. Therefore L2, and consequently strong L2, fails not only for the closed-logical operators in Bacon's appendix model but for every such enlargement, including any prospective PP enlargement on the same tree frame that validates the repaired background theory. This does not by itself supply the missing PP interpretation. |
+| Bacon Theorem 10.1 | **Verified for arbitrary signatures in the `t`-fragment** | Isabelle proves the theorem throughout the fragment of types built from `t` alone and supplies the branch-gluing proof Bacon omits. Signatures involving `e`-containing types remain outside scope, as Bacon explicitly defers that extension. The verified scope includes Goodman's language with its single propositional constant. |
+| Bacon's omitted QLN verification | **Verified for Goodman's specialization** | In the completed tree interpretation with one fundamental proposition, `Pure` interpreted by the complete closed-logical stock, and `Fun` interpreted by the generic proposition, Isabelle proves global zeroary and unary QLN. Zeroary Exhaustion follows from the root truth/falsity classification of closed logical propositions; unary Exhaustion follows from cone invariance; unary Recombination is supplied by the generic proposition. These are all nonvacuous instances in Goodman's unique-fundamental-proposition setting. Bacon's broader future-work extension to arbitrary individual types or several pairwise-distinct fundamental entities is not claimed. |
+| QLN granularity condition | **Exact proof-theoretic reduction verified; no derivation from PP** | Closed logical builders for the truth-functional agreement and disagreement operators are encoded in the complete object language. The logical-purity schema and application closure make their values at a pure unary operator pure; PP is not the source of these purity premises. Isabelle reconstructs the generic unary Exhaustion instance, combines it with Recombination, and proves that over the full QLN+PP stock the modal agreement disjunction is equivalent to the pointwise agreement-or-disagreement disjunction. A separate verified truth-condition theorem identifies that disjunction with truth uniformity. Thus the proposed condition is exactly TU in this setting, not a weaker intermediate principle. No PP-only derivation, underivability theorem, or PP countermodel is claimed. |
+| L2 in Bacon's exact appendix model | **Refuted for the complete closed-logical stock** | On Bacon's finite-natural-word action, the closed logical operator \(\widehat Z(P)=\{w:(\exists n\,P(w^\frown\langle n\rangle))\mathbin{\&}(\exists n\,\neg P(w^\frown\langle n\rangle))\}\) records variation among all immediate successors. Isabelle verifies its exact right-division denotation, closed-logical-stock membership, surjectivity, complement-invariance and hence noninjectivity, right-cancellativity on the exact stock, and nonreversibility. A generic-separation theorem supplies an exact-stock `fun-prime` proposition, which \(Z\) carries to another such proposition. Identity and \(Z\) therefore refute both L2 and strong L2 for Bacon's exact closed-logical stock. This corrects the earlier two-child calculation. No theorem for arbitrary enlarged pure stocks, and no PP interpretation, is claimed. |
 
 ## Claims that cannot presently be “verified”
 

@@ -1,0 +1,357 @@
+%------------------------------------------------------------------------------
+% Corrected finite multisorted representation for the L2 full-stock search.
+%------------------------------------------------------------------------------
+%
+% This file contains only common vocabulary, semantic definitions, and the
+% finite logical-purity/application-closure instances needed by the staged
+% targets.  It contains none of the following:
+%
+%   * Goodman's PP;
+%   * Recombination or Exhaustion;
+%   * existence of a fun' proposition;
+%   * weak or strong L2 as an axiom;
+%   * Goodman's T6 diagonal D, or an assertion that D is pure;
+%   * TU, WI, Inv, or RS.
+%
+% Operators are reified as elements of op1.  This is deliberate: using the
+% THF function type prop>prop would make operator equality extensionally
+% collapse at the meta-level, whereas CEV+ requires the modalized
+% functionality step.
+%------------------------------------------------------------------------------
+
+tff(world_type,type,world:$tType).
+tff(prop_type,type,prop:$tType).
+tff(op1_type,type,op1:$tType).
+tff(op2_type,type,op2:$tType).
+
+tff(holds_type,type,holds:(world * prop)>$o).
+tff(accessible_type,type,accessible:(world * world)>$o).
+tff(app_type,type,app:(op1 * prop)>prop).
+tff(app_o_type,type,app_o:(op2 * op1)>prop).
+tff(compose_type,type,compose:(op1 * op1)>op1).
+
+% Object-language identity is world-relative.  It must not be represented by
+% TFF's meta-level equality.
+tff(eq_prop_at_type,type,eq_prop_at:(world * prop * prop)>$o).
+tff(eq_op_at_type,type,eq_op_at:(world * op1 * op1)>$o).
+tff(eq_prop_term_type,type,eq_prop_term:(prop * prop)>prop).
+
+% Pure at the three types required to type PP correctly.
+tff(pure_prop_at_type,type,pure_prop_at:(world * prop)>$o).
+tff(pure_op_at_type,type,pure_op_at:(world * op1)>$o).
+tff(pure_op2_at_type,type,pure_op2_at:(world * op2)>$o).
+
+% Fun at proposition type and the two explicitly empty higher types.
+tff(fundamental_prop_at_type,type,
+    fundamental_prop_at:(world * prop)>$o).
+tff(fundamental_op_at_type,type,
+    fundamental_op_at:(world * op1)>$o).
+tff(fundamental_op2_at_type,type,
+    fundamental_op2_at:(world * op2)>$o).
+
+% The interpretations of Pure_Prop and Pure_(Prop->Prop).
+tff(pure_prop_classifier_type,type,pure_prop_classifier:op1).
+tff(pure_unary_classifier_type,type,pure_unary_classifier:op2).
+
+% Selected closed logical operators.
+tff(identity_type,type,identity:op1).
+tff(negation_type,type,negation:op1).
+tff(constant_truth_type,type,constant_truth:op1).
+tff(constant_falsity_type,type,constant_falsity:op1).
+tff(necessity_type,type,necessity:op1).
+tff(possibility_type,type,possibility:op1).
+tff(truth_type,type,truth:prop).
+tff(falsity_type,type,falsity:prop).
+
+% Logical devices used in the exact Recombination-to-QSS bridge.
+tff(pointwise_eq_type,type,pointwise_eq:(op1 * op1)>op1).
+tff(mf_prop_type,type,mf_prop:(op1 * op1)>prop).
+
+% Derived predicates used by the L2 reductions.
+tff(box_true_type,type,box_true:(world * prop)>$o).
+tff(fun_prime_type,type,fun_prime:(world * prop)>$o).
+tff(reversible_type,type,reversible:(world * op1)>$o).
+tff(group_member_type,type,group_member:(world * op1)>$o).
+tff(same_kind_type,type,same_kind:(world * op1 * op1)>$o).
+tff(same_agreements_type,type,same_agreements:(world * op1 * op1)>$o).
+tff(composition_classification_type,type,
+    composition_classification:world>$o).
+tff(fun_prime_orbit_type,type,fun_prime_orbit:world>$o).
+tff(y_transport_type,type,y_transport:world>$o).
+tff(weak_L2_type,type,weak_L2:world>$o).
+
+% S4 frame conditions used by the represented modal vocabulary.
+tff(accessibility_reflexive,axiom,
+    ! [W:world] : accessible(W,W)).
+
+tff(accessibility_transitive,axiom,
+    ! [U:world,V:world,W:world] :
+      ((accessible(U,V) & accessible(V,W)) => accessible(U,W))).
+
+tff(box_true_definition,axiom,
+    ! [W:world,P:prop] :
+      (box_true(W,P)
+       <=>
+       ! [V:world] : (accessible(W,V) => holds(V,P)))).
+
+% Pure is interpreted by the correctly typed classifier at each type.
+tff(pure_prop_definition,axiom,
+    ! [W:world,P:prop] :
+      (pure_prop_at(W,P)
+       <=>
+       holds(W,app(pure_prop_classifier,P)))).
+
+tff(pure_op_definition,axiom,
+    ! [W:world,X:op1] :
+      (pure_op_at(W,X)
+       <=>
+       holds(W,app_o(pure_unary_classifier,X)))).
+
+% Truth, falsity, identity, constants, negation, and composition.
+tff(truth_is_true,axiom,
+    ! [W:world] : holds(W,truth)).
+
+tff(falsity_is_false,axiom,
+    ! [W:world] : ~ holds(W,falsity)).
+
+tff(identity_application,axiom,
+    ! [P:prop] : app(identity,P) = P).
+
+tff(constant_truth_application,axiom,
+    ! [P:prop] : app(constant_truth,P) = truth).
+
+tff(constant_falsity_application,axiom,
+    ! [P:prop] : app(constant_falsity,P) = falsity).
+
+tff(negation_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(negation,P)) <=> ~ holds(W,P))).
+
+tff(composition_application,axiom,
+    ! [X:op1,Y:op1,P:prop] :
+      app(compose(X,Y),P) = app(X,app(Y,P))).
+
+% On the represented admitted domains, object-language identity is taken to
+% be reflexive, symmetric, and transitive.
+tff(eq_prop_reflexive,axiom,
+    ! [W:world,P:prop] : eq_prop_at(W,P,P)).
+
+tff(eq_prop_symmetric,axiom,
+    ! [W:world,P:prop,Q:prop] :
+      (eq_prop_at(W,P,Q) => eq_prop_at(W,Q,P))).
+
+tff(eq_prop_transitive,axiom,
+    ! [W:world,P:prop,Q:prop,R:prop] :
+      ((eq_prop_at(W,P,Q) & eq_prop_at(W,Q,R))
+       => eq_prop_at(W,P,R))).
+
+tff(eq_op_reflexive,axiom,
+    ! [W:world,X:op1] : eq_op_at(W,X,X)).
+
+tff(eq_op_symmetric,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (eq_op_at(W,X,Y) => eq_op_at(W,Y,X))).
+
+tff(eq_op_transitive,axiom,
+    ! [W:world,X:op1,Y:op1,Z:op1] :
+      ((eq_op_at(W,X,Y) & eq_op_at(W,Y,Z))
+       => eq_op_at(W,X,Z))).
+
+tff(application_identity_congruence,axiom,
+    ! [W:world,X:op1,Y:op1,P:prop,Q:prop] :
+      ((eq_op_at(W,X,Y) & eq_prop_at(W,P,Q))
+       => eq_prop_at(W,app(X,P),app(Y,Q)))).
+
+tff(composition_identity_congruence,axiom,
+    ! [W:world,X:op1,Y:op1,Z:op1,R:op1] :
+      ((eq_op_at(W,X,Y) & eq_op_at(W,Z,R))
+       => eq_op_at(W,compose(X,Z),compose(Y,R)))).
+
+% Necessity and possibility are included only as selected closed logical
+% operators; no classification principle is attached to them.
+tff(necessity_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(necessity,P))
+       <=>
+       ! [V:world] : (accessible(W,V) => holds(V,P)))).
+
+tff(possibility_truth_condition,axiom,
+    ! [W:world,P:prop] :
+      (holds(W,app(possibility,P))
+       <=>
+       ? [V:world] : (accessible(W,V) & holds(V,P)))).
+
+% Finite instances of logical purity.  Crucially, purity of
+% pure_unary_classifier is NOT here: that is PP and occurs only in the stock
+% files as pure_op2_at(W,pure_unary_classifier).
+tff(pure_truth,axiom,
+    ! [W:world] : pure_prop_at(W,truth)).
+
+tff(pure_falsity,axiom,
+    ! [W:world] : pure_prop_at(W,falsity)).
+
+tff(pure_identity,axiom,
+    ! [W:world] : pure_op_at(W,identity)).
+
+tff(pure_negation,axiom,
+    ! [W:world] : pure_op_at(W,negation)).
+
+tff(pure_constant_truth,axiom,
+    ! [W:world] : pure_op_at(W,constant_truth)).
+
+tff(pure_constant_falsity,axiom,
+    ! [W:world] : pure_op_at(W,constant_falsity)).
+
+tff(pure_necessity,axiom,
+    ! [W:world] : pure_op_at(W,necessity)).
+
+tff(pure_possibility,axiom,
+    ! [W:world] : pure_op_at(W,possibility)).
+
+tff(pure_pure_prop_classifier,axiom,
+    ! [W:world] : pure_op_at(W,pure_prop_classifier)).
+
+% Relevant application-closure and logical-builder instances.
+tff(pure_application_prop,axiom,
+    ! [W:world,X:op1,P:prop] :
+      ((pure_op_at(W,X) & pure_prop_at(W,P))
+       => pure_prop_at(W,app(X,P)))).
+
+tff(pure_application_unary,axiom,
+    ! [W:world,F:op2,X:op1] :
+      ((pure_op2_at(W,F) & pure_op_at(W,X))
+       => pure_prop_at(W,app_o(F,X)))).
+
+tff(pure_composition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      ((pure_op_at(W,X) & pure_op_at(W,Y))
+       => pure_op_at(W,compose(X,Y)))).
+
+% The pointwise identity operator and the modalized-functionality condition.
+tff(eq_prop_term_truth,axiom,
+    ! [W:world,P:prop,Q:prop] :
+      (holds(W,eq_prop_term(P,Q)) <=> eq_prop_at(W,P,Q))).
+
+tff(pointwise_eq_application,axiom,
+    ! [X:op1,Y:op1,P:prop] :
+      app(pointwise_eq(X,Y),P)
+      = eq_prop_term(app(X,P),app(Y,P))).
+
+tff(mf_prop_truth,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (holds(W,mf_prop(X,Y))
+       <=>
+       ! [P:prop] : eq_prop_at(W,app(X,P),app(Y,P)))).
+
+tff(pure_pointwise_eq,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      ((pure_op_at(W,X) & pure_op_at(W,Y))
+       => pure_op_at(W,pointwise_eq(X,Y)))).
+
+tff(pure_mf_prop,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      ((pure_op_at(W,X) & pure_op_at(W,Y))
+       => pure_prop_at(W,mf_prop(X,Y)))).
+
+% Proposition identity is rigid, but remains object-language identity rather
+% than TFF meta-level equality.
+tff(proposition_identity_is_necessary,axiom,
+    ! [W:world,P:prop,Q:prop] :
+      (eq_prop_at(W,P,Q) => box_true(W,eq_prop_term(P,Q)))).
+
+% Modalized Functionality, kept explicit because op1 is reified.
+tff(modalized_functionality,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (box_true(W,mf_prop(X,Y)) => eq_op_at(W,X,Y))).
+
+% fun'(p): evaluation at p is injective on the locally pure unary operators.
+tff(fun_prime_definition,axiom,
+    ! [W:world,P:prop] :
+      (fun_prime(W,P)
+       <=>
+       ! [X:op1,Y:op1] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & eq_prop_at(W,app(X,P),app(Y,P)))
+          => eq_op_at(W,X,Y)))).
+
+% Reversibility, G, and sameness of kind.
+tff(reversible_definition,axiom,
+    ! [W:world,Z:op1] :
+      (reversible(W,Z)
+       <=>
+       ? [R:op1] :
+         (pure_op_at(W,R)
+          & eq_op_at(W,compose(Z,R),identity)
+          & eq_op_at(W,compose(R,Z),identity)))).
+
+tff(group_member_definition,axiom,
+    ! [W:world,Z:op1] :
+      (group_member(W,Z)
+       <=>
+       (pure_op_at(W,Z) & reversible(W,Z)))).
+
+tff(same_kind_definition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (same_kind(W,X,Y)
+       <=>
+       ? [Z:op1] :
+         (group_member(W,Z) & eq_op_at(W,X,compose(Y,Z))))).
+
+% X and Y have the same composition-agreement profile.
+tff(same_agreements_definition,axiom,
+    ! [W:world,X:op1,Y:op1] :
+      (same_agreements(W,X,Y)
+       <=>
+       ! [A:op1,B:op1] :
+         ((pure_op_at(W,A) & pure_op_at(W,B))
+          =>
+          ((eq_op_at(W,compose(A,X),compose(B,X)))
+           <=>
+           (eq_op_at(W,compose(A,Y),compose(B,Y))))))).
+
+tff(composition_classification_definition,axiom,
+    ! [W:world] :
+      (composition_classification(W)
+       <=>
+       ! [X:op1,Y:op1] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & same_agreements(W,X,Y))
+          => same_kind(W,X,Y)))).
+
+tff(fun_prime_orbit_definition,axiom,
+    ! [W:world] :
+      (fun_prime_orbit(W)
+       <=>
+       ! [P:prop,Q:prop] :
+         ((fun_prime(W,P) & fun_prime(W,Q))
+          =>
+          ? [Z:op1] :
+            (group_member(W,Z) & eq_prop_at(W,Q,app(Z,P)))))).
+
+tff(y_transport_definition,axiom,
+    ! [W:world] :
+      (y_transport(W)
+       <=>
+       ! [Y:op1,P:prop,Q:prop] :
+         ((pure_op_at(W,Y)
+           & fun_prime(W,P)
+           & fun_prime(W,Q))
+          =>
+          ? [Z:op1] :
+            (group_member(W,Z)
+             & eq_prop_at(W,app(Y,Q),app(Y,app(Z,P))))))).
+
+% Weak L2, with Goodman's binder order X,Y,p,q.
+tff(weak_L2_definition,axiom,
+    ! [W:world] :
+      (weak_L2(W)
+       <=>
+       ! [X:op1,Y:op1,P:prop,Q:prop] :
+         ((pure_op_at(W,X)
+           & pure_op_at(W,Y)
+           & fun_prime(W,P)
+           & fun_prime(W,Q)
+           & eq_prop_at(W,app(X,P),app(Y,Q)))
+          => same_kind(W,X,Y)))).

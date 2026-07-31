@@ -1,0 +1,8 @@
+% Conditional Recombination-only hard target.
+% The extra exists-fun' premise is isolated in file 03.
+
+include('01_recombination_PP_stock.tff.in').
+include('03_exists_fun_prime_assumption.tff.in').
+
+tff(recombination_plus_fun_prime_implies_classification,conjecture,
+    ! [W:world] : composition_classification(W)).

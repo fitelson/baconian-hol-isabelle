@@ -1,0 +1,213 @@
+%------------------------------------------------------------------------------
+% Goodman T6-Inv: direct TFF refutation problem
+%
+% Intended run:
+%   vampire --mode casc --time_limit 60 goodman_t6_inv_from_axioms.tff.in
+%
+% This is a deliberately small semantic encoding of the exact T6-Inv route.
+% Unlike goodman_t6_inv_calibration.in, it does NOT assume any of the
+% following derived claims:
+%
+%   Pure(D)
+%   not D(D(r))
+%   not D(not D(r))
+%   the Inv case split for operators of D's kind
+%   D(D(r))
+%
+% Vampire must derive those consequences from:
+%
+%   the required instances of logical purity and application closure,
+%   PP (the purity of the Pure classifier),
+%   the definition of fun',
+%   the definition of Goodman's T6 operator D,
+%   existence of a fun' proposition,
+%   weak L2,
+%   Inv,
+%   and the ordinary extensional Boolean/application laws of CEV+.
+%
+% The encoding is semantic rather than a reification of CEV+ derivability:
+% the formulas below state the relevant axiom-schema instances and the
+% standard interpretation clauses directly.  It is therefore a from-axioms
+% T6-Inv test, but not yet an independent implementation of the CEV+ proof
+% calculus.
+%------------------------------------------------------------------------------
+
+%---The two object-language types used by T6.
+tff(prop_type, type, prop: $tType).
+tff(op_type, type, op: $tType).
+
+%---Two higher types needed only to obtain Pure(D) from PP.
+tff(classifier_type, type, classifier: $tType).
+tff(builder_type, type, builder: $tType).
+
+%---Application and propositional truth.
+tff(app_type, type, app: (op * prop) > prop).
+tff(holds_type, type, holds: prop > $o).
+tff(neg_type, type, neg: prop > prop).
+
+%---Operator composition and the two logical unary operators.
+tff(compose_type, type, compose: (op * op) > op).
+tff(identity_type, type, identity: op).
+tff(negation_type, type, negation: op).
+
+%---Purity at the three types needed by the derivation.
+tff(pure_op_type, type, pure: op > $o).
+tff(pure_classifier_type, type, pure_classifier: classifier > $o).
+tff(pure_builder_type, type, pure_builder: builder > $o).
+
+%---The Pure classifier, the logical T6 builder, and its application.
+tff(pure_classifier_constant_type, type, pure_classifier_constant: classifier).
+tff(t6_builder_type, type, t6_builder: builder).
+tff(build_type, type, build: (builder * classifier) > op).
+
+%---Goodman's defined notions.
+tff(fun_prime_type, type, fun_prime: prop > $o).
+tff(reversible_type, type, reversible: op > $o).
+tff(group_member_type, type, group_member: op > $o).
+tff(same_kind_type, type, same_kind: (op * op) > $o).
+
+%---Goodman's T6 operator.
+tff(d_type, type, d: op).
+
+%==============================================================================
+% Ordinary CEV+ interpretation laws
+%==============================================================================
+
+% Identity, negation, and composition have their usual applications.
+tff(identity_application, axiom,
+    ! [P: prop] :
+      app(identity,P) = P).
+
+tff(negation_application, axiom,
+    ! [P: prop] :
+      app(negation,P) = neg(P)).
+
+tff(composition_application, axiom,
+    ! [X: op, Y: op, P: prop] :
+      app(compose(X,Y),P) = app(X,app(Y,P))).
+
+% Classical negation, both propositionally and as proposition identity.
+tff(negation_truth, axiom,
+    ! [P: prop] :
+      (holds(neg(P)) <=> ~ holds(P))).
+
+tff(double_negation_identity, axiom,
+    ! [P: prop] :
+      neg(neg(P)) = P).
+
+% Higher-type equality is extensional.
+tff(operator_extensionality, axiom,
+    ! [X: op, Y: op] :
+      ((! [P: prop] : app(X,P) = app(Y,P)) => X = Y)).
+
+%==============================================================================
+% The exact purity/application-closure instances used to obtain Pure(D)
+%==============================================================================
+
+% Purity schema: the closed logical T6 abstraction is pure.
+tff(t6_builder_is_logical_and_pure, axiom,
+    pure_builder(t6_builder)).
+
+% PP at the type of unary proposition operators.
+tff(pp_purity_of_pure, axiom,
+    pure_classifier(pure_classifier_constant)).
+
+% The required instance of application closure.
+tff(purity_application_closure, axiom,
+    ! [B: builder, C: classifier] :
+      ((pure_builder(B) & pure_classifier(C)) => pure(build(B,C)))).
+
+% Beta-contraction of the logical builder applied to Pure.
+tff(t6_builder_beta, axiom,
+    build(t6_builder,pure_classifier_constant) = d).
+
+% Negation is a closed logical operator.
+tff(logical_negation_is_pure, axiom,
+    pure(negation)).
+
+% Composition is a closed logical operation; this is its purity-schema plus
+% application-closure instance.
+tff(logical_composition_preserves_purity, axiom,
+    ! [X: op, Y: op] :
+      ((pure(X) & pure(Y)) => pure(compose(X,Y)))).
+
+%==============================================================================
+% Definitions occurring in T6
+%==============================================================================
+
+% fun'(p): evaluation at p is injective on pure unary operators.
+tff(fun_prime_definition, axiom,
+    ! [P: prop] :
+      (fun_prime(P)
+       <=>
+       ! [X: op, Y: op] :
+         ((pure(X)
+           & pure(Y)
+           & app(X,P) = app(Y,P))
+          => X = Y))).
+
+% A pure reversible operator, the group G, and sameness of kind.
+tff(reversible_definition, axiom,
+    ! [Z: op] :
+      (reversible(Z)
+       <=>
+       ? [W: op] :
+         (pure(W)
+          & compose(Z,W) = identity
+          & compose(W,Z) = identity))).
+
+tff(group_member_definition, axiom,
+    ! [Z: op] :
+      (group_member(Z) <=> (pure(Z) & reversible(Z)))).
+
+tff(same_kind_definition, axiom,
+    ! [X: op, Y: op] :
+      (same_kind(X,Y)
+       <=>
+       ? [Z: op] :
+         (group_member(Z) & X = compose(Y,Z)))).
+
+% Goodman's T6 operator:
+%
+%   D(p) iff every decomposition p = X(q), with X pure and fun'(q),
+%   makes X(p) false.
+tff(t6_d_definition, axiom,
+    ! [P: prop] :
+      (holds(app(d,P))
+       <=>
+       ! [X: op, Q: prop] :
+         ((pure(X)
+           & fun_prime(Q)
+           & P = app(X,Q))
+          => ~ holds(app(X,P))))).
+
+%==============================================================================
+% The remaining three nonlogical assumptions of the T6-Inv stock
+%==============================================================================
+
+% There is a fun' proposition.
+tff(exists_fun_prime, axiom,
+    ? [R: prop] : fun_prime(R)).
+
+% Weak L2.
+tff(weak_l2, axiom,
+    ! [X: op, Y: op, P: prop, Q: prop] :
+      ((pure(X)
+        & pure(Y)
+        & fun_prime(P)
+        & fun_prime(Q)
+        & app(X,P) = app(Y,Q))
+       => same_kind(X,Y))).
+
+% Inv: the pure reversible operators are exactly identity and negation.
+tff(inv, axiom,
+    ! [Z: op] :
+      (group_member(Z) <=> (Z = identity | Z = negation))).
+
+%==============================================================================
+% Refutation target
+%==============================================================================
+
+% The conjecture contributes no assumption.  Proving it requires Vampire to
+% show that the preceding axioms are inconsistent.
+tff(t6_inv_inconsistency, conjecture, $false).

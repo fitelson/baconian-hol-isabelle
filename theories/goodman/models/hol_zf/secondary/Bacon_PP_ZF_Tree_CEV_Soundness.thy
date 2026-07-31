@@ -1008,6 +1008,31 @@ proof -
     unfolding pp_t_valid_def using typed holds by blast
 qed
 
+lemma pp_t_H_IndividualExistence_valid:
+  "pp_t_valid \<Gamma> (Exists Ind (Eq Ind (Var 0) (Var 0)))"
+proof -
+  have typed:
+      "\<Gamma> \<turnstile> Exists Ind (Eq Ind (Var 0) (Var 0)) : Prop"
+    by (rule has_type.Exists, rule has_type.Eq; simp)
+  have holds:
+      "\<And>\<rho> w. pp_t_env_typed \<Gamma> \<rho> \<Longrightarrow>
+        pp_t_holds
+          (pp_t_eval C \<rho>
+            (Exists Ind (Eq Ind (Var 0) (Var 0)))) w"
+  proof -
+    fix \<rho> w
+    assume "pp_t_env_typed \<Gamma> \<rho>"
+    obtain x where x: "Elem x (pp_t_domain Ind)"
+      using pp_t_domain_nonempty by blast
+    show "pp_t_holds
+        (pp_t_eval C \<rho>
+          (Exists Ind (Eq Ind (Var 0) (Var 0)))) w"
+      using x by (simp; blast)
+  qed
+  show ?thesis
+    unfolding pp_t_valid_def using typed holds by blast
+qed
+
 theorem pp_t_H_sound:
   assumes "\<Gamma> \<turnstile>\<^sub>H A"
   shows "pp_t_valid \<Gamma> A"
@@ -1015,6 +1040,9 @@ theorem pp_t_H_sound:
 proof (induction rule: H_proves.induct)
   case (PC \<Gamma> A)
   then show ?case by (rule pp_t_prop_tautology_valid)
+next
+  case (IndividualExistence \<Gamma>)
+  show ?case by (rule pp_t_H_IndividualExistence_valid)
 next
   case (UI \<sigma> \<Gamma> A T)
   then show ?case by (rule pp_t_H_UI_valid)

@@ -1,0 +1,7 @@
+% Conditional Recombination-only monolithic comparison target.
+
+include('01_recombination_PP_stock.tff.in').
+include('03_exists_fun_prime_assumption.tff.in').
+
+tff(recombination_plus_fun_prime_implies_weak_L2,conjecture,
+    ! [W:world] : weak_L2(W)).

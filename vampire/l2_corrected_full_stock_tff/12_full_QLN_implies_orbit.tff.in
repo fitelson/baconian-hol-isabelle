@@ -1,0 +1,8 @@
+% Strong alternate full-stock hard target:
+% Does the corrected full-QLN + PP representation put all fun' propositions
+% in one G-orbit?
+
+include('02_full_QLN_PP_stock.tff.in').
+
+tff(full_QLN_implies_fun_prime_orbit,conjecture,
+    ! [W:world] : fun_prime_orbit(W)).

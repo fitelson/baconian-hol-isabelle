@@ -5,27 +5,33 @@ theory Audit_Goodman_Complete
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_T9
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_Heredity_Advertised
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_QSS_Recombination_Bridge
+    Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_Granularity_QLN
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M1
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M1_Complete
+    Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M1_Henkin
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M1_Fn60
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M2
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M3_Complete
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M4
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M5
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M5_Collision
+    Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M5_Existential_Invertibles
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M5_Orbit_Avoidance
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M6
     Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M7_Invariant_Reachability
     Higher_Order_Metaphysics_PP.Bacon_PP_Heredity_Semantics
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Bacon_10_1
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M1_Fn59
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M1_Fn60
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Rebuild
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_M7
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Model
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Goodman_L2_Child_Xor
-    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Tree_CEV_Soundness
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Bacon_10_1
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Bacon_QLN
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_M1_Fn59
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_M1_Fn60
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_M5_Rebuild
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_M5_Full_Rebuilt_Model
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Goodman_M7
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Repaired_Central_Stock
+    Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Tree_CEV_Soundness
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Exact_Completeness
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Exact_L2_Child_Variation
+    Goodman_CEVplus_Canonical.Bacon_PP_Fresh_Finite_Fragment
     Goodman_CEVplus_ZF_Bridge.Bacon_PP_Fresh_ZF_Fragment_Bridge
 begin
 
@@ -67,8 +73,18 @@ val targets = [
     @{thm pp_v_equal_classifier_root_iff}),
   ("zeroary-unary QLN package exact scope",
     @{thm pp_full_QLN_background_axioms_exact_scope}),
+  ("object-language unary Exhaustion instance",
+    @{thm CEV_axiom_unary_exhaustion_instance}),
+  ("object-language unary QLN equivalence instance",
+    @{thm CEV_axiom_unary_QLN_instance}),
+  ("full-QLN granularity iff truth uniformity",
+    @{thm CEV_full_QLN_PP_granularity_iff_truth_uniform}),
   ("proposition-valued Modalized Functionality schema",
     @{thm CEV_proves_proposition_valued_modalized_functionality_schema}),
+  ("Goodman consistency iff every finite fragment is consistent",
+    @{thm pp_recombination_axiom_consistency_iff_finite_fragments}),
+  ("negative answer iff a finite inconsistent core exists",
+    @{thm pp_recombination_axiom_negative_answer_iff_finite_inconsistent_core}),
 
   (* Object-language suite. *)
   ("T1 pure propositions", @{thm CEV_Goodman_T1_pure_propositions_extreme}),
@@ -136,17 +152,33 @@ val targets = [
     @{thm CEV_Goodman_T6_WI_repaired_central_stock}),
   ("repaired central T6 RS",
     @{thm CEV_Goodman_T6_RS_repaired_central_stock}),
+  ("repaired central stock forces L2 or TU failure",
+    @{thm henkin_action_model.repaired_central_stock_forces_L2_or_TU_failure}),
+  ("repaired central stock has explicit L2 or TU failure",
+    @{thm henkin_action_model.repaired_central_stock_has_explicit_L2_or_TU_failure}),
 
   (* Model-theoretic M1--M7 suite. *)
   ("M1 bottom purity", @{thm pp_M1_bottom_purity_is_noncontingency}),
   ("M1 footnote-59 liar purity", @{thm pp_M1_fn59_liar_pure}),
   ("M1 footnote-59 contradiction",
     @{thm pp_M1_fn59_unique_fun_diagonal_contradiction_sem}),
+  ("M1 arbitrary-Henkin exact denotation",
+    @{thm goodman_M1_henkin_model.M1_fn59_liar_denotation}),
+  ("M1 arbitrary-Henkin QSS denotation",
+    @{thm goodman_M1_henkin_model.M1_fn59_QSS_denotation}),
+  ("M1 arbitrary-Henkin unique-fundamentality denotation",
+    @{thm goodman_M1_henkin_model.M1_unique_fundamental_denotation}),
+  ("M1 arbitrary-Henkin diagonal contradiction",
+    @{thm goodman_M1_henkin_model.M1_fn59_diagonal_contradiction}),
+  ("M1 arbitrary-Henkin PP failure",
+    @{thm goodman_M1_henkin_model.M1_fn59_PP_failure}),
+  ("M1 arbitrary-Henkin full-QLN plus Purity-of-Fun exclusion",
+    @{thm goodman_M1_henkin_model.no_full_QLN_model_with_purity_of_fun}),
   ("M1 footnote-59 exact denotation",
     @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_liar_denotation}),
   ("M1 QSS exact denotation",
     @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_QSS_denotation}),
-  ("M1 footnote-59 PER contradiction",
+  ("M1 footnote-59 secondary tree-model contradiction",
     @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_diagonal_contradiction}),
   ("M1 footnote-59 PP failure bridge",
     @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_PP_failure}),
@@ -177,10 +209,12 @@ val targets = [
     @{thm pp_M3_countable_boolean_stock_has_fun_prime}),
   ("M3 product meagerness",
     @{thm pp_M3_fun_prime_class_is_product_meager}),
-  ("M4 hereditary preimage", @{thm pp_M4_fun_prime_preimage}),
-  ("M4 outside fundamental orbit",
+  ("M4 conditional-stock hereditary preimage",
+    @{thm pp_M4_fun_prime_preimage}),
+  ("M4 conditional-stock outside fundamental orbit",
     @{thm pp_M4_explicit_fun_prime_outside_fundamental_orbit}),
-  ("M4 semantic heredity", @{thm pp_stock_fun_prime_hereditary}),
+  ("M4 conditional-stock semantic heredity",
+    @{thm pp_stock_fun_prime_hereditary}),
   ("M5 exotic involution", @{thm pp_M5_exotic_involution}),
   ("M5 not truth-uniform", @{thm pp_M5_exotic_not_truth_uniform}),
   ("M5 not biconditional", @{thm pp_M5_exotic_not_biconditional}),
@@ -202,9 +236,18 @@ val targets = [
     @{thm pp_M5_pre_rebuild_QSS_obstruction}),
   ("M5 collision method",
     @{thm CEV_Goodman_M5_collision}),
-  ("Bacon Theorem 10.1", @{thm pp_t_Bacon_10_1}),
-  ("Bacon Theorem 10.1 Ind restriction",
-    @{thm pp_t_Bacon_10_1_Ind_requires_constant_family}),
+  ("M5 reversible operators are injective",
+    @{thm CEV_M5_reversible_injective}),
+  ("M5 displayed collision operator is not reversible",
+    @{thm CEV_Goodman_M5_collision_operator_not_reversible}),
+  ("Bacon Theorem 10.1 at the appendix-developed scope",
+    @{thm pp_e_Bacon_10_1}),
+  ("Bacon zeroary QLN verification",
+    @{thm pp_t_generic_zeroary_QLN_gvalid}),
+  ("Bacon unary QLN verification",
+    @{thm pp_t_generic_unary_QLN_gvalid}),
+  ("Bacon QLN verification for unique fundamental proposition",
+    @{thm pp_t_Bacon_QLN_unique_fundamental_proposition}),
   ("M5 rebuilt model with fixed operator",
     @{thm pp_t_M5_rebuild_with_fixed_unary_operator}),
   ("M5 rebuilt exotic involution",
@@ -233,12 +276,13 @@ val targets = [
     @{thm pp_t_M5_full_rebuilt_exotic_certificate}),
   ("M5 full rebuilt model",
     @{thm pp_t_M5_full_rebuilt_model}),
-  ("M6 substitution separation",
+  ("M6 conditional-stock substitution separation",
     @{thm pp_M6_fun_prime_separates_distinct_substitutions}),
-  ("M6 single-coordinate failure",
+  ("M6 conditional-stock single-coordinate failure",
     @{thm pp_M6_single_proposition_independence_fails}),
-  ("M6 strict fun-prime pair", @{thm pp_M6_fun_prime_strict_pair}),
-  ("M6 joint assignment obstruction",
+  ("M6 conditional-stock strict fun-prime pair",
+    @{thm pp_M6_fun_prime_strict_pair}),
+  ("M6 conditional-stock joint assignment obstruction",
     @{thm pp_M6_joint_assignment_blocked_by_inclusion}),
   ("M7 diagonal outside range", @{thm pp_t_M7_diagonal_outside_range}),
   ("M7 fundamental completeness failure",
@@ -248,23 +292,34 @@ val targets = [
   ("M7 universal invariant reachability iff orbit-map injection",
     @{thm pp_M7_all_invariant_reachable_iff_orbit_map_injective}),
 
-  (* Exact-model L2 calibration and final conditional model theorem. *)
-  ("exact-stock fun-prime existence", @{thm pp_b_exact_fun_prime_exists}),
-  ("exact-stock same-kind equivalence", @{thm pp_b_exact_same_kind_equivp}),
-  ("exact-stock box/diamond collision exclusion",
-    @{thm pp_b_exact_box_diamond_no_fun_prime_collision}),
-  ("exact-stock base collision classification",
-    @{thm pp_b_exact_base_collision_classification}),
-  ("exact-stock L2 on five-operator base", @{thm pp_b_exact_L2_on_base}),
-  ("exact-stock L2 counterexample criterion",
-    @{thm pp_b_exact_not_L2_iff_counterexample}),
-  ("strong L2 entails L2 in appendix model",
-    @{thm pp_b_exact_strong_L2_imp_L2}),
-  ("closed logical operator refutes strong L2",
-    @{thm pp_b_child_xor_refutes_exact_strong_L2}),
-  ("CEV base soundness", @{thm pp_t_constants.pp_t_base_sound}),
-  ("CEV vector-Equivalence soundness",
-    @{thm pp_t_constants.pp_t_zeta_sound}),
+  (* Exact-model L2 calibration on Bacon's natural-word action. *)
+  ("exact-stock fun-prime existence", @{thm pp_e_exact_fun_prime_exists}),
+  ("exact child-variation term belongs to the closed logical stock",
+    @{thm pp_e_child_variation_in_exact_stock}),
+  ("exact child-variation operator is surjective",
+    @{thm pp_e_child_variation_surjective}),
+  ("exact child-variation operator is noninjective",
+    @{thm pp_e_child_variation_not_injective}),
+  ("exact child-variation operator is right-cancellative",
+    @{thm pp_e_exact_child_variation_right_cancellative}),
+  ("exact child-variation operator is nonreversible",
+    @{thm pp_e_child_variation_not_exact_reversible}),
+  ("closed logical operator refutes exact L2",
+    @{thm pp_e_child_variation_refutes_exact_L2}),
+  ("closed logical operator refutes exact strong L2",
+    @{thm pp_e_child_variation_refutes_exact_strong_L2}),
+  ("exact individual Existence validity",
+    @{thm pp_e_constants.pp_e_H_IndividualExistence_valid}),
+  ("exact H soundness", @{thm pp_e_constants.pp_e_H_sound}),
+  ("exact CEV soundness", @{thm pp_e_constants.pp_e_CEV_valid}),
+  ("exact CEV base global soundness",
+    @{thm pp_e_constants.pp_e_base_sound}),
+  ("exact CEV vector-Equivalence soundness",
+    @{thm pp_e_constants.pp_e_zeta_sound}),
+  ("exact Bacon consistency representation",
+    @{thm pp_e_Bacon_consistency_representation}),
+  ("exact Bacon semantic frame-theory representation",
+    @{thm pp_e_Bacon_exact_completeness}),
   ("fixed point answers Goodman",
     @{thm pp_t_cone_natural_enumerator.pp_t_term_basis_fixed_point_answers_Goodman}),
 

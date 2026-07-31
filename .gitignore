@@ -14,6 +14,7 @@ graphify-out/
 isabelle-kg/
 tmp/
 finite_core_search/runs/
+pure_diagonal_search/runs/
 finite_core_search/c_engine/finite_core_size4
 finite_core_search/c_engine/finite_core_context1
 __pycache__/

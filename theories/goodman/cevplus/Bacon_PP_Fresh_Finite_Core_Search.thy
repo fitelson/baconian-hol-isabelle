@@ -256,6 +256,180 @@ lemma finite_core_modalized_functionality_in_profile:
   using assms finite_core_modalized_functionality_schemaI[of \<sigma> \<tau>]
   by (simp add: fresh_goodman_axioms_def fresh_goodman_background_axioms_def)
 
+subsection \<open>Purity of enumerated diagonal operators\<close>
+
+lemma finite_core_application_closed:
+  assumes closure: "pp_application_closure \<sigma> \<tau> \<in> T"
+    and F_type: "\<Gamma> \<turnstile> F : \<sigma> \<rightarrow>\<^sub>o \<tau>"
+    and X_type: "\<Gamma> \<turnstile> X : \<sigma>"
+    and pure_F:
+      "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+        pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) F"
+    and pure_X:
+      "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ pp_pure \<sigma> X"
+  shows "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ pp_pure \<tau> (App F X)"
+proof -
+  have closure_type:
+    "\<Gamma> \<turnstile> pp_application_closure \<sigma> \<tau> : Prop"
+    by (rule infer_type_sound)
+      (simp add: pp_application_closure_def pp_pure_def pp_Pure_def
+        lookup_def)
+  have d_closure:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+ pp_application_closure \<sigma> \<tau>"
+    using closure closure_type by (rule CEV_axiom_proves.Axiom)
+  have d_outer_raw:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      subst0 F
+        (Forall \<sigma>
+          (Imp
+            (Conj
+              (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (Var 1))
+              (pp_pure \<sigma> (Var 0)))
+            (pp_pure \<tau> (App (Var 1) (Var 0)))))"
+  proof (rule CEV_axiom_UI_typed)
+    show "\<Gamma> \<turnstile>
+        Forall (\<sigma> \<rightarrow>\<^sub>o \<tau>)
+          (Forall \<sigma>
+            (Imp
+              (Conj
+                (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (Var 1))
+                (pp_pure \<sigma> (Var 0)))
+              (pp_pure \<tau> (App (Var 1) (Var 0))))) : Prop"
+      using closure_type
+      unfolding pp_application_closure_def .
+  next
+    show "\<Gamma> \<turnstile> F : \<sigma> \<rightarrow>\<^sub>o \<tau>"
+      by (rule F_type)
+  next
+    show "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+        Forall (\<sigma> \<rightarrow>\<^sub>o \<tau>)
+          (Forall \<sigma>
+            (Imp
+              (Conj
+                (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (Var 1))
+                (pp_pure \<sigma> (Var 0)))
+              (pp_pure \<tau> (App (Var 1) (Var 0)))))"
+      using d_closure
+      unfolding pp_application_closure_def .
+  qed
+  have d_outer:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      Forall \<sigma>
+        (Imp
+          (Conj
+            (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (shift F))
+            (pp_pure \<sigma> (Var 0)))
+          (pp_pure \<tau> (App (shift F) (Var 0))))"
+    using d_outer_raw
+    by (simp add: pp_pure_def pp_Pure_def subst0_def shift_def)
+  have outer_type:
+    "\<Gamma> \<turnstile>
+      Forall \<sigma>
+        (Imp
+          (Conj
+            (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (shift F))
+            (pp_pure \<sigma> (Var 0)))
+          (pp_pure \<tau> (App (shift F) (Var 0)))) : Prop"
+    using CEV_axiom_proves_formula[OF d_outer] .
+  have d_inner_raw:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      subst0 X
+        (Imp
+          (Conj
+            (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) (shift F))
+            (pp_pure \<sigma> (Var 0)))
+          (pp_pure \<tau> (App (shift F) (Var 0))))"
+    using outer_type X_type d_outer by (rule CEV_axiom_UI_typed)
+  have d_inner:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      Imp
+        (Conj
+          (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) F)
+          (pp_pure \<sigma> X))
+        (pp_pure \<tau> (App F X))"
+  proof -
+    have subst_shift:
+      "subst (case_nat X Var) (rename Suc F) = F"
+      using subst0_shift[of X F]
+      unfolding subst0_def shift_def .
+    show ?thesis
+      using d_inner_raw
+      by (simp add: pp_pure_def pp_Pure_def subst0_def shift_def
+          subst_shift)
+  qed
+  have d_pair:
+    "\<Gamma> ; T \<turnstile>\<^sub>CEV\<^sup>+
+      Conj
+        (pp_pure (\<sigma> \<rightarrow>\<^sub>o \<tau>) F)
+        (pp_pure \<sigma> X)"
+    using pure_F pure_X by (rule CEV_axiom_conj_intro)
+  show ?thesis
+    using d_pair d_inner by (rule CEV_axiom_proves.MP)
+qed
+
+lemma finite_core_pure_logical_builder_application:
+  assumes builder_type:
+      "infer_type [] B =
+        Some ((((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop)
+          \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)))"
+    and logical: "consts_of B = {}"
+  shows
+    "[] ; finite_core_profile_axioms profile
+      \<turnstile>\<^sub>CEV\<^sup>+
+        pp_pure (Prop \<rightarrow>\<^sub>o Prop)
+          (App B (pp_Pure (Prop \<rightarrow>\<^sub>o Prop)))"
+proof -
+  have B_type:
+    "[] \<turnstile> B :
+      ((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop)
+        \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)"
+    using builder_type by (rule infer_type_sound)
+  have B_purity_member:
+    "pp_pure
+        (((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop)
+          \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)) B
+      \<in> finite_core_profile_axioms profile"
+    using finite_core_purity_schemaI[OF builder_type logical]
+    by (rule finite_core_purity_in_profile)
+  have B_pure:
+    "[] ; finite_core_profile_axioms profile
+      \<turnstile>\<^sub>CEV\<^sup>+
+        pp_pure
+          (((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop)
+            \<rightarrow>\<^sub>o (Prop \<rightarrow>\<^sub>o Prop)) B"
+    using B_purity_member typed_pp_pure[OF B_type]
+    by (rule CEV_axiom_proves.Axiom)
+  have classifier_pure:
+    "[] ; finite_core_profile_axioms profile
+      \<turnstile>\<^sub>CEV\<^sup>+
+        pp_pure
+          ((Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop)
+          (pp_Pure (Prop \<rightarrow>\<^sub>o Prop))"
+  proof -
+    have target_type: "[] \<turnstile> pp_target_PP : Prop"
+      by (rule infer_type_sound)
+        (simp add: pp_target_PP_def pp_purity_of_pure_def pp_pure_def
+          pp_Pure_def lookup_def)
+    have target:
+      "[] ; finite_core_profile_axioms profile
+        \<turnstile>\<^sub>CEV\<^sup>+ pp_target_PP"
+      using finite_core_target_PP_in_profile target_type
+      by (rule CEV_axiom_proves.Axiom)
+    show ?thesis
+      using target
+      by (simp add: pp_target_PP_def pp_purity_of_pure_def)
+  qed
+  have classifier_type:
+    "[] \<turnstile> pp_Pure (Prop \<rightarrow>\<^sub>o Prop) :
+      (Prop \<rightarrow>\<^sub>o Prop) \<rightarrow>\<^sub>o Prop"
+    using typed_pp_Pure[of "[]" "Prop \<rightarrow>\<^sub>o Prop"]
+    by simp
+  show ?thesis
+    using finite_core_application_closure_in_profile
+      B_type classifier_type B_pure classifier_pure
+    by (rule finite_core_application_closed)
+qed
+
 subsection \<open>Certification boundary\<close>
 
 definition finite_core_certified ::

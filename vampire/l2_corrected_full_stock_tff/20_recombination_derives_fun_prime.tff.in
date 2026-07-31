@@ -1,0 +1,7 @@
+% Open bridge gate for the exact Recombination-only + PP representation.
+% No fun' witness is assumed.
+
+include('01_recombination_PP_stock.tff.in').
+
+tff(recombination_derives_exists_fun_prime,conjecture,
+    ! [W:world] : ? [P:prop] : fun_prime(W,P)).

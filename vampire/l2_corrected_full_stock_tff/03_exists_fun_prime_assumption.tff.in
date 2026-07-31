@@ -1,0 +1,7 @@
+% Explicit auxiliary premise for the Recombination-only conditional targets.
+%
+% This file is intentionally separate.  The Recombination-only stock does
+% not currently derive existence of a fun' proposition in Isabelle.
+
+tff(exists_fun_prime,axiom,
+    ! [W:world] : ? [P:prop] : fun_prime(W,P)).

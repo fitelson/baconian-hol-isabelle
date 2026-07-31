@@ -955,6 +955,28 @@ proof (induction rule: H_proves.induct)
   then show ?case
     by (rule prop_tautology_valid)
 next
+  case (IndividualExistence \<Gamma>)
+  show ?case
+  proof (unfold valid_in_context_def, intro conjI)
+    show "\<Gamma> \<turnstile> Exists Ind (Eq Ind (Var 0) (Var 0)) : Prop"
+      by (rule has_type.Exists, rule has_type.Eq; simp)
+    show "\<forall>\<rho>. env_typed \<Gamma> \<rho> \<longrightarrow>
+        holds (eval \<rho> (Exists Ind (Eq Ind (Var 0) (Var 0))))"
+    proof (intro allI impI)
+      fix \<rho>
+      assume "env_typed \<Gamma> \<rho>"
+      have witness: "const_den ''existence-witness'' Ind \<in> D Ind"
+        by (rule const_den_type)
+      have reflexive:
+          "eq_den Ind (const_den ''existence-witness'' Ind)
+            (const_den ''existence-witness'' Ind)"
+        by (rule eq_den_refl[OF witness])
+      show "holds (eval \<rho>
+          (Exists Ind (Eq Ind (Var 0) (Var 0))))"
+        using witness reflexive by (simp; blast)
+    qed
+  qed
+next
   case (UI \<sigma> \<Gamma> A T)
   then show ?case
     by (rule H_UI_valid)
