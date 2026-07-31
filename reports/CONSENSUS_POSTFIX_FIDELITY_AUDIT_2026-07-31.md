@@ -45,13 +45,9 @@ repairs from theorem statements and proofs rather than trusting this summary.
 
 Materials and required checks:
 
-- Goodman's original notes: `../PP_project_notes copy.pdf`, with extracted
-  text in `../tmp/pdfs/PP_project_notes.txt`.
-- Bacon and Dorr: `../Bacon_Dorr_Classicism.pdf`, with extracted text in
-  `../tmp/pdfs/bacon_dorr_classicism.txt`.
-- Bacon's appendix/model paper: `../tmp/pdfs/Bacon_Logical_Combinatorialism.pdf`,
-  with extracted text in
-  `../tmp/pdfs/Bacon_Logical_Combinatorialism_full_layout.txt`.
+- [Goodman's original notes](../sources/pdfs/Goodman_PP_Project_Notes.pdf).
+- [Bacon and Dorr, *Classicism*](../sources/pdfs/Bacon_Dorr_Classicism.pdf).
+- [Bacon, *Logical Combinatorialism*](../sources/pdfs/Bacon_Logical_Combinatorialism.pdf).
 - Inspect the actual Isabelle sources in `theories/base/`,
   `theories/classicism/`, `theories/goodman/core/`,
   `theories/goodman/notes/`,
@@ -486,7 +482,7 @@ Further confirmations:
 - `./check_isabelle.sh` completed successfully with `-j 1`; the 158-target audit actually ran and passed.
 - The relevant rendered report pages are visually clean, and the compiled PDF contains the same scope language as the `.tex`.
 
-Source materials checked: :codex-file-citation{path="/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/PP_project_notes copy.pdf" purpose="source"} :codex-file-citation{path="/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Bacon_Dorr_Classicism.pdf" purpose="source"} :codex-file-citation{path="/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/tmp/pdfs/Bacon_Logical_Combinatorialism.pdf" purpose="source"} :codex-file-citation{path="/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf" purpose="source"}
+Source materials checked: [Goodman's notes](../sources/pdfs/Goodman_PP_Project_Notes.pdf), [Bacon and Dorr's *Classicism*](../sources/pdfs/Bacon_Dorr_Classicism.pdf), [Bacon's *Logical Combinatorialism*](../sources/pdfs/Bacon_Logical_Combinatorialism.pdf), and the [Goodman verification report](GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.pdf).
 
 | Component | Refined verdict |
 |---|---|
@@ -586,17 +582,17 @@ I accept Claude’s retargeted F1′. The formal development passes; the report 
 
 Bacon’s structure is decisive:
 
-- \(A(M)\) denotes the model determined by \(M\) in the \(t\)-fragment, namely all types built solely from \(t\) ([source text](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/tmp/pdfs/Bacon_Logical_Combinatorialism_full_layout.txt:2549>)).
-- Section 10.1 remains in that fragment and explicitly defers the extension involving \(e\) ([source text](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/tmp/pdfs/Bacon_Logical_Combinatorialism_full_layout.txt:2633>)).
-- Theorem 10.1 itself concerns arbitrary \(\Sigma\)-models over \(A(M)\). The propositional-letter construction is only an illustration; the theorem generalizes it to arbitrary signatures containing higher, non-\(t\) types within the \(t\)-generated hierarchy ([source text](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/tmp/pdfs/Bacon_Logical_Combinatorialism_full_layout.txt:2716>); original source: :codex-file-citation{path="/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/tmp/pdfs/Bacon_Logical_Combinatorialism.pdf" purpose="source"}).
+- \(A(M)\) denotes the model determined by \(M\) in the \(t\)-fragment, namely all types built solely from \(t\) ([*Logical Combinatorialism*, PDF p. 40](../sources/pdfs/Bacon_Logical_Combinatorialism.pdf)).
+- Section 10.1 remains in that fragment and explicitly defers the extension involving \(e\) ([*Logical Combinatorialism*, PDF p. 41](../sources/pdfs/Bacon_Logical_Combinatorialism.pdf)).
+- Theorem 10.1 itself concerns arbitrary \(\Sigma\)-models over \(A(M)\). The propositional-letter construction is only an illustration; the theorem generalizes it to arbitrary signatures containing higher, non-\(t\) types within the \(t\)-generated hierarchy ([*Logical Combinatorialism*, PDF p. 43](../sources/pdfs/Bacon_Logical_Combinatorialism.pdf)).
 
-Isabelle proves precisely that scope. `pp_e_propositional_type` defines the whole \(t\)-fragment, while `pp_e_Bacon_10_1` quantifies over every typed constant and proves the action equation for every typed \(e\)-free term ([Bacon_PP_ZF_Exact_10_1.thy](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/theories/goodman/models/hol_zf/canonical/Bacon_PP_ZF_Exact_10_1.thy:838>)).
+Isabelle proves precisely that scope. `pp_e_propositional_type` defines the whole \(t\)-fragment, while `pp_e_Bacon_10_1` quantifies over every typed constant and proves the action equation for every typed \(e\)-free term ([Bacon_PP_ZF_Exact_10_1.thy](../theories/goodman/models/hol_zf/canonical/Bacon_PP_ZF_Exact_10_1.thy#L838)).
 
 One correction to Claude’s reasoning: Isabelle’s premise is not strictly weaker than Bacon’s family-of-models premise. Over the fixed carriers, a \(\Sigma\)-model contributes exactly a well-typed assignment to its nonlogical constants. Isabelle totalizes that assignment over typed string constants; unused constants can be restricted away, and missing ones can be filled with domain defaults. Likewise, the total output at `Ind` is bookkeeping, not an \(e\)-fragment gluing result: the action and term conclusions remain explicitly \(t\)-fragment restricted.
 
 Low-severity finding:
 
-- **Locations:** [report lines 212–214](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex:212>), [report lines 691–698](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex:691>), and [matrix lines 43 and 97](</Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md:43>).
+- **Locations:** [report lines 212–214](GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex#L212), [report lines 691–698](GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex#L691), and [matrix lines 43 and 97](GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md#L43).
 - **Error:** They place “arbitrary signature” outside the verified scope and describe Isabelle as proving only a narrower construction.
 - **Smallest repair:** State that Isabelle proves Bacon’s arbitrary-signature Theorem 10.1 throughout the \(t\)-fragment, supplying the branch-gluing proof Bacon omits. State separately that signatures involving \(e\)-containing types remain outside scope and are explicitly deferred by Bacon.
 

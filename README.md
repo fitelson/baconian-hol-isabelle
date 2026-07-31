@@ -67,7 +67,9 @@ The project contains no admitted Isabelle proofs.
   directory and session map;
 - [`docs/ISABELLE_TERMINOLOGY.md`](docs/ISABELLE_TERMINOLOGY.md):
   Bacon--Dorr--Goodman terminology;
-- [`STATUS.md`](STATUS.md): concise current theorem status.
+- [`STATUS.md`](STATUS.md): concise current theorem status; and
+- [`sources/README.md`](sources/README.md): primary Bacon, Dorr, and Goodman
+  source PDFs used in the fidelity audits.
 
 For theory, theorem, import, and dependency queries, the repository includes
 tools for generating and querying an Isabelle-native knowledge graph. The
@@ -75,3 +77,10 @@ generated `isabelle-kg/` directory is local and intentionally excluded from
 Git because it is large. See the [knowledge-graph
 guide](tools/isabelle_kg/README.md) for prerequisites, construction, and query
 examples.
+
+## License
+
+The Isabelle formalization and repository software are licensed under the
+[BSD 2-Clause License](LICENSE). The source PDFs in [`sources/pdfs/`](sources/pdfs/)
+remain under the copyright of their respective authors and publishers and are
+not licensed by the repository's BSD license.

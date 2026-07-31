@@ -54,6 +54,9 @@ For precise statements and qualifications, see:
 - [final post-repair source-fidelity
   audit](../../reports/CONSENSUS_POSTFIX_FIDELITY_AUDIT_2026-07-31.md).
 
+The primary Goodman, Bacon--Dorr, and Bacon source documents used in that
+audit are indexed in [`../../sources/README.md`](../../sources/README.md).
+
 Run the complete maintained verification serially from the repository root:
 
 ```sh

@@ -10,7 +10,7 @@ Run every file from this directory so that Vampire resolves the local
 includes:
 
 ```sh
-cd "/Users/fitelson/Library/CloudStorage/Dropbox/non-MUSIC/todo/Higher_Order_Stuff/Higher_Order_Metaphysics/vampire/l2_corrected_full_stock_tff"
+cd vampire/l2_corrected_full_stock_tff
 ```
 
 ## Corrections relative to the old finite probe
