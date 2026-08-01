@@ -1,0 +1,10 @@
+*.*~
+AOT.ExportInfo/
+.DS_Store
+output/
+tmp/
+AOT-lean/
+.claude/
+.github/
+local-experiments/
+principia.pdf

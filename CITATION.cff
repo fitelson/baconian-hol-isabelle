@@ -5,6 +5,8 @@ type: software
 authors:
   - family-names: Fitelson
     given-names: Branden
+  - family-names: Kirchner
+    given-names: Daniel
 version: 0.1.0
 date-released: 2026-07-15
 license: BSD-2-Clause
@@ -12,5 +14,6 @@ keywords:
   - Isabelle/HOL
   - higher-order logic
   - higher-order metaphysics
+  - abstract object theory
   - modal logic
   - names

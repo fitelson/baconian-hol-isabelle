@@ -1,7 +1,7 @@
 # Repository structure
 
-The Isabelle development has three principal layers.  The directory structure
-and session-parent relation follow the mathematical dependence:
+The Isabelle development has two independent theory families. The directory
+structure and session-parent relations follow their mathematical dependence:
 
 ```text
 Bacon_Base
@@ -13,6 +13,8 @@ Bacon_Base
         │   │       └── Higher_Order_Metaphysics_PP_ZF_Secondary
         │   └── Higher_Order_Metaphysics_PP_Models
         └── Goodman_CEVplus_Canonical
+
+AOT
 ```
 
 The older HOL-ZF fragments and bridge sessions continue below
@@ -54,7 +56,31 @@ The directory `theories/classicism/prefix/` retains the optional cached-prefix
 session used by older incremental workflows.  It is not needed by the normal
 central build.
 
-## 3. Goodman's CEV+
+## 3. Zalta's Abstract Object Theory
+
+Session: `AOT`
+
+Directory: `theories/zalta/`
+
+This is an independent shallow semantic embedding of Edward Zalta's Abstract
+Object Theory, based on *Principia Logico-Metaphysica*. Daniel Kirchner
+developed the Isabelle/HOL formalization and its custom theorem-proving
+environment. It formalizes Zalta's theory and PLM developments to which
+Kirchner and Uri Nodelman made critical theoretical contributions. It extends
+`HOL-Cardinals`, not `Bacon_Base`, and supplies its own object-language syntax,
+semantic model, axiom commands, and proof infrastructure. Its developments
+cover logical objects, restricted variables, possible worlds, natural
+numbers, possibilities, hype states, and truthmaker semantics. There are no
+imports between `AOT` and the Bacon--Dorr--Goodman sessions.
+
+The directory README records upstream provenance and distinguishes upstream
+material from local extensions.
+
+The AOT knowledge graph is generated separately at
+`isabelle-kg/zalta/graph.json`. It contains no nodes from the
+Bacon--Dorr--Goodman family.
+
+## 4. Goodman's CEV+
 
 Session: `Goodman_CEVplus`
 
@@ -217,11 +243,12 @@ remains a distinct obligation.
 
 ## Session declarations
 
-All active project sessions are declared in the root `ROOT` file.  Separate
-`ROOT` files remain only for dated audit sessions, generated finite-core
-replays, scratch material, and the optional Classicism prefix.  Consequently
-the entire maintained development, including the Goodman claim audit, is
-checked with one command:
+The Bacon--Dorr--Goodman sessions are declared in the root `ROOT` file. The
+independent AOT session has its own `theories/zalta/ROOT`; the maintained build
+discovers both. Other separate `ROOT` files remain only for dated audit
+sessions, generated finite-core replays, scratch material, and the optional
+Classicism prefix. Consequently the entire maintained development, including
+AOT and the Goodman claim audit, is checked with one command:
 
 ```sh
 ./check_isabelle.sh
@@ -243,6 +270,9 @@ The mathematical status is not inferred from directory names.  Use:
 The consistency question remains open.  In particular, a verified finite or
 fragment model is not automatically a model of Goodman's unrestricted
 logical-purity schema.
+
+The Bacon--Dorr--Goodman knowledge graph is generated separately at
+`isabelle-kg/bacon/graph.json`. It contains no AOT nodes.
 
 ## Search tools
 

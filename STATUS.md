@@ -1,6 +1,6 @@
 # Project Status
 
-Current as of 2026-07-31.
+Current as of 2026-08-01.
 
 ## Bacon--Dorr background theories
 
@@ -12,9 +12,26 @@ The maintained background consists of two Isabelle sessions:
   derivations, vector Equivalence, semantics, soundness, and canonical and
   Henkin completeness results.
 
-These are the principal theories in the repository. Their source directories
-are [`theories/base/`](theories/base/) and
+These form the repository's first theory family. Their source directories are
+[`theories/base/`](theories/base/) and
 [`theories/classicism/`](theories/classicism/).
+
+## Zalta's Abstract Object Theory
+
+The independent `AOT` session in [`theories/zalta/`](theories/zalta/)
+formalizes Edward Zalta's Abstract Object Theory as presented in *Principia
+Logico-Metaphysica*. Daniel Kirchner developed this Isabelle/HOL
+formalization and its custom theorem-proving environment. It formalizes
+Zalta's theory and PLM developments to which Kirchner and Uri Nodelman made
+critical theoretical contributions. It is a standalone shallow semantic
+embedding over `HOL-Cardinals`, with its own syntax, axioms, proof commands,
+and mathematical developments. It has no import path to or from the
+Bacon--Dorr--Goodman sessions.
+
+The imported source is based on `ekpyron/AOT` `develop` commit
+`9a165b4d2e1dd9da7276248ebdcaf671dcdf2bdd`, together with separately
+identified local extensions and repairs. The maintained `AOT` session builds
+under Isabelle2025-2.
 
 ## Goodman project
 

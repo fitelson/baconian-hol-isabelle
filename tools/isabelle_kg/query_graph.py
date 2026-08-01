@@ -156,8 +156,14 @@ def main() -> None:
     parser.add_argument(
         "--graph",
         type=Path,
-        default=Path("isabelle-kg/graph.json"),
-        help="graph JSON path",
+        default=None,
+        help="graph JSON path; overrides --family",
+    )
+    parser.add_argument(
+        "--family",
+        choices=("bacon", "zalta"),
+        default="bacon",
+        help="theory-family graph to query (default: bacon)",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -187,7 +193,8 @@ def main() -> None:
     path.add_argument("--directed", action="store_true")
 
     args = parser.parse_args()
-    graph, nodes, outgoing, incoming = load_graph(args.graph)
+    graph_path = args.graph or Path("isabelle-kg") / args.family / "graph.json"
+    graph, nodes, outgoing, incoming = load_graph(graph_path)
 
     if args.command == "stats":
         command_stats(graph)

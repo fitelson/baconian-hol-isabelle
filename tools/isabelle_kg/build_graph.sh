@@ -3,7 +3,7 @@ set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)
-OUTPUT_DIR=${1:-"$PROJECT_ROOT/isabelle-kg"}
+OUTPUT_DIR=${1:-"$PROJECT_ROOT/isabelle-kg/bacon"}
 CLASSES_DIR="$OUTPUT_DIR/classes"
 GRAPH_JSON="$OUTPUT_DIR/graph.json"
 GRAPHML="$OUTPUT_DIR/graph.graphml"
@@ -12,39 +12,44 @@ ISABELLE_SCALA_JAR=$(isabelle getenv -b ISABELLE_SCALA_JAR)
 ISABELLE_CLASSPATH=$(isabelle getenv -b ISABELLE_CLASSPATH)
 TOOL_CLASSPATH="$ISABELLE_SCALA_JAR:$ISABELLE_CLASSPATH:$CLASSES_DIR"
 
+BACON_SESSIONS="
+  Bacon_Base
+  Bacon_Classicism
+  Goodman_CEVplus
+  Higher_Order_Metaphysics_PP
+  Higher_Order_Metaphysics_PP_Frontier
+  Higher_Order_Metaphysics_PP_Models
+  Higher_Order_Metaphysics_PP_ZF_Model
+  Higher_Order_Metaphysics_PP_ZF_Secondary
+  Higher_Order_Metaphysics_PP_ZF_Truth_Functions
+  Higher_Order_Metaphysics_PP_ZF_Necessity
+  Higher_Order_Metaphysics_PP_ZF_Possibility
+  Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified
+  Higher_Order_Metaphysics_PP_ZF_Fun_Prime
+  Higher_Order_Metaphysics_PP_ZF_T6_Diagonal
+  Goodman_CEVplus_Canonical
+  Goodman_CEVplus_ZF_Bridge
+  Goodman_CEVplus_Modal_Quantified_Bridge
+  Goodman_CEVplus_Finite_Fragment_Model_Program
+  Goodman_CEVplus_Finite_First_Cyclic_Model
+  Higher_Order_Metaphysics_PP_ZF_Dual_Pair_Grafting
+  Goodman_Modal_Quantified_Audit_2026_07_28
+"
+
 mkdir -p "$CLASSES_DIR"
 
 build_sessions() {
-  isabelle build -j 1 "$@" -D "$PROJECT_ROOT" \
-    -D "$PROJECT_ROOT/reports/audit_modal_quantified" \
-    -o export_theory=true
+  isabelle build -j 1 -d "$PROJECT_ROOT" \
+    -d "$PROJECT_ROOT/reports/audit_modal_quantified" \
+    -o export_theory=true \
+    $BACON_SESSIONS
 }
 
 force_export_sessions() {
   isabelle build -j 1 -f -d "$PROJECT_ROOT" \
     -d "$PROJECT_ROOT/reports/audit_modal_quantified" \
     -o export_theory=true \
-    Bacon_Base \
-    Bacon_Classicism \
-    Goodman_CEVplus \
-    Higher_Order_Metaphysics_PP \
-    Higher_Order_Metaphysics_PP_Frontier \
-    Higher_Order_Metaphysics_PP_Models \
-    Higher_Order_Metaphysics_PP_ZF_Model \
-    Higher_Order_Metaphysics_PP_ZF_Secondary \
-    Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
-    Higher_Order_Metaphysics_PP_ZF_Necessity \
-    Higher_Order_Metaphysics_PP_ZF_Possibility \
-    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
-    Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
-    Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
-    Goodman_CEVplus_Canonical \
-    Goodman_CEVplus_ZF_Bridge \
-    Goodman_CEVplus_Modal_Quantified_Bridge \
-    Goodman_CEVplus_Finite_Fragment_Model_Program \
-    Goodman_CEVplus_Finite_First_Cyclic_Model \
-    Higher_Order_Metaphysics_PP_ZF_Dual_Pair_Grafting \
-    Goodman_Modal_Quantified_Audit_2026_07_28
+    $BACON_SESSIONS
 }
 
 compile_extractor() {
@@ -66,27 +71,7 @@ run_extractor() {
     isabelle.Isabelle_KG \
     "$PROJECT_ROOT" \
     "$GRAPH_JSON" \
-    Bacon_Base \
-    Bacon_Classicism \
-    Goodman_CEVplus \
-    Higher_Order_Metaphysics_PP \
-    Higher_Order_Metaphysics_PP_Frontier \
-    Higher_Order_Metaphysics_PP_Models \
-    Higher_Order_Metaphysics_PP_ZF_Model \
-    Higher_Order_Metaphysics_PP_ZF_Secondary \
-    Higher_Order_Metaphysics_PP_ZF_Truth_Functions \
-    Higher_Order_Metaphysics_PP_ZF_Necessity \
-    Higher_Order_Metaphysics_PP_ZF_Possibility \
-    Higher_Order_Metaphysics_PP_ZF_Higher_Order_Quantified \
-    Higher_Order_Metaphysics_PP_ZF_Fun_Prime \
-    Higher_Order_Metaphysics_PP_ZF_T6_Diagonal \
-    Goodman_CEVplus_Canonical \
-    Goodman_CEVplus_ZF_Bridge \
-    Goodman_CEVplus_Modal_Quantified_Bridge \
-    Goodman_CEVplus_Finite_Fragment_Model_Program \
-    Goodman_CEVplus_Finite_First_Cyclic_Model \
-    Higher_Order_Metaphysics_PP_ZF_Dual_Pair_Grafting \
-    Goodman_Modal_Quantified_Audit_2026_07_28
+    $BACON_SESSIONS
 }
 
 semantic_graph_present() {
@@ -99,6 +84,13 @@ with open(sys.argv[1], encoding="utf-8") as stream:
 counts = graph.get("stats", {}).get("edge_kinds", {})
 if counts.get("DEPENDS_ON", 0) <= 0 or counts.get("USES_CONSTANT", 0) <= 0:
     raise SystemExit(1)
+
+if any(
+    node.get("name") == "AOT"
+    or "theories/zalta/" in node.get("file", "")
+    for node in graph.get("nodes", [])
+):
+    raise SystemExit("Zalta AOT material leaked into the Bacon-family graph")
 
 required_dependencies = {
     "theorem:Bacon_PP_ZF_Fresh_Constant_Builder_Fragment_Model."
