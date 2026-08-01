@@ -5,6 +5,11 @@ begin
 section \<open>Goodman M7: failure of Fundamental Completeness\<close>
 
 text \<open>
+  This is a secondary Boolean-tree diagonal.  The abstract reachability
+  equivalence in \<open>Bacon_PP_Goodman_M7_Invariant_Reachability\<close> is
+  model-independent; the concrete diagonal below is not an exact-carrier
+  theorem about Bacon's appendix model.
+
   Given a countable sequence of proposition denotations, we put above the
   nth reserved cone the complement of the nth denotation's own view there.
   The resulting proposition differs from the nth denotation at the root of

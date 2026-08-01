@@ -5,6 +5,9 @@ begin
 section \<open>Goodman M5: rebuilding with a fixed logical operator\<close>
 
 text \<open>
+  This is a secondary Boolean-tree comparison construction, not a
+  reconstruction of Bacon's exact appendix model.
+
   Goodman's final M5 step enlarges the logical vocabulary by one invariant
   unary operator and then repeats Bacon's model construction.  The point
   requiring verification is that the distinguished interpretation remains

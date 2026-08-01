@@ -7,6 +7,10 @@ begin
 section \<open>Goodman M5: a rebuilt model containing an exotic operator\<close>
 
 text \<open>
+  This is a secondary Boolean-tree model.  It is useful for testing Goodman's
+  rebuilding proposal, but no theorem in this file is evidence that Bacon's
+  exact appendix construction has been enlarged in the same way.
+
   The preceding M5 theory proves Bacon's rebuilding theorem for an arbitrary
   fixed cone-natural unary operator.  Here we discharge those hypotheses
   inside the Boolean-prefix presentation of Bacon's model and rebuild the

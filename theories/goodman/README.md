@@ -38,10 +38,12 @@ claim in Goodman's notes. It also supplies Bacon's omitted proof of Theorem
 chain, and the enumeration and gluing argument for Bacon's semantic
 frame-theory representation theorem.
 
-The central consistency question is not among the settled results. The exact
-appendix model does not validate Purity of Pure at the unary-operator type,
-and no model of the complete CEV+ stock with Purity of Pure is currently
-known.
+The central consistency question is not among the settled results.  For the
+closed-logical interpretation on Bacon's exact carriers, Purity of Pure at the
+unary-operator type is equivalent to membership of the unary-stock classifier
+in the next closed-logical stock.  That membership has not been proved or
+refuted unconditionally.  No model of the complete CEV+ stock with Purity of
+Pure is currently known.
 
 For precise statements and qualifications, see:
 

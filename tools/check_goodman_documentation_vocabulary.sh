@@ -8,6 +8,9 @@ $project_dir/README.md
 $project_dir/STATUS.md
 $project_dir/docs/ISABELLE_TERMINOLOGY.md
 $project_dir/theories/goodman/README.md
+$project_dir/theories/goodman/models/hol_zf/canonical/README.md
+$project_dir/theories/goodman/models/hol_zf/extensions/README.md
+$project_dir/theories/goodman/models/hol_zf/secondary/README.md
 $project_dir/reports/GOODMAN_VERIFICATION_AND_PROGRESS_REPORT_2026-07-27.tex
 $project_dir/reports/GOODMAN_COMPLETE_VERIFICATION_MATRIX_2026-07-27.md
 $project_dir/theories/goodman/cevplus/Bacon_PP_Fresh_Finite_Fragment.thy

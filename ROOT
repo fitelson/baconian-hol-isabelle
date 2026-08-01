@@ -190,6 +190,8 @@ theories
     Bacon_PP_ZF_Exact_L2_Child_Variation_Semantics
     Bacon_PP_ZF_Exact_L2_Child_Variation
     Bacon_PP_ZF_Exact_Recombination
+    Bacon_PP_ZF_Exact_M1
+    Bacon_PP_ZF_Exact_Self_Classifying_Stock
   Bacon_PP_ZF_Exact_10_1
   Bacon_PP_ZF_Exact_CEV_Soundness
   Bacon_PP_ZF_Exact_Enumeration

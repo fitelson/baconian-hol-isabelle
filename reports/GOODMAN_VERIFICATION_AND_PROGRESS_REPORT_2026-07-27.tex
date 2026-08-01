@@ -104,11 +104,11 @@ in T3 and a false countability argument in M5; verifies the four T6
 contradiction routes and the T9 cardinal dichotomy from their explicit
 premises; completes the rebuilt M5 model containing the displayed exotic
 operator; and completes the denotational step in Bacon's footnote-59
-argument.  In Bacon's exact tree semantics, the displayed footnote-59 term
+argument.  Over Bacon's exact recursively restricted carriers, the displayed footnote-59 term
 denotes the required diagonal, with identity interpreted at the appropriate
 higher types.  Consequently no interpretation in that semantic framework
 can validate \PP\ together with the \PP-free M1 background and \QSS.  This
-rules out completing Bacon's exact tree interpretation while retaining the
+rules out completing that exact-carrier interpretation while retaining the
 \PP-free M1 background (including Purity of Fun), \QSS, and unique
 fundamentality.  The same argument
 has now been proved for arbitrary compositional CEV+ Henkin models: no such
@@ -225,7 +225,7 @@ frame-theory representation theorem, not proof-theoretic completeness of
 \bottomrule
 \end{longtable}
 
-The dedicated Goodman-notes audit checks 158 theorem objects supporting the
+The dedicated Goodman-notes audit checks 167 theorem objects supporting the
 central object-language and model-theoretic claims below, and fresh builds
 pass.  Separate maintained sessions check the modal-and-quantified fragment
 models and the later finite-fragment constructions.  None
@@ -410,8 +410,10 @@ earlier binary-tree calculation: Bacon's frame has one immediate successor
 for each natural number, so its exact operator tests variation among all
 immediate successors rather than comparing two distinguished children.
 
-The result does not prove the consistency of \PP.  Bacon's appendix model
-still fails \PP\ at the unary-operator type.  Nor does the theorem show that
+The result does not prove the consistency of \PP.  In the exact-carrier
+closed-logical interpretation, \PP\ at the unary-operator type is equivalent
+to membership of the unary-stock classifier in the next closed-logical
+stock.  That membership has not been proved or refuted unconditionally.  Nor does the theorem show that
 every larger interpretation of the pure unary operators still falsifies
 \Ltwo: right-cancellativity and \(\funp\) must be recalculated relative to
 the enlarged stock.  What the result establishes is the exact calibration
@@ -644,14 +646,14 @@ pure operators, \(R\)
 ceases to be \(\funp\), proving the corrected pre-rebuild \QSS\
 obstruction.\\
 
-M5, rebuild & Verified without Theorem~10.1 &
+M5, rebuild & Verified in a secondary comparison model &
 Isabelle constructs
 the least application-closed pure stock containing every closed logical
 denotation and the displayed \(f\), proves that \(f\) is a pure self-inverse
 operator in the modalized function domain, and rebuilds a fundamental
 proposition that supplies Recombination and \(\funp\)-separation at every
-world.  The rebuilt interpretation validates Bacon's Recombination
-background.  It does not validate \PP; that would require the classifier of
+world.  This Boolean-tree comparison interpretation validates Bacon's Recombination
+background.  It does not establish \PP; that would require the classifier of
 the enlarged pure stock itself to belong to the next pure stock.\\
 
 M5, collision & Verified; unrestricted generalization refuted &
@@ -679,8 +681,9 @@ by countability.  These results have not all been instantiated for Bacon's
 stock of operators denoted by closed terms containing only logical
 vocabulary.\\
 
-M7 & Verified, with an open instance &
-The Tarski diagonal lies outside the range of the enumerated closed terms.
+M7 & Abstract theorem verified; exact instance open &
+In the secondary Boolean-tree comparison model, the Tarski diagonal lies
+outside the range of the enumerated closed terms.
 For arbitrary invariant operators of Goodman's form \(G_T\), every proposition is reachable from \(r\)
 if and only if the orbit map
 \[
@@ -1314,8 +1317,9 @@ formalization does not assume them away; it addresses each one explicitly.
 \item \textbf{Truth at a world and identity of propositions.}
       The semantic evaluator keeps these notions separate.  Identity is
       interpreted at each type by its proper local equivalence relation, while
-      truth is evaluation at a world.  The exact M1 calculation, the rebuilt
-      M5 model, and the \Ltwo\ counterexample all use this distinction.
+      truth is evaluation at a world.  The exact-carrier M1 calculation, the
+      secondary rebuilt M5 model, and the exact-carrier \Ltwo\ counterexample
+      all use this distinction.
       Higher-type identity is interpreted pointwise rather than by treating
       operators themselves as propositions.
 \item \textbf{Validity in Bacon's model and derivability in CEV+.}
@@ -1449,7 +1453,7 @@ The verification matrix gives, for each claim, the exact Isabelle theorem and
 the qualification under which it has been proved, and identifies the source
 theory corresponding to each result.  \isa{STATUS.md} gives the concise
 current project status.
-The audit theory is a kernel-cleanliness gate.  It checks that its 158 listed
+The audit theory is a kernel-cleanliness gate.  It checks that its 167 listed
 theorems have no oracles, dangling hypotheses, or unsolved unification pairs;
 the source-fidelity and hypothesis-strength assessments reported here come
 from the separate statement-by-statement audit.  The repository's serial
@@ -1467,7 +1471,8 @@ collision method is false, refutes L2 when the pure unary operators are
 precisely the closed logical denotations in Bacon's appendix model, proves
 the exact T6 semantic
 consequence, and completes Bacon's footnote-59 denotation argument in the
-exact tree semantics and in arbitrary compositional CEV+ Henkin models.  The
+exact recursively restricted semantics and in arbitrary compositional CEV+
+Henkin models.  The
 last result proves that full QLN, PP, and Purity of Fun have no such model,
 but it does not settle Goodman's question because the central axiom sets omit
 Purity of Fun.  The report also corrects the use of \PC\ as a surrogate for

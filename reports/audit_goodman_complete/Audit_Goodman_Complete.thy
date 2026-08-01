@@ -31,6 +31,7 @@ theory Audit_Goodman_Complete
     Higher_Order_Metaphysics_PP_ZF_Secondary.Bacon_PP_ZF_Tree_CEV_Soundness
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Exact_Completeness
     Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Exact_L2_Child_Variation
+    Higher_Order_Metaphysics_PP_ZF_Model.Bacon_PP_ZF_Exact_Self_Classifying_Stock
     Goodman_CEVplus_Canonical.Bacon_PP_Fresh_Finite_Fragment
     Goodman_CEVplus_ZF_Bridge.Bacon_PP_Fresh_ZF_Fragment_Bridge
 begin
@@ -174,6 +175,24 @@ val targets = [
     @{thm goodman_M1_henkin_model.M1_fn59_PP_failure}),
   ("M1 arbitrary-Henkin full-QLN plus Purity-of-Fun exclusion",
     @{thm goodman_M1_henkin_model.no_full_QLN_model_with_purity_of_fun}),
+  ("M1 footnote-59 contradiction on Bacon's exact carriers",
+    @{thm pp_e_moving_internal_parameters.pp_e_M1_fn59_diagonal_contradiction}),
+  ("M1 footnote-60 classifier belongs to the exact higher-type domain",
+    @{thm pp_e_M1_fn60_classifier_in_exact_domain}),
+  ("M1 footnote-60 classifier has the exact closed-logical extension",
+    @{thm pp_e_M1_fn60_classifier_exact_extension}),
+  ("M1 footnote-60 classifier is the exact Pure interpretation",
+    @{thm pp_e_M1_fn60_is_exact_Pure_interpretation}),
+  ("M1 footnote-60 PP iff exact classifier membership",
+    @{thm pp_e_M1_fn60_PP_iff_classifier_closed_logical_at_world}),
+  ("exact all-type PP iff self-classification",
+    @{thm pp_e_moving_internal_parameters.pp_e_all_PP_instances_gvalid_iff_self_classifying}),
+  ("exact target PP iff unary classifier membership",
+    @{thm pp_e_moving_internal_parameters.pp_e_target_PP_gvalid_iff_unary_classifier_member}),
+  ("exact candidate validates logical purity, application closure, and PP",
+    @{thm pp_e_moving_internal_parameters.pp_e_exact_candidate_validates_purity_closure_and_PP}),
+  ("exact closed-logical PP iff classifier membership",
+    @{thm pp_e_closed_logical_target_PP_iff_classifier_member}),
   ("M1 footnote-59 exact denotation",
     @{thm pp_t_moving_internal_parameters.pp_t_M1_fn59_liar_denotation}),
   ("M1 QSS exact denotation",

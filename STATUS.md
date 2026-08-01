@@ -54,7 +54,11 @@ and model-theoretic work:
   scope.
 - Goodman's L2 fails when the pure unary operators are precisely the
   denotations of closed logical terms in Bacon's exact appendix model.
-- The maintained Goodman audit checks 158 principal theorem objects for
+- For that exact-carrier closed-logical interpretation, PP is equivalent to
+  membership of the unary-stock classifier in the next closed-logical stock.
+  That membership is not presently proved false or true without additional
+  assumptions.
+- The maintained Goodman audit checks 167 principal theorem objects for
   oracles, residual hypotheses, and flex-flex constraints.
 
 None of these results settles the central question. In particular, fragment

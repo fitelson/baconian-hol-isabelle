@@ -4,7 +4,13 @@ theory Bacon_PP_ZF_Goodman_M1_Fn59
     "Higher_Order_Metaphysics_PP_Frontier.Bacon_PP_Goodman_M1_Complete"
 begin
 
-section \<open>Goodman M1 and Bacon's footnote 59 in the exact tree semantics\<close>
+section \<open>Goodman M1 in the secondary Boolean-tree semantics\<close>
+
+text \<open>
+  This is a comparison-model calculation.  The source-faithful transfer to
+  Bacon's exact recursively restricted carriers is
+  \<open>Bacon_PP_ZF_Exact_M1\<close> in the canonical model session.
+\<close>
 
 context pp_t_moving_internal_parameters
 begin

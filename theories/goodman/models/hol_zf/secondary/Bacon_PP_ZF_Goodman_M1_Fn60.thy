@@ -2,7 +2,12 @@ theory Bacon_PP_ZF_Goodman_M1_Fn60
   imports Bacon_PP_ZF_Tree_Generic_Seed
 begin
 
-section \<open>Goodman M1 and Bacon's footnote 60 in the exact tree model\<close>
+section \<open>Goodman M1 in the secondary Boolean-tree model\<close>
+
+text \<open>
+  This theory is retained as a comparison calculation.  The exact-carrier
+  classifier and PP equivalence are proved in \<open>Bacon_PP_ZF_Exact_M1\<close>.
+\<close>
 
 abbreviation pp_t_M1_unary_type :: otype where
   "pp_t_M1_unary_type \<equiv> Prop \<rightarrow>\<^sub>o Prop"
