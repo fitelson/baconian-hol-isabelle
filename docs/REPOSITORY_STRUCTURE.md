@@ -19,6 +19,8 @@ AOT
 
 The older HOL-ZF fragments and bridge sessions continue below
 `Higher_Order_Metaphysics_PP_ZF_Secondary`; they are listed separately below.
+The distinct representation strategies of the two families are explained in
+[`EMBEDDING_ARCHITECTURE.md`](EMBEDDING_ARCHITECTURE.md).
 
 ## 1. Bacon's base theory
 

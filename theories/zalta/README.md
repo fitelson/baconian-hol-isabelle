@@ -16,6 +16,10 @@ Metaphysics,” describes the shallow semantic embedding, its abstraction layer,
 and the verification of the AOT reconstruction of Frege's theorem. The exact
 article and PLM draft used for this repository are in the
 [central source archive](../../sources/README.md).
+The repository's
+[embedding-architecture note](../../docs/EMBEDDING_ARCHITECTURE.md) compares
+this shallow semantic embedding with the independent deep embedding used for
+the Bacon--Dorr theories.
 
 The source is based on the `develop` branch of
 [`ekpyron/AOT`](https://github.com/ekpyron/AOT), commit

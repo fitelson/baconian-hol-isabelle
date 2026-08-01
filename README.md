@@ -81,6 +81,9 @@ The project contains no admitted Isabelle proofs.
 
 - [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md): complete
   directory and session map;
+- [`docs/EMBEDDING_ARCHITECTURE.md`](docs/EMBEDDING_ARCHITECTURE.md): comparison
+  of the deep Bacon--Dorr embedding and Kirchner's shallow semantic embedding
+  of AOT;
 - [`docs/ISABELLE_TERMINOLOGY.md`](docs/ISABELLE_TERMINOLOGY.md):
   Bacon--Dorr--Goodman terminology;
 - [`STATUS.md`](STATUS.md): concise current theorem status; and
